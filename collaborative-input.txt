@@ -1,0 +1,54 @@
+SIGNAL THEORY FRAMEWORK (MASTER REFERENCE):
+
+Four Signal States:
+1. Interest - Reciprocal effort, consistent forward movement, she initiates, follows through on plans
+2. Uncertainty - Inconsistent patterns, warm but distant after, vague about plans, evaluating
+3. Comfort - Easy connection, emotional openness, but no romantic direction or escalation
+4. Disengagement - Moving away, slower responses, plans falling through, fading energy
+
+Core Framework Rules:
+- Signals Over Stories: Trust behavior not explanations. When words and behavior conflict, behavior wins.
+- Timing Over Intent: When you act matters more than why. Kind intentions early create pressure.
+- Calibration Over Performance: Match energy to situation. Don't try to impress or force connection.
+- The Master Question: "Am I aligned with the signal or trying to change it?" If trying to change it, stop.
+
+Key Insight: You don't fix signals. You respond to them. Goal is accuracy not performance.
+
+---
+
+CURRENT APP STATE:
+
+What Works:
+- Quiz UI (question display, navigation, results)
+- Auth flow (login/signup)
+- Color scheme (orange/dark theme)
+- Mobile-first responsive design
+- Backend API structure exists
+
+What's Broken:
+- Only 3 test quiz questions (need 30)
+- Questions don't map to framework states
+- Feedback doesn't teach WHY answers are right/wrong
+- No framework principles shown
+- Analyzer returns error (backend issue)
+- Textarea has whitespace bug
+
+---
+
+BUILD SPEC QUESTION:
+
+Review the attached CLAUDE-CODE-READY-SPEC.md and answer:
+
+1. Is the spec clear enough for Claude Code to implement in one session (60-90 min)?
+2. Are we losing critical framework context by simplifying?
+3. Does the quiz question template capture everything needed to teach the framework?
+4. Is the Analyzer backend prompt comprehensive enough?
+5. What's missing that would cause confusion or incomplete implementation?
+
+Focus on:
+- Clarity of data structures
+- Completeness of examples
+- Framework alignment validation
+- Implementation feasibility
+
+If simplification loses important context, identify what needs to be added back.

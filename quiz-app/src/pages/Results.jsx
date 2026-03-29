@@ -53,7 +53,7 @@ export default function Results() {
     setSubmitting(false);
   };
 
-  const shareUrl = typeof window !== 'undefined' ? window.location.origin + '/' : '/';
+  const shareUrl = typeof window !== 'undefined' ? window.location.origin + '/signal-theory/quiz/' : '/signal-theory/quiz/';
   const shareText = `I just took the Signal Theory Dating Readiness Quiz and got "${profile.name}". Find out your profile:`;
 
   const handleCopyLink = () => {

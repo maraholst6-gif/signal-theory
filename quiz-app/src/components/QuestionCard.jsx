@@ -1,10 +1,10 @@
 export default function QuestionCard({ question, selectedValue, onSelect }) {
   return (
     <div className="w-full">
-      <h2 className="text-xl sm:text-2xl font-bold leading-relaxed text-text mb-8">
+      <h2 className="text-lg sm:text-2xl font-bold leading-snug text-text mb-3">
         {question.text}
       </h2>
-      <div className="space-y-3">
+      <div className="space-y-2">
         {question.options.map((option) => {
           const isSelected = selectedValue === option.value;
           return (
@@ -12,7 +12,7 @@ export default function QuestionCard({ question, selectedValue, onSelect }) {
               key={option.value}
               onClick={() => onSelect(option)}
               className={`
-                w-full text-left p-4 rounded-lg border transition-all duration-200
+                w-full text-left p-3 rounded-lg border transition-all duration-200
                 ${isSelected
                   ? 'border-accent bg-accent/10 text-text'
                   : 'border-border bg-surface text-text hover:border-accent/50 hover:bg-surface/80'

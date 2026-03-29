@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/signal-theory/quiz/',
   plugins: [
     tailwindcss(),
     react(),

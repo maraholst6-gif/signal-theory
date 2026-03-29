@@ -1,0 +1,713 @@
+SIGNAL THEORY FRAMEWORK (MASTER REFERENCE):
+
+Four Signal States:
+1. Interest - Reciprocal effort, consistent forward movement, she initiates, follows through on plans
+2. Uncertainty - Inconsistent patterns, warm but distant after, vague about plans, evaluating
+3. Comfort - Easy connection, emotional openness, but no romantic direction or escalation
+4. Disengagement - Moving away, slower responses, plans falling through, fading energy
+
+Core Framework Rules:
+- Signals Over Stories: Trust behavior not explanations. When words and behavior conflict, behavior wins.
+- Timing Over Intent: When you act matters more than why. Kind intentions early create pressure.
+- Calibration Over Performance: Match energy to situation. Don't try to impress or force connection.
+- The Master Question: "Am I aligned with the signal or trying to change it?" If trying to change it, stop.
+
+Key Insight: You don't fix signals. You respond to them. Goal is accuracy not performance.
+
+---
+
+CURRENT APP STATE:
+
+What Works:
+- Quiz UI (question display, navigation, results)
+- Auth flow (login/signup)
+- Color scheme (orange/dark theme)
+- Mobile-first responsive design
+- Backend API structure exists
+
+What's Broken:
+- Only 3 test quiz questions (need 30)
+- Questions don't map to framework states
+- Feedback doesn't teach WHY answers are right/wrong
+- No framework principles shown
+- Analyzer returns error (backend issue)
+- Textarea has whitespace bug
+
+---
+
+BUILD SPEC QUESTION:
+
+Review the attached CLAUDE-CODE-READY-SPEC.md and answer:
+
+1. Is the spec clear enough for Claude Code to implement in one session (60-90 min)?
+2. Are we losing critical framework context by simplifying?
+3. Does the quiz question template capture everything needed to teach the framework?
+4. Is the Analyzer backend prompt comprehensive enough?
+5. What's missing that would cause confusion or incomplete implementation?
+
+Focus on:
+- Clarity of data structures
+- Completeness of examples
+- Framework alignment validation
+- Implementation feasibility
+
+If simplification loses important context, identify what needs to be added back.
+
+
+---SPEC TO REVIEW---
+
+# Signal Theory App - Single-Session Build Spec
+
+**Target:** Claude Code implementation in one session  
+**Focus:** Framework alignment with minimal changes to existing structure  
+**Estimated time:** 60-90 minutes
+
+---
+
+## Signal Theory Framework (MASTER REFERENCE)
+
+### The Four Signal States
+
+**1. Interest**
+- **What it looks like:** Reciprocal effort, consistent forward movement, she initiates contact, suggests specific plans, follows through
+- **How to respond:** Stay steady, match investment, don't accelerate
+- **Common mistake:** Over-investing because you're excited
+
+**2. Uncertainty**
+- **What it looks like:** Inconsistent initiation, warm but distant after, vague plans, fluctuating energy
+- **How to respond:** Stay warm but not insistent, give space, don't push for answers
+- **Common mistake:** Trying to "fix" uncertainty with more contact or explanations
+
+**3. Comfort**
+- **What it looks like:** Easy conversation, emotional openness, no romantic direction, no escalation
+- **How to respond:** Reintroduce direction calmly or step back
+- **Common mistake:** Lingering indefinitely hoping attraction will emerge
+
+**4. Disengagement**
+- **What it looks like:** Moving away, slower responses, plans falling through, fading energy
+- **How to respond:** Accept direction, stop pushing, preserve dignity
+- **Common mistake:** Interpreting disengagement as uncertainty and trying to win her back
+
+### Core Framework Rules
+
+1. **Signals Over Stories** - Trust behavior over explanations. When words and behavior conflict, behavior wins.
+2. **Timing Over Intent** - When you do something matters more than why. Kind intentions early create pressure.
+3. **Calibration Over Performance** - Match energy to situation. Don't try to impress or force connection.
+4. **The Master Question** - "Am I aligned with the signal or trying to change it?" If trying to change it, stop.
+
+---
+
+## What We're Building (This Session Only)
+
+### ✅ Build Now:
+
+1. **30 Framework-Aligned Quiz Questions** (10 per level)
+   - Each maps to a signal state
+   - Each teaches WHY answer is right/wrong
+   - Each shows common mistake vs calibrated response
+
+2. **Enhanced Quiz Feedback UI**
+   - Show signal state badge (color-coded)
+   - Display framework principle taught
+   - Show common mistake + calibrated response
+   - Better results screen with state-by-state breakdown
+
+3. **Fix Analyzer Backend**
+   - Get basic function working (no more errors)
+   - Implement Signal Theory framework prompt
+   - Return structured analysis (state + behaviors + calibrated response)
+
+### ⏸️ Defer for Later:
+
+- Interactive scenarios (multi-turn AI conversations)
+- Advanced analytics/progress tracking
+- Custom scenario creation
+- Text exchange formatting (Me:/Her: labels)
+- Screenshot upload
+- Adaptive quiz difficulty
+
+---
+
+## Part 1: Quiz Questions (30 Total)
+
+### Data Structure (Use This Exactly)
+
+```javascript
+const QUIZ_SCENARIOS = {
+  beginner: [
+    {
+      id: 'q-beg-01',
+      level: 'beginner',
+      signalState: 'Interest',
+      title: 'Consistent Follow-Through',
+      situation: 'You've been on two dates with Emma. She texts you first sometimes, suggests specific days to meet, and follows through on plans without vagueness. Energy feels easy and reciprocal.',
+      question: 'What signal state is Emma showing?',
+      options: [
+        {
+          id: 'a',
+          text: 'Interest',
+          correct: true
+        },
+        {
+          id: 'b',
+          text: 'Uncertainty',
+          correct: false
+        },
+        {
+          id: 'c',
+          text: 'Comfort',
+          correct: false
+        },
+        {
+          id: 'd',
+          text: 'Disengagement',
+          correct: false
+        }
+      ],
+      correctAnswer: 'a',
+      signalStateBadge: 'Interest',
+      signalStateColor: 'green',
+      explanation: {
+        correct: '✅ Emma is showing Interest. Observable behaviors: reciprocal initiation, specific plan suggestions, consistent follow-through. These cost her something (time, effort, prioritization), which signals genuine interest.',
+        why: 'Interest is not intensity—it's consistency. Look for behaviors that cost her something. Emma is moving toward you in observable ways.',
+        commonMistake: 'Mistaking intensity for interest. A woman can text constantly but never make plans (Comfort). Emma does both—that's Interest.',
+        calibratedResponse: 'Stay steady, match her investment, don't accelerate. Let momentum continue naturally.',
+        frameworkPrinciple: 'Signals Over Stories'
+      },
+      behaviors: [
+        'She initiates contact sometimes',
+        'Suggests specific days to meet',
+        'Follows through on plans',
+        'Energy is reciprocal and easy'
+      ]
+    },
+    // ... 9 more beginner questions
+  ],
+  intermediate: [
+    // ... 10 intermediate questions
+  ],
+  advanced: [
+    // ... 10 advanced questions
+  ]
+};
+```
+
+### Question Distribution (30 Questions)
+
+**Beginner (10 questions) - Signal State Recognition:**
+- 3 Interest examples (clear reciprocal patterns)
+- 2 Uncertainty examples (warm but inconsistent)
+- 3 Comfort examples (connection without direction)
+- 2 Disengagement examples (fading energy)
+
+**Intermediate (10 questions) - Response Calibration:**
+- 3 Interest → What to do (stay steady, don't over-invest)
+- 2 Uncertainty → What to do (give space, don't push)
+- 3 Comfort → What to do (reintroduce direction or step back)
+- 2 Disengagement → What to do (accept, preserve dignity)
+
+**Advanced (10 questions) - Common Mistakes:**
+- 3 Over-investment scenarios (texting too much, explaining feelings early)
+- 3 Pushing uncertainty (double-texts, seeking reassurance)
+- 2 Lingering in comfort (friend zone recognition)
+- 2 Misreading politeness (soft disengagement patterns)
+
+### Example Questions (Write 2-3 per category, I'll provide more)
+
+**Beginner - Interest:**
+```javascript
+{
+  id: 'q-beg-01',
+  signalState: 'Interest',
+  situation: 'You've been on two dates with Emma. She texts you first sometimes, suggests specific days to meet, and follows through on plans without vagueness. Energy feels easy and reciprocal.',
+  // ... (full structure above)
+}
+```
+
+**Beginner - Uncertainty:**
+```javascript
+{
+  id: 'q-beg-04',
+  signalState: 'Uncertainty',
+  situation: 'Sarah is warm when you're together but takes 8-12 hours to text back afterward. She says "let's meet up soon" but is vague about when.',
+  question: 'What signal state is Sarah showing?',
+  explanation: {
+    correct: '✅ Uncertainty. Warmth without consistent follow-through signals she's evaluating but hasn't decided. This is a pause, not a puzzle.',
+    why: 'Trust the behavior (slow texts, vague plans) over the words ("let's meet up"). Behavior shows uncertainty.',
+    commonMistake: 'Pushing for clarity or increasing contact frequency. This converts Uncertainty → Disengagement.',
+    calibratedResponse: 'Stay warm but not insistent. Give space. Let time and behavior provide clarity.',
+    frameworkPrinciple: 'Signals Over Stories'
+  }
+}
+```
+
+**Intermediate - Response Calibration (Interest):**
+```javascript
+{
+  id: 'q-int-01',
+  signalState: 'Interest',
+  situation: 'You've been on 3 great dates with Lisa. She texts first, suggests plans, and energy is reciprocal. You're excited and want to text her throughout the day.',
+  question: 'What's the calibrated response?',
+  options: [
+    { id: 'a', text: 'Text her often to show you're interested', correct: false },
+    { id: 'b', text: 'Match her investment, don't dramatically exceed it', correct: true },
+    { id: 'c', text: 'Pull back to create scarcity', correct: false },
+    { id: 'd', text: 'Ask where the relationship is going', correct: false }
+  ],
+  explanation: {
+    correct: '✅ Match her investment. Don't dramatically exceed it. Over-investing (even when excited) can create pressure and push Interest → Uncertainty.',
+    why: 'Calibration over Performance. Your excitement is valid but needs to match the current momentum, not try to accelerate it.',
+    commonMistake: 'Texting all day, making big plans early, explaining feelings too soon. Over-investment signals anxiety.',
+    calibratedResponse: 'Stay steady. Reciprocate her energy. Let momentum continue naturally.',
+    frameworkPrinciple: 'Calibration Over Performance'
+  }
+}
+```
+
+**Advanced - Common Mistake (Pushing Uncertainty):**
+```javascript
+{
+  id: 'q-adv-03',
+  signalState: 'Uncertainty',
+  situation: 'You texted Jessica "Want to grab dinner this weekend?" She replied "Maybe, I'll let you know." Three days pass with no response.',
+  question: 'What should you do?',
+  options: [
+    { id: 'a', text: 'Send a follow-up: "Hey, still down for that dinner?"', correct: false },
+    { id: 'b', text: 'Let it go. She knows you're interested. Ball is in her court.', correct: true },
+    { id: 'c', text: 'Explain why you'd be great together', correct: false },
+    { id: 'd', text: 'Suggest a different plan to show flexibility', correct: false }
+  ],
+  explanation: {
+    correct: '✅ Let it go. "Maybe" + silence = soft disengagement, not uncertainty. Following up confirms you're over-invested and can't sit with ambiguity.',
+    why: 'The Master Question: Are you trying to change the signal (follow up) or respond to it (let go)? Following up is trying to change it.',
+    commonMistake: 'Double-texting, suggesting alternative plans, explaining your intentions. This signals anxiety and low self-trust.',
+    calibratedResponse: 'Stop. No more contact. If she's interested, she'll reach out. You preserved your dignity by not chasing.',
+    frameworkPrinciple: 'The Master Question'
+  }
+}
+```
+
+---
+
+## Part 2: Enhanced Quiz Feedback UI
+
+### Current Flow (Keep This)
+
+Question → User selects answer → Submit button → Feedback screen → Next question
+
+### Changes to Feedback Screen
+
+**Add these elements after user submits:**
+
+```html
+<div class="feedback-card">
+  <!-- Keep existing header (✅/❌, title) -->
+  
+  <!-- ADD: Signal State Badge -->
+  <div class="signal-state-badge ${signalState.toLowerCase()}">
+    ${signalState} Signal
+  </div>
+  
+  <!-- ADD: Observable Behaviors -->
+  <div class="feedback-section">
+    <div class="feedback-section-title">Observable Behaviors</div>
+    <ul class="behaviors-list">
+      ${behaviors.map(b => `<li>${b}</li>`).join('')}
+    </ul>
+  </div>
+  
+  <!-- KEEP: Existing explanation section -->
+  
+  <!-- ADD: Why This Matters -->
+  <div class="feedback-section">
+    <div class="feedback-section-title">Why This Matters</div>
+    <div class="feedback-section-body">${explanation.why}</div>
+  </div>
+  
+  <!-- ADD: Common Mistake -->
+  <div class="feedback-section">
+    <div class="feedback-section-title">Common Mistake</div>
+    <div class="feedback-section-body">${explanation.commonMistake}</div>
+  </div>
+  
+  <!-- ADD: Calibrated Response -->
+  <div class="feedback-section">
+    <div class="feedback-section-title">Calibrated Response</div>
+    <div class="feedback-section-body">${explanation.calibratedResponse}</div>
+  </div>
+  
+  <!-- ADD: Framework Principle -->
+  <div class="feedback-section">
+    <div class="feedback-section-title">Framework Principle</div>
+    <div class="principle-text">📖 ${explanation.frameworkPrinciple}</div>
+  </div>
+  
+  <!-- Keep existing Next Question button -->
+</div>
+```
+
+### CSS for New Elements
+
+```css
+.signal-state-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 12px 0;
+  text-transform: uppercase;
+}
+
+.signal-state-badge.interest { background: #d1fae5; color: #065f46; }
+.signal-state-badge.uncertainty { background: #fef3c7; color: #92400e; }
+.signal-state-badge.comfort { background: #dbeafe; color: #1e40af; }
+.signal-state-badge.disengagement { background: #fee2e2; color: #991b1b; }
+
+.feedback-section {
+  margin-bottom: 16px;
+}
+
+.feedback-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #9ca3af;
+  margin-bottom: 8px;
+}
+
+.feedback-section-body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #f5f5f5;
+}
+
+.principle-text {
+  font-style: italic;
+  color: #FF6B35;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+```
+
+### Results Screen Updates
+
+**Add state-by-state breakdown:**
+
+```javascript
+function showQuizResults() {
+  // ... existing score calculation ...
+  
+  // ADD: State-by-state breakdown
+  const stateBreakdown = {
+    Interest: { correct: 0, total: 0 },
+    Uncertainty: { correct: 0, total: 0 },
+    Comfort: { correct: 0, total: 0 },
+    Disengagement: { correct: 0, total: 0 }
+  };
+  
+  quizState.scenarios.forEach((q, i) => {
+    const answer = quizState.answers[i];
+    stateBreakdown[q.signalState].total++;
+    if (answer?.correct) {
+      stateBreakdown[q.signalState].correct++;
+    }
+  });
+  
+  // Display breakdown
+  let breakdownHTML = '<div class="state-breakdown">';
+  breakdownHTML += '<h3>Your Signal State Recognition:</h3>';
+  
+  Object.entries(stateBreakdown).forEach(([state, stats]) => {
+    if (stats.total > 0) {
+      const icon = stats.correct === stats.total ? '✅' : '⚠️';
+      breakdownHTML += `<div class="state-stat">${icon} ${state}: ${stats.correct}/${stats.total} correct</div>`;
+    }
+  });
+  
+  breakdownHTML += '</div>';
+  
+  // Identify struggling areas
+  const struggling = Object.entries(stateBreakdown)
+    .filter(([_, stats]) => stats.total > 0 && stats.correct / stats.total < 0.7)
+    .map(([state, _]) => state);
+  
+  if (struggling.length > 0) {
+    breakdownHTML += `<div class="struggling-note">You Struggled With: 🎯 ${struggling.join(', ')}</div>`;
+  }
+  
+  document.getElementById('resultsBreakdown').innerHTML = breakdownHTML;
+}
+```
+
+---
+
+## Part 3: Analyzer Fix + Framework Integration
+
+### Backend Fix (analyze route)
+
+**Current problem:** Returns error  
+**Root cause:** Unknown (need to test backend)
+
+**Fix approach:**
+
+1. Verify `/api/analyze` endpoint exists and is accessible
+2. Check if it's calling Claude API correctly
+3. Implement Signal Theory framework prompt
+
+**Updated analyze route (`backend/src/routes/analysis.ts`):**
+
+```typescript
+router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
+  const { situation } = req.body as { situation?: string };
+
+  if (!situation?.trim()) {
+    res.status(400).json({ error: 'Situation text is required.' });
+    return;
+  }
+
+  try {
+    const prompt = `You are analyzing a dating situation using the Signal Theory framework.
+
+**Framework Overview:**
+
+**The Four Signal States:**
+1. Interest - Reciprocal effort, consistent forward movement, she initiates contact, follows through on plans
+2. Uncertainty - Inconsistent patterns, warm but distant after, vague about plans
+3. Comfort - Easy connection, emotional openness, but no romantic direction
+4. Disengagement - Moving away, slower responses, plans falling through, fading energy
+
+**Core Rules:**
+- Signals Over Stories: Trust behavior, not explanations
+- Timing Over Intent: When you act matters more than why
+- Calibration Over Performance: Match energy, don't exceed it
+- The Master Question: "Am I aligned with the signal or trying to change it?"
+
+**User's Situation:**
+${situation}
+
+**Analyze this and provide:**
+
+1. **Signal State**: Which of the four states is this? (Interest/Uncertainty/Comfort/Disengagement)
+
+2. **Observable Behaviors**: List specific behaviors you see (who initiates, response times, plan follow-through)
+
+3. **Pattern Analysis**: What does this pattern tell us?
+
+4. **Common Mistake**: What do most people do wrong here?
+
+5. **Calibrated Response**: What should the user do next, aligned with the signal state?
+
+6. **Framework Principle**: Which rule applies? (Signals Over Stories / Timing Over Intent / Calibration Over Performance / Master Question)
+
+Format as plain text with clear sections. Be direct and specific.`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY as string,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Anthropic API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const analysis = data.content[0].text;
+
+    res.json({ analysis });
+  } catch (err) {
+    console.error('[analysis]', err);
+    res.status(500).json({ error: 'Analysis failed. Please try again.' });
+  }
+});
+```
+
+### Frontend Fix (index.html)
+
+**Current textarea bug:** Hidden whitespace  
+**Fix:** Remove extra spaces in HTML
+
+Find this:
+
+```html
+<textarea id="analyzeInput" class="analyze-textarea" rows="6" placeholder="...">
+  
+</textarea>
+```
+
+Replace with:
+
+```html
+<textarea id="analyzeInput" class="analyze-textarea" rows="6" placeholder="Describe your situation: what's happening, who's initiating contact, how she responds, etc."></textarea>
+```
+
+**Improve results display:**
+
+```javascript
+async function analyze() {
+  const input = document.getElementById('analyzeInput').value.trim();
+  if (!input) { alert('Please enter a situation to analyze.'); return; }
+  
+  const resultDiv = document.getElementById('analyzeResult');
+  const resultText = document.getElementById('analyzeResultText');
+  const btn = document.getElementById('analyzeBtn');
+  
+  btn.textContent = 'Analyzing...';
+  btn.disabled = true;
+  
+  resultText.innerHTML = '<p style="color:#a0a0a0">Analyzing signals...</p>';
+  resultDiv.style.display = 'block';
+  window.scrollTo(0, 0); // Already fixed in commit 687c5a7
+  
+  try {
+    const res = await fetch(API_BASE + '/api/analyze', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ situation: input })
+    });
+    
+    if (!res.ok) {
+      if (res.status === 502 || res.status === 503) {
+        throw new Error('Backend is starting up. Please wait 30 seconds and try again.');
+      } else if (res.status === 401) {
+        throw new Error('Session expired. Please log in again.');
+      }
+      throw new Error('Analysis failed. Please try again.');
+    }
+    
+    const data = await res.json();
+    
+    // Format analysis with better structure
+    const formatted = data.analysis
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/\n/g, '<br>');
+    
+    resultText.innerHTML = `<div style="font-size:14px;line-height:1.8;color:#f5f5f5">${formatted}</div>`;
+    
+  } catch (e) {
+    resultText.innerHTML = `<p style="color:#ef4444">${e.message}</p>`;
+  } finally {
+    btn.textContent = 'Analyze';
+    btn.disabled = false;
+  }
+}
+```
+
+---
+
+## Implementation Checklist
+
+**Claude Code should:**
+
+### ✅ Step 1: Update Quiz Data Structure (30 minutes)
+- [ ] Create 30 quiz questions using the template above
+- [ ] Map each to a signal state
+- [ ] Add explanation object with all required fields
+- [ ] Add behaviors array for each question
+- [ ] Update `QUIZ_SCENARIOS` constant in index.html
+
+### ✅ Step 2: Enhance Feedback UI (15 minutes)
+- [ ] Add signal state badge display
+- [ ] Add observable behaviors section
+- [ ] Add "Why This Matters" section
+- [ ] Add "Common Mistake" section
+- [ ] Add "Calibrated Response" section
+- [ ] Add "Framework Principle" section
+- [ ] Add CSS for new elements
+- [ ] Ensure scroll to top works
+
+### ✅ Step 3: Improve Results Screen (15 minutes)
+- [ ] Add state-by-state breakdown
+- [ ] Show which states user struggled with
+- [ ] Add recommendations based on weak areas
+
+### ✅ Step 4: Fix Analyzer (20 minutes)
+- [ ] Fix textarea whitespace bug
+- [ ] Update backend analyze route with framework prompt
+- [ ] Improve frontend error handling
+- [ ] Format analysis output with sections
+
+### ✅ Step 5: Test End-to-End (10 minutes)
+- [ ] Complete beginner quiz
+- [ ] Verify feedback shows correctly
+- [ ] Check results breakdown
+- [ ] Test analyzer with sample situation
+- [ ] Confirm all signal states are covered
+
+---
+
+## Success Criteria
+
+**After this session, user should be able to:**
+
+1. ✅ Take a quiz and see WHY each answer is right/wrong based on framework
+2. ✅ Identify which signal state they're in (Interest/Uncertainty/Comfort/Disengagement)
+3. ✅ Understand what the calibrated response is for that state
+4. ✅ See which framework principle applies
+5. ✅ Use Analyzer to get framework-based feedback on real situations
+6. ✅ Know which signal states they struggle to recognize
+
+**The app should teach:**
+- Signal state recognition through observable behaviors
+- Response calibration (match energy to state)
+- Framework principles (Signals over Stories, Timing over Intent, etc.)
+- Common mistakes to avoid
+
+---
+
+## What NOT to Build (This Session)
+
+- ❌ Interactive scenarios (multi-turn AI conversations)
+- ❌ Advanced analytics/progress dashboard
+- ❌ Text exchange formatting (Me:/Her: labels)
+- ❌ Screenshot upload
+- ❌ Adaptive quiz difficulty
+- ❌ Cross-linking to scenarios (we don't have scenarios yet)
+- ❌ Custom scenario creation
+- ❌ Profile recommendations
+
+---
+
+## Notes for Claude Code
+
+**Keep existing:**
+- Quiz navigation (back buttons work now)
+- Color scheme (orange/dark already applied)
+- Auth flow (login fixed)
+- Mobile-first responsive design
+
+**Focus on:**
+- Content quality (questions teach framework clearly)
+- Feedback clarity (explain WHY, show common mistakes)
+- Analyzer accuracy (framework-grounded analysis)
+
+**If you run into issues:**
+- Backend analyze route: Just make sure it calls Claude API with the prompt provided
+- Quiz questions: Use the template exactly, prioritize clarity over variety
+- Feedback UI: Don't need fancy animations, just clear information hierarchy
+
+---
+
+**Estimated Time:** 60-90 minutes total  
+**Output:** Fully functional framework-aligned quiz + working analyzer
+

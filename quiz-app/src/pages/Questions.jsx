@@ -47,12 +47,12 @@ export default function Questions() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="px-4 pt-6 pb-4 max-w-2xl mx-auto w-full">
+      <header className="px-4 pt-4 pb-3 max-w-2xl mx-auto w-full flex-shrink-0">
         <ProgressBar current={currentIndex + 1} total={questions.length} />
       </header>
 
-      {/* Main */}
-      <main className="flex-1 flex flex-col items-center px-4 py-6">
+      {/* Main - Scrollable content area with padding for fixed footer */}
+      <main className="flex-1 flex flex-col items-center px-4 pb-24 overflow-y-auto">
         <div className="max-w-2xl w-full">
           <QuestionCard
             question={currentQuestion}
@@ -62,8 +62,8 @@ export default function Questions() {
         </div>
       </main>
 
-      {/* Navigation */}
-      <footer className="px-4 py-6 max-w-2xl mx-auto w-full">
+      {/* Navigation - FIXED at bottom */}
+      <footer className="fixed bottom-0 left-0 right-0 px-4 py-4 bg-bg border-t border-border/20 z-50">
         <div className="flex gap-3">
           <button
             onClick={handleBack}
