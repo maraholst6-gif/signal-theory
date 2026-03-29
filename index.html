@@ -107,6 +107,16 @@
         }
         .label { font-weight: 600; color: #374151; display: block; margin-bottom: 4px; }
         .hidden { display: none; }
+        .toggle-link {
+            display: block;
+            text-align: center;
+            margin-top: 14px;
+            color: #667eea;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .toggle-link:hover { color: #764ba2; }
     </style>
 </head>
 <body>
@@ -115,32 +125,39 @@
             <h1>🔥 Signal Theory</h1>
             <p>AI-Powered Dating Coach • Live Demo</p>
         </div>
-        
+
         <div class="content">
-            <!-- Registration -->
-            <div class="section">
-                <h2>1️⃣ Create Account</h2>
-                <input type="email" id="regEmail" placeholder="Email" value="test@example.com">
-                <input type="password" id="regPassword" placeholder="Password" value="TestPass123!">
-                <input type="text" id="regName" placeholder="Display Name" value="Test User">
-                <button onclick="register()">Register</button>
-                <div id="regOutput" class="output hidden"></div>
+            <!-- Auth section (shown until logged in) -->
+            <div id="authSection">
+
+                <!-- Sign Up Form -->
+                <div id="signupForm" class="section">
+                    <h2>Create Account</h2>
+                    <input type="email" id="regEmail" placeholder="Email">
+                    <input type="password" id="regPassword" placeholder="Password">
+                    <input type="text" id="regName" placeholder="Display Name">
+                    <button onclick="register()">Sign Up</button>
+                    <div id="regOutput" class="output hidden"></div>
+                    <span class="toggle-link" onclick="showLogin()">Have an account? Log in</span>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm" class="section hidden">
+                    <h2>Log In</h2>
+                    <input type="email" id="loginEmail" placeholder="Email">
+                    <input type="password" id="loginPassword" placeholder="Password">
+                    <button onclick="login()">Log In</button>
+                    <div id="loginOutput" class="output hidden"></div>
+                    <span class="toggle-link" onclick="showSignup()">New user? Sign up</span>
+                </div>
+
             </div>
 
-            <!-- Login -->
-            <div class="section">
-                <h2>2️⃣ Login</h2>
-                <input type="email" id="loginEmail" placeholder="Email" value="test@example.com">
-                <input type="password" id="loginPassword" placeholder="Password" value="TestPass123!">
-                <button onclick="login()">Login</button>
-                <div id="loginOutput" class="output hidden"></div>
-            </div>
-
-            <!-- Analysis -->
-            <div class="section">
-                <h2>3️⃣ Get Dating Advice</h2>
+            <!-- Analysis (shown after login) -->
+            <div id="analysisSection" class="section hidden">
+                <h2>Get Dating Advice</h2>
                 <label class="label">Describe your situation:</label>
-                <textarea id="analysisText" placeholder="Example: She said 'we should hang out sometime' but hasn't responded to my follow-up text...">She said "we should hang out sometime" but hasn't responded to my follow-up text for 2 days. Should I text again or wait?</textarea>
+                <textarea id="analysisText" placeholder="Example: She said 'we should hang out sometime' but hasn't responded to my follow-up text..."></textarea>
                 <button onclick="analyze()">Analyze with AI</button>
                 <div id="analysisOutput" class="output hidden"></div>
             </div>
@@ -156,6 +173,22 @@
             el.innerHTML = content;
             el.className = 'output ' + type;
             el.classList.remove('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('signupForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+        function showSignup() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('signupForm').classList.remove('hidden');
+        }
+
+        function onAuthSuccess() {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('analysisSection').classList.remove('hidden');
+            document.getElementById('analysisSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         async function register() {
@@ -174,21 +207,7 @@
 
                 if (res.ok) {
                     token = data.access_token;
-                    showOutput('regOutput', `
-                        <strong>✅ Account created!</strong><br>
-                        User ID: ${data.user.user_id}<br>
-                        Email: ${data.user.email}<br>
-                        <div class="status">✅ You're logged in! Scroll down to get AI advice.</div>
-                    `, 'success');
-                    
-                    // Auto-fill login (in case they want to test it)
-                    document.getElementById('loginEmail').value = email;
-                    document.getElementById('loginPassword').value = password;
-                    
-                    // Auto-scroll to analysis section
-                    setTimeout(() => {
-                        document.querySelector('textarea').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 1000);
+                    onAuthSuccess();
                 } else {
                     showOutput('regOutput', `<strong>❌ Error:</strong> ${data.error || 'Registration failed'}`, 'error');
                 }
@@ -212,16 +231,7 @@
 
                 if (res.ok) {
                     token = data.access_token;
-                    showOutput('loginOutput', `
-                        <strong>✅ Logged in!</strong><br>
-                        Email: ${data.user.email}<br>
-                        <div class="status">✅ Ready! Scroll down to get AI advice.</div>
-                    `, 'success');
-                    
-                    // Auto-scroll to analysis section
-                    setTimeout(() => {
-                        document.querySelector('textarea').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 1000);
+                    onAuthSuccess();
                 } else {
                     showOutput('loginOutput', `<strong>❌ Error:</strong> ${data.error || 'Login failed'}`, 'error');
                 }
@@ -231,12 +241,8 @@
         }
 
         async function analyze() {
-            if (!token) {
-                showOutput('analysisOutput', '<strong>❌ Please login first!</strong>', 'error');
-                return;
-            }
-
             const input_text = document.getElementById('analysisText').value;
+            if (!input_text.trim()) return;
 
             showOutput('analysisOutput', '🤔 Analyzing with Claude AI...', '');
 
