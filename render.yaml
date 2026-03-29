@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: signal-theory-backend
+    runtime: docker
+    plan: starter
+    region: oregon
+    rootDir: backend
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: signal-theory-db
+          property: connectionString
+
+  - type: web
+    name: signal-theory-demo
+    runtime: static
+    plan: free
+    buildCommand: echo "No build needed"
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /
+        destination: /test-ui.html
+
+databases:
+  - name: signal-theory-db
+    plan: free
