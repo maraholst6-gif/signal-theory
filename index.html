@@ -224,7 +224,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
         <div id="viewDashboard" class="module-view active">
           <div class="dashboard-header">
             <h1>&#128293; Signal Theory</h1>
-            <p class="subtitle">Welcome back, <span id="dashUserName">&#8212;</span></p>
+            <p id="dashGreeting" class="subtitle">Welcome back, <span id="dashUserName">&#8212;</span></p>
           </div>
           <div class="card progress-card">
             <h2>&#128202; Your Progress</h2>
@@ -461,7 +461,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
           <div class="card">
             <label class="analyze-label">Paste a text thread or describe the situation:</label>
             <textarea id="analyzeInput" class="analyze-textarea" placeholder="Example: She texted me at 11pm saying 'hey what are you up to?' after we went on a date three days ago..."></textarea>
-            <button class="btn-primary" style="margin-top:12px" onclick="analyze()">Analyze Signals &#8594;</button>
+            <button id="analyzeBtn" class="btn-primary" style="margin-top:12px" onclick="analyze()">Analyze Signals &#8594;</button>
           </div>
           <div id="analyzeResult" class="analysis-result" style="display:none">
             <div class="card">
@@ -690,6 +690,11 @@ async function loadDashboard() {
   const nameEl = document.getElementById('dashUserName');
   if (nameEl) nameEl.textContent = userName||'there';
   const history = JSON.parse(localStorage.getItem('quiz_history')||'[]');
+  const greetEl = document.getElementById('dashGreeting');
+  if (greetEl) {
+    if (history.length===0) { greetEl.textContent='Welcome!'; }
+    else { greetEl.innerHTML='Welcome back, <span id="dashUserName">'+(userName||'there')+'</span>'; }
+  }
   const pct = Math.round(Math.min(history.length*10/30*100,100));
   const pctEl = document.getElementById('dashTrainingPct');
   if (pctEl) pctEl.textContent = pct+'%';
@@ -711,6 +716,10 @@ async function loadDashboard() {
       if (leftEl) leftEl.textContent=usage.scenarios_used_week+' used this week';
     }
     const qh = await apiGet('/api/quizzes/history');
+    if (greetEl) {
+      if (!qh||qh.length===0) { greetEl.textContent='Welcome!'; }
+      else { greetEl.innerHTML='Welcome back, <span id="dashUserName">'+(userName||'there')+'</span>'; }
+    }
     if (qh&&qh.length>0) {
       const acc2=Math.round(qh.reduce((s,h)=>s+(h.score||0),0)/qh.reduce((s,h)=>s+(h.total||10),0)*100);
       const accEl=document.getElementById('dashAccuracy');
@@ -954,19 +963,41 @@ async function analyze() {
   if (!input) { alert('Please enter a situation to analyze.'); return; }
   const resultDiv=document.getElementById('analyzeResult');
   const resultText=document.getElementById('analyzeResultText');
+  const btn=document.getElementById('analyzeBtn');
+  const origText=btn?btn.textContent:'';
+  if (btn) { btn.textContent='Analyzing...'; btn.disabled=true; }
   resultText.innerHTML='<p style="color:#6b7280">Analyzing signals...</p>';
   resultDiv.style.display='block';
+  const timeoutId=setTimeout(()=>{
+    resultText.innerHTML='<p style="color:#dc2626">This is taking longer than expected. The backend may be starting up — please try again in 30 seconds.</p>';
+    if (btn) { btn.textContent=origText; btn.disabled=false; }
+  }, 30000);
   try {
     const res=await fetch(API_BASE+'/api/analyze',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
       body:JSON.stringify({situation:input})
     });
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      let errorMsg;
+      if (res.status===502||res.status===503) { errorMsg='Backend is starting up. Please wait 30 seconds and try again.'; }
+      else if (res.status===429) { errorMsg='Rate limit reached. Please try again in a few minutes.'; }
+      else if (res.status===401) { errorMsg='Session expired. Please log in again.'; }
+      else { const d=await res.json().catch(()=>({})); errorMsg='Error: '+(d.error||d.message||res.statusText||'Please try again.'); }
+      resultText.innerHTML='<p style="color:#dc2626">'+errorMsg+'</p>';
+      return;
+    }
     const data=await res.json();
     if (data.analysis) { resultText.innerHTML='<p style="font-size:14px;line-height:1.8;color:#374151">'+data.analysis.replace(/\n/g,'<br>')+'</p>'; }
     else if (data.error||data.message) { resultText.innerHTML='<p style="color:#dc2626">'+(data.error||data.message)+'</p>'; }
     else { resultText.innerHTML='<p style="color:#dc2626">Unable to analyze. Please try again.</p>'; }
-  } catch(e) { resultText.innerHTML='<p style="color:#dc2626">Connection error. Please try again.</p>'; }
+  } catch(e) {
+    clearTimeout(timeoutId);
+    resultText.innerHTML='<p style="color:#dc2626">Connection error. Please try again.</p>';
+  } finally {
+    if (btn) { btn.textContent=origText; btn.disabled=false; }
+  }
 }
 
 function showUpgrade() { document.getElementById('upgradeModal').classList.add('show'); }
