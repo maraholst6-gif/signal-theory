@@ -10,299 +10,1465 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
             color: #333;
         }
-        .container {
+        /* ── App shell ── */
+        .app-shell {
             max-width: 600px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #f0f2f7;
         }
-        .header {
+        /* ── Header ── */
+        .app-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 30px;
+            padding: 20px 24px 16px;
             text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
         }
-        .header h1 { font-size: 32px; margin-bottom: 10px; }
-        .header p { opacity: 0.9; font-size: 14px; }
-        .content { padding: 30px; }
-        .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f7f9fc;
-            border-radius: 12px;
-            border-left: 4px solid #667eea;
+        .app-header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+        .app-header p { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+        /* ── Tab bar ── */
+        .tab-bar {
+            display: flex;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
         }
-        .section h2 {
-            font-size: 18px;
-            margin-bottom: 15px;
-            color: #667eea;
+        .tab-btn {
+            flex: 1;
+            padding: 12px 0 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            font-size: 11px;
+            color: #9ca3af;
+            font-weight: 500;
+            transition: color 0.2s;
+            width: auto;
+            margin: 0;
+            transform: none;
+            box-shadow: none;
         }
-        input, textarea {
+        .tab-btn:hover { transform: none; box-shadow: none; color: #667eea; }
+        .tab-btn.active { color: #667eea; }
+        .tab-btn .tab-icon { font-size: 20px; }
+        /* ── Main content ── */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        /* ── Auth ── */
+        .auth-wrapper {
+            padding: 20px 16px;
+            flex: 1;
+        }
+        .auth-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .auth-card h2 { font-size: 20px; margin-bottom: 20px; color: #374151; }
+        input {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 2px solid #e0e6ed;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border 0.3s;
+            padding: 12px 14px;
+            margin: 6px 0;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border 0.2s;
+            background: #f9fafb;
         }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        textarea { min-height: 120px; resize: vertical; font-family: inherit; }
-        button {
+        input:focus { outline: none; border-color: #667eea; background: white; }
+        .btn-primary {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-top: 10px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            margin-top: 12px;
         }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
-        button:active { transform: translateY(0); }
-        .output {
-            margin-top: 15px;
-            padding: 15px;
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-secondary {
+            width: 100%;
+            padding: 12px;
             background: white;
-            border-radius: 8px;
-            border: 2px solid #e0e6ed;
-            font-size: 14px;
-            line-height: 1.6;
-            max-height: 300px;
-            overflow-y: auto;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            margin-top: 8px;
         }
-        .output.success { border-color: #10b981; background: #f0fdf4; }
-        .output.error { border-color: #ef4444; background: #fef2f2; }
-        .status { margin-top: 10px; font-size: 13px; color: #6b7280; }
-        .advice {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-left-color: #f59e0b;
-            margin-top: 15px;
-            padding: 20px;
-            border-radius: 12px;
-        }
-        .advice h3 {
-            color: #92400e;
-            margin-bottom: 12px;
-            font-size: 16px;
-        }
-        .advice p {
-            color: #78350f;
-            line-height: 1.8;
-            margin: 8px 0;
-        }
-        .label { font-weight: 600; color: #374151; display: block; margin-bottom: 4px; }
-        .hidden { display: none; }
-        .toggle-link {
-            display: block;
-            text-align: center;
-            margin-top: 14px;
+        .btn-secondary:hover { background: #f0f4ff; transform: none; box-shadow: none; }
+        .btn-ghost {
+            background: none;
+            border: none;
             color: #667eea;
             font-size: 14px;
             cursor: pointer;
             text-decoration: underline;
+            padding: 0;
+            width: auto;
+            margin-top: 14px;
+            display: block;
+            text-align: center;
         }
-        .toggle-link:hover { color: #764ba2; }
-        .logout-bar {
-            text-align: right;
-            padding: 0 0 10px 0;
+        .btn-ghost:hover { color: #764ba2; transform: none; box-shadow: none; }
+        .output-msg {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
         }
-        .logout-link {
-            color: #9ca3af;
+        .output-msg.error { background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; display: block; }
+        .output-msg.success { background: #f0fdf4; border: 1px solid #86efac; color: #166534; display: block; }
+        /* ── Section headings ── */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+        .section-sub {
             font-size: 13px;
-            cursor: pointer;
-            text-decoration: underline;
+            color: #6b7280;
+            margin-bottom: 16px;
         }
-        .logout-link:hover { color: #ef4444; }
+        /* ── Usage bar ── */
+        .usage-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .usage-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        .usage-count { font-weight: 700; color: #374151; }
+        .usage-divider { width: 1px; height: 20px; background: #e5e7eb; }
+        /* ── Scenario cards ── */
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 360px) { .scenario-grid { grid-template-columns: 1fr; } }
+        .scenario-card {
+            background: white;
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border: 2px solid transparent;
+        }
+        .scenario-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); border-color: #667eea; }
+        .scenario-card.completed { border-color: #10b981; }
+        .scenario-card .card-category {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #9ca3af;
+            font-weight: 600;
+        }
+        .scenario-card .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1.3;
+        }
+        .scenario-card .card-desc {
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.4;
+            flex: 1;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+        }
+        .badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 20px;
+            text-transform: capitalize;
+        }
+        .badge.beginner { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced { background: #fee2e2; color: #991b1b; }
+        .card-arrow { font-size: 14px; color: #667eea; font-weight: 700; }
+        .completed-check { font-size: 14px; }
+        /* ── Category filter ── */
+        .category-filter {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .category-filter::-webkit-scrollbar { display: none; }
+        .cat-chip {
+            flex-shrink: 0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid #e5e7eb;
+            background: white;
+            color: #6b7280;
+            transition: all 0.15s;
+        }
+        .cat-chip.active { background: #667eea; border-color: #667eea; color: white; }
+        /* ── Scenario detail ── */
+        .detail-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+        }
+        .detail-title { font-size: 20px; font-weight: 700; color: #1f2937; margin-bottom: 6px; }
+        .detail-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+        .detail-situation {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #374151;
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border-left: 3px solid #667eea;
+        }
+        .choices-label {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #9ca3af;
+            margin-bottom: 12px;
+        }
+        .choice-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: white;
+        }
+        .choice-option:hover { border-color: #667eea; background: #f5f3ff; }
+        .choice-option.selected { border-color: #667eea; background: #f5f3ff; }
+        .choice-radio {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            flex-shrink: 0;
+            margin-top: 1px;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .choice-option.selected .choice-radio { border-color: #667eea; background: #667eea; }
+        .choice-option.selected .choice-radio::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: white;
+        }
+        .choice-text { font-size: 14px; color: #374151; line-height: 1.5; }
+        /* ── Results ── */
+        .result-header {
+            text-align: center;
+            padding: 24px 20px 20px;
+            border-radius: 16px 16px 0 0;
+            margin-bottom: 0;
+        }
+        .result-header.correct { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); }
+        .result-header.incorrect { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); }
+        .result-icon { font-size: 40px; margin-bottom: 8px; }
+        .result-verdict { font-size: 22px; font-weight: 800; }
+        .result-verdict.correct { color: #065f46; }
+        .result-verdict.incorrect { color: #991b1b; }
+        .result-body {
+            background: white;
+            border-radius: 0 0 16px 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+        }
+        .signal-state-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .signal-state-badge.POSITIVE { background: #d1fae5; color: #065f46; }
+        .signal-state-badge.NEGATIVE { background: #fee2e2; color: #991b1b; }
+        .signal-state-badge.NEUTRAL { background: #fef3c7; color: #92400e; }
+        .signal-state-badge.AMBIGUOUS { background: #e0e7ff; color: #3730a3; }
+        .result-section { margin-bottom: 16px; }
+        .result-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: #9ca3af;
+            margin-bottom: 6px;
+        }
+        .result-section-body {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #374151;
+        }
+        .behavior-list { list-style: none; padding: 0; }
+        .behavior-list li {
+            padding: 4px 0;
+            padding-left: 18px;
+            position: relative;
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.5;
+        }
+        .behavior-list li::before { content: '•'; position: absolute; left: 0; color: #667eea; font-weight: 700; }
+        .result-actions { display: flex; gap: 10px; margin-top: 4px; }
+        .result-actions button { flex: 1; margin-top: 0; }
+        /* ── Analysis ── */
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            min-height: 140px;
+            resize: vertical;
+            background: #f9fafb;
+            transition: border 0.2s;
+        }
+        textarea:focus { outline: none; border-color: #667eea; background: white; }
+        .analysis-result-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+        }
+        .analysis-result-header {
+            padding: 20px 20px 16px;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+        .analysis-result-header h3 { font-size: 18px; font-weight: 800; color: #92400e; }
+        .analysis-result-header .signal-tag {
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 6px;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        .analysis-result-body { padding: 20px; }
+        .analysis-section { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid #f3f4f6; }
+        .analysis-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .analysis-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: #9ca3af;
+            margin-bottom: 6px;
+        }
+        .analysis-section-body {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #374151;
+        }
+        /* ── Profile ── */
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 14px;
+        }
+        .profile-email {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        .profile-since { font-size: 13px; color: #9ca3af; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+        .stat-box {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-number { font-size: 28px; font-weight: 800; color: #667eea; }
+        .stat-label { font-size: 12px; color: #6b7280; margin-top: 2px; }
+        .upgrade-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(102,126,234,0.35);
+            margin-bottom: 14px;
+        }
+        .upgrade-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .upgrade-card p { font-size: 14px; opacity: 0.9; margin-bottom: 16px; }
+        .btn-upgrade {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s;
+            width: auto;
+            display: inline-block;
+            margin: 0;
+        }
+        .btn-upgrade:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        /* ── Back button ── */
+        .back-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            width: auto;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 14px;
+            margin-top: 0;
+        }
+        .back-btn:hover { color: #764ba2; transform: none; box-shadow: none; }
+        /* ── Limit modal ── */
+        .limit-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 24px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .limit-icon { font-size: 40px; margin-bottom: 12px; }
+        .limit-card h3 { font-size: 20px; font-weight: 700; color: #1f2937; margin-bottom: 8px; }
+        .limit-card p { font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 20px; }
+        /* ── Utility ── */
+        .hidden { display: none !important; }
+        .divider { height: 1px; background: #f3f4f6; margin: 16px 0; }
+        .loading-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner {
+            width: 20px; height: 20px;
+            border: 2px solid #e5e7eb;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🔥 Signal Theory</h1>
-            <p>AI-Powered Dating Coach • Live Demo</p>
+<div class="app-shell">
+
+    <!-- ══════════════════════════════
+         HEADER
+    ══════════════════════════════ -->
+    <div class="app-header" id="appHeader">
+        <h1>🔥 Signal Theory</h1>
+        <p id="headerSub">AI-Powered Dating Coach</p>
+    </div>
+
+    <!-- ══════════════════════════════
+         AUTH SCREEN
+    ══════════════════════════════ -->
+    <div class="main-content auth-wrapper" id="authScreen">
+        <!-- Sign Up -->
+        <div id="signupForm" class="auth-card">
+            <h2>Create Account</h2>
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="password" id="regPassword" placeholder="Password">
+            <input type="text" id="regName" placeholder="Display Name">
+            <button class="btn-primary" onclick="register()">Sign Up →</button>
+            <div id="regOutput" class="output-msg"></div>
+            <button class="btn-ghost" onclick="showLogin()">Have an account? Log in</button>
         </div>
-
-        <div class="content">
-            <!-- Auth section (shown until logged in) -->
-            <div id="authSection">
-
-                <!-- Sign Up Form -->
-                <div id="signupForm" class="section">
-                    <h2>Create Account</h2>
-                    <input type="email" id="regEmail" placeholder="Email">
-                    <input type="password" id="regPassword" placeholder="Password">
-                    <input type="text" id="regName" placeholder="Display Name">
-                    <button onclick="register()">Sign Up</button>
-                    <div id="regOutput" class="output hidden"></div>
-                    <span class="toggle-link" onclick="showLogin()">Have an account? Log in</span>
-                </div>
-
-                <!-- Login Form -->
-                <div id="loginForm" class="section hidden">
-                    <h2>Log In</h2>
-                    <input type="email" id="loginEmail" placeholder="Email">
-                    <input type="password" id="loginPassword" placeholder="Password">
-                    <button onclick="login()">Log In</button>
-                    <div id="loginOutput" class="output hidden"></div>
-                    <span class="toggle-link" onclick="showSignup()">New user? Sign up</span>
-                </div>
-
-            </div>
-
-            <!-- Analysis (shown after login) -->
-            <div id="analysisSection" class="section hidden">
-                <div class="logout-bar"><span class="logout-link" onclick="logout()">Log out</span></div>
-                <h2>Get Dating Advice</h2>
-                <label class="label">Describe your situation:</label>
-                <textarea id="analysisText" placeholder="Example: She said 'we should hang out sometime' but hasn't responded to my follow-up text..."></textarea>
-                <button onclick="analyze()">Analyze with AI</button>
-                <div id="analysisOutput" class="output hidden"></div>
-            </div>
+        <!-- Login -->
+        <div id="loginForm" class="auth-card hidden">
+            <h2>Welcome Back</h2>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button class="btn-primary" onclick="login()">Log In →</button>
+            <div id="loginOutput" class="output-msg"></div>
+            <button class="btn-ghost" onclick="showSignup()">New user? Sign up</button>
         </div>
     </div>
 
-    <script>
-        const API = 'https://signal-theory-backend.onrender.com/api';
-        let token = localStorage.getItem('signal_theory_token') || '';
+    <!-- ══════════════════════════════
+         MAIN APP (post-login)
+    ══════════════════════════════ -->
+    <div id="appScreen" class="hidden" style="display:flex;flex-direction:column;flex:1;min-height:0;">
 
-        // On page load, if we have a token already, skip auth
-        if (token) {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('analysisSection').classList.remove('hidden');
-        }
+        <div class="main-content" id="mainContent">
 
-        function showOutput(id, content, type = '') {
-            const el = document.getElementById(id);
-            el.innerHTML = content;
-            el.className = 'output ' + type;
-            el.classList.remove('hidden');
-        }
+            <!-- ── SCENARIOS TAB ── -->
+            <div id="tabScenarios">
+                <!-- Scenario List -->
+                <div id="viewScenarioList">
+                    <div class="section-title">Practice Scenarios</div>
+                    <div class="section-sub">Learn to read signals correctly</div>
 
-        function showLogin() {
-            document.getElementById('signupForm').classList.add('hidden');
-            document.getElementById('loginForm').classList.remove('hidden');
-        }
-
-        function showSignup() {
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('signupForm').classList.remove('hidden');
-        }
-
-        function onAuthSuccess(newToken) {
-            token = newToken;
-            localStorage.setItem('signal_theory_token', newToken);
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('analysisSection').classList.remove('hidden');
-            document.getElementById('analysisSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function logout() {
-            token = '';
-            localStorage.removeItem('signal_theory_token');
-            document.getElementById('analysisSection').classList.add('hidden');
-            document.getElementById('authSection').classList.remove('hidden');
-            document.getElementById('signupForm').classList.remove('hidden');
-            document.getElementById('loginForm').classList.add('hidden');
-        }
-
-        async function register() {
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const display_name = document.getElementById('regName').value;
-
-            try {
-                const res = await fetch(`${API}/auth/signup`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, display_name })
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    onAuthSuccess(data.access_token);
-                } else {
-                    showOutput('regOutput', `<strong>❌ Error:</strong> ${data.error || 'Registration failed'}`, 'error');
-                }
-            } catch (err) {
-                showOutput('regOutput', `<strong>❌ Network error:</strong> ${err.message}`, 'error');
-            }
-        }
-
-        async function login() {
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            try {
-                const res = await fetch(`${API}/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    onAuthSuccess(data.access_token);
-                } else {
-                    showOutput('loginOutput', `<strong>❌ Error:</strong> ${data.error || 'Login failed'}`, 'error');
-                }
-            } catch (err) {
-                showOutput('loginOutput', `<strong>❌ Network error:</strong> ${err.message}`, 'error');
-            }
-        }
-
-        async function analyze() {
-            const input_text = document.getElementById('analysisText').value;
-            if (!input_text.trim()) return;
-
-            showOutput('analysisOutput', '🤔 Analyzing with Claude AI...', '');
-
-            try {
-                const res = await fetch(`${API}/analyze`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ input_text })
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    const advice = data.analysis;
-                    showOutput('analysisOutput', `
-                        <div class="advice">
-                            <h3>🔥 ${advice.signal_state} Signal</h3>
-                            <p><strong>What I See:</strong><br>${advice.what_i_see}</p>
-                            <p><strong>What It Means:</strong><br>${advice.what_it_means}</p>
-                            <p><strong>Your Move:</strong><br>${advice.your_move}</p>
-                            <p><strong>Watch For:</strong><br>${advice.watch_for}</p>
+                    <div class="usage-bar">
+                        <div class="usage-item">
+                            <span>📊</span>
+                            <span class="usage-count" id="scenariosUsedCount">0</span>
+                            <span>/ 5 this week</span>
                         </div>
-                    `, 'success');
-                } else {
-                    showOutput('analysisOutput', `<strong>❌ Error:</strong> ${data.error || 'Analysis failed'}`, 'error');
-                }
-            } catch (err) {
-                showOutput('analysisOutput', `<strong>❌ Network error:</strong> ${err.message}`, 'error');
-            }
-        }
-    </script>
+                        <div class="usage-divider"></div>
+                        <div class="usage-item">
+                            <span>✅</span>
+                            <span class="usage-count" id="scenariosCompletedCount">0</span>
+                            <span>completed total</span>
+                        </div>
+                    </div>
+
+                    <div class="category-filter" id="categoryFilter">
+                        <div class="cat-chip active" data-cat="all" onclick="filterCategory('all')">All</div>
+                        <div class="cat-chip" data-cat="Texting" onclick="filterCategory('Texting')">Texting</div>
+                        <div class="cat-chip" data-cat="In-Person" onclick="filterCategory('In-Person')">In-Person</div>
+                        <div class="cat-chip" data-cat="Mixed Signals" onclick="filterCategory('Mixed Signals')">Mixed Signals</div>
+                    </div>
+
+                    <div class="scenario-grid" id="scenarioGrid"></div>
+                </div>
+
+                <!-- Scenario Detail -->
+                <div id="viewScenarioDetail" class="hidden">
+                    <button class="back-btn" onclick="showScenarioList()">← Back to Scenarios</button>
+                    <div class="detail-card" id="detailCard">
+                        <!-- filled by JS -->
+                    </div>
+                    <button class="btn-primary" id="submitAnswerBtn" onclick="submitAnswer()">Submit Answer →</button>
+                </div>
+
+                <!-- Scenario Result -->
+                <div id="viewScenarioResult" class="hidden">
+                    <div id="resultHeader" class="result-header">
+                        <div class="result-icon" id="resultIcon"></div>
+                        <div class="result-verdict" id="resultVerdict"></div>
+                        <div style="font-size:14px;margin-top:4px;" id="resultSubtext"></div>
+                    </div>
+                    <div class="result-body" id="resultBody">
+                        <!-- filled by JS -->
+                    </div>
+                    <div class="result-actions">
+                        <button class="btn-secondary" onclick="showScenarioList()">Back to List</button>
+                        <button class="btn-primary" onclick="nextScenario()">Next →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── ANALYZE TAB ── -->
+            <div id="tabAnalyze" class="hidden">
+                <!-- Analyze Input -->
+                <div id="viewAnalyzeInput">
+                    <div class="section-title">Analyze Your Situation</div>
+                    <div class="section-sub">Describe what's happening — get real signal-based feedback</div>
+
+                    <div class="usage-bar">
+                        <div class="usage-item">
+                            <span>🔍</span>
+                            <span class="usage-count" id="analysesUsedCount">0</span>
+                            <span>/ 2 free analyses this week</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <textarea id="analysisText" placeholder="Example: She texted me at 11pm three days after our first date saying 'hey what are you up to?' but didn't mention the date or suggest meeting again..."></textarea>
+                        <button class="btn-primary" onclick="analyze()" style="margin-top:12px;">Analyze with AI →</button>
+                    </div>
+                </div>
+
+                <!-- Analyze Result -->
+                <div id="viewAnalyzeResult" class="hidden">
+                    <button class="back-btn" onclick="showAnalyzeInput()">← Analyze Another</button>
+                    <div id="analysisResultContent"></div>
+                </div>
+            </div>
+
+            <!-- ── PROFILE TAB ── -->
+            <div id="tabProfile" class="hidden">
+                <div class="section-title">Your Profile</div>
+                <div class="section-sub">Track your progress</div>
+
+                <div class="profile-card">
+                    <div class="profile-email" id="profileEmail">—</div>
+                    <div class="profile-since">Free Account</div>
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="stat-number" id="statScenariosCompleted">0</div>
+                            <div class="stat-label">Scenarios Completed</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="statAnalysesDone">0</div>
+                            <div class="stat-label">Analyses Done</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="statCorrect">0</div>
+                            <div class="stat-label">Correct Answers</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="statAccuracy">—</div>
+                            <div class="stat-label">Accuracy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upgrade-card">
+                    <h3>Upgrade to Pro</h3>
+                    <p>Unlimited scenarios, unlimited analyses, advanced coaching insights</p>
+                    <button class="btn-upgrade">Upgrade — $19/mo</button>
+                </div>
+
+                <div class="profile-card">
+                    <button class="btn-secondary" onclick="logout()" style="margin-top:0;">Log Out</button>
+                </div>
+            </div>
+
+        </div><!-- /main-content -->
+
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+            <button class="tab-btn active" id="tabBtnScenarios" onclick="switchTab('Scenarios')">
+                <span class="tab-icon">📚</span>
+                Scenarios
+            </button>
+            <button class="tab-btn" id="tabBtnAnalyze" onclick="switchTab('Analyze')">
+                <span class="tab-icon">🔍</span>
+                Analyze
+            </button>
+            <button class="tab-btn" id="tabBtnProfile" onclick="switchTab('Profile')">
+                <span class="tab-icon">👤</span>
+                Profile
+            </button>
+        </div>
+
+    </div><!-- /appScreen -->
+
+</div><!-- /app-shell -->
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════
+const API = 'https://signal-theory-backend.onrender.com/api';
+let token = localStorage.getItem('signal_theory_token') || '';
+let userEmail = localStorage.getItem('signal_theory_email') || '';
+let currentScenarioId = null;
+let selectedChoiceId = null;
+let currentFilter = 'all';
+
+// ══════════════════════════════════════════════
+// SCENARIO DATA (15 scenarios embedded)
+// ══════════════════════════════════════════════
+const SCENARIOS = [
+  {
+    id: 1,
+    title: "Late Night Text",
+    category: "Texting",
+    difficulty: "beginner",
+    situation: "She texts \"Hey what are you up to?\" at 11 PM, three days after your first date. No mention of the date or any future plans.",
+    options: [
+      { id: "a", text: "Respond immediately with a detailed recap of your day and ask lots of questions to keep the conversation going" },
+      { id: "b", text: "Wait until morning — don't seem too available" },
+      { id: "c", text: "Reply warmly but briefly, match her energy, and see if she escalates", correct: true },
+      { id: "d", text: "Ask directly if she wants to come over" }
+    ],
+    signal_state: "NEUTRAL",
+    behaviors: [
+      "Initiated contact (positive)",
+      "Timing is late/casual (neutral)",
+      "No reference to the date or future plans (neutral)",
+      "Three-day gap since last contact (neutral)"
+    ],
+    analysis: "This is information gathering. She's checking availability but hasn't demonstrated clear forward interest — no mention of meeting again, no investment in deeper conversation. Late-night timing can mean curiosity, boredom, or testing responsiveness. Not enough data yet.",
+    recommended_response: "Respond warmly but briefly. Don't over-invest. Match her energy. Example: \"Just wrapping up some work. How was your week?\" Then see if she escalates or lets it drop."
+  },
+  {
+    id: 2,
+    title: "Delayed Response Pattern",
+    category: "Texting",
+    difficulty: "intermediate",
+    situation: "She used to reply within an hour. Over the past week, responses take 6-8 hours and her messages have gotten shorter — often one sentence or less.",
+    options: [
+      { id: "a", text: "Ask \"Is everything okay?\" — she might just be going through something" },
+      { id: "b", text: "Send more messages to stay top of mind" },
+      { id: "c", text: "Pull back and give space — stop investing where energy is shrinking", correct: true },
+      { id: "d", text: "Double down and plan a date, maybe she just needs a reason to re-engage" }
+    ],
+    signal_state: "NEGATIVE",
+    behaviors: [
+      "Response time increased significantly (directional change)",
+      "Message length decreased (reduced investment)",
+      "Pattern shifted from engaged to minimal (trajectory is away)"
+    ],
+    analysis: "This is disengagement. Behavior moved from engaged to distant. The direction matters more than the absolute timing. When energy moves away consistently, that's the signal — not the individual delays.",
+    recommended_response: "Do not chase with more messages. Pull back and give space. If interest returns, she'll re-initiate. If it doesn't, you have clarity. Stop investing where energy is shrinking."
+  },
+  {
+    id: 3,
+    title: "App Match Goes Quiet",
+    category: "Texting",
+    difficulty: "beginner",
+    situation: "Great conversation on a dating app for 2 days — she was responsive, funny, asking questions. Then mid-conversation, she just stops responding. It's been 3 days.",
+    options: [
+      { id: "a", text: "Send a follow-up: \"Hey, did I say something wrong?\"" },
+      { id: "b", text: "Send one more message — maybe she just got busy", correct: true },
+      { id: "c", text: "Move on entirely — don't send anything else" },
+      { id: "d", text: "Find her on Instagram and message her there" }
+    ],
+    signal_state: "NEGATIVE",
+    behaviors: [
+      "Previous engagement was strong (context)",
+      "Sudden silence mid-conversation (abrupt shift)",
+      "No explanation or re-engagement (absence of behavior)"
+    ],
+    analysis: "Apps create parallel conversations. Something else likely gained priority. This could be temporary or permanent. Without more information, assume disengagement and move on. If you already sent a follow-up and heard nothing, don't send more.",
+    recommended_response: "At most, one brief follow-up after a few days. If no reply, do not double-text further. If she re-engages later, respond normally. Your time is better spent on people showing consistent interest."
+  },
+  {
+    id: 4,
+    title: "Post-Date Follow Up",
+    category: "Texting",
+    difficulty: "beginner",
+    situation: "You text \"Had a great time, let's do it again\" after a first date. She replies \"Yeah it was fun!\" — warm response, but she doesn't suggest any plans or time.",
+    options: [
+      { id: "a", text: "Ask her out again immediately with a specific plan" },
+      { id: "b", text: "Leave it and don't follow up at all" },
+      { id: "c", text: "Leave it for now — if interested, follow up in a few days with a specific invitation", correct: true },
+      { id: "d", text: "Tell her how much you liked her to build momentum" }
+    ],
+    signal_state: "NEUTRAL",
+    behaviors: [
+      "Responded (acknowledgment)",
+      "Agreed it was fun (polite reciprocation)",
+      "Did not initiate plans or agree to future meet (no forward movement)"
+    ],
+    analysis: "This is politeness without commitment. She's not rejecting, but she's also not investing. If she wanted to see you again, she'd agree to plans or counter with her availability. Politeness alone is not interest.",
+    recommended_response: "Leave it. If she's interested, she'll reach out or be receptive when you follow up in a few days with a specific invitation — day, time, and place. If she deflects again, you have your answer."
+  },
+  {
+    id: 5,
+    title: "The Reschedule",
+    category: "Texting",
+    difficulty: "intermediate",
+    situation: "She cancels dinner plans the day before — says she's swamped at work. Adds \"Maybe next week?\" but doesn't suggest a specific day or time.",
+    options: [
+      { id: "a", text: "Push her to commit to a day right now while you have her attention" },
+      { id: "b", text: "Say \"No problem, let me know when things calm down\" and stop initiating", correct: true },
+      { id: "c", text: "Accept it and immediately propose two new date options" },
+      { id: "d", text: "Express that you're disappointed to show how much you care" }
+    ],
+    signal_state: "AMBIGUOUS",
+    behaviors: [
+      "Canceled plans (withdrawal)",
+      "Provided reason (explanation, not necessarily signal)",
+      "Suggested future timeframe but no specific alternative (vague future commitment)"
+    ],
+    analysis: "This could be legitimate or a soft decline. The tell is what happens next. If she actively reschedules with a specific day/time, it was legitimate. If she stays vague or doesn't follow through, it was a soft no.",
+    recommended_response: "\"No problem, let me know when things calm down and we can find a time.\" Then stop initiating. If she's interested, she'll propose an alternative. One cancellation is data — the follow-through (or lack of it) is the signal."
+  },
+  {
+    id: 6,
+    title: "Enthusiasm Mismatch",
+    category: "Texting",
+    difficulty: "intermediate",
+    situation: "You're sending 2-3 sentence messages with questions. Her replies are consistently one word or a single emoji. This has been the pattern for a week.",
+    options: [
+      { id: "a", text: "Keep trying — maybe she's just not a big texter but still likes you" },
+      { id: "b", text: "Ask her directly if she's still interested" },
+      { id: "c", text: "Pull back to match her level of investment or below", correct: true },
+      { id: "d", text: "Send one really impressive message to get her more engaged" }
+    ],
+    signal_state: "NEGATIVE",
+    behaviors: [
+      "Your investment is high (multi-sentence, questions)",
+      "Her investment is minimal (one word, emojis)",
+      "Mismatch is consistent (pattern, not isolated)"
+    ],
+    analysis: "Investment mismatch is a clear signal. If someone is interested, they match or exceed your energy. When they consistently give less, they're either not interested or not emotionally available. Continuing to over-invest won't change it.",
+    recommended_response: "Stop compensating for their lack of effort with more effort. Pull back to their level or below. If interest exists, they'll notice and re-engage. If it doesn't, you stop wasting energy."
+  },
+  {
+    id: 7,
+    title: "Read Receipts",
+    category: "Texting",
+    difficulty: "beginner",
+    situation: "Your message shows \"Read\" 4 hours ago. No response. Meanwhile she's been active on Instagram, posting stories and liking other content.",
+    options: [
+      { id: "a", text: "Send a follow-up message to check in — maybe she forgot" },
+      { id: "b", text: "Comment on her Instagram story to get her attention" },
+      { id: "c", text: "Do nothing — move on and don't send another message", correct: true },
+      { id: "d", text: "Wait a full day and send a funny meme to restart the conversation" }
+    ],
+    signal_state: "NEGATIVE",
+    behaviors: [
+      "Message was seen (awareness confirmed)",
+      "No response (choice not to engage)",
+      "Active on other platforms (not actually busy)"
+    ],
+    analysis: "This is not about being busy. This is about priority. Read receipt + social media activity removes the \"maybe she didn't see it\" excuse. She saw it and chose not to reply. Chasing this will only create more distance.",
+    recommended_response: "Do not send a follow-up. Do not comment on her social media. Move on. If she reaches out later, you can decide if you want to engage. People make time for what matters to them."
+  },
+  {
+    id: 8,
+    title: "Plan Avoidance",
+    category: "Texting",
+    difficulty: "intermediate",
+    situation: "You've suggested specific plans three times over the past two weeks — always with a day, time, and place. Each time she says she'll \"check her schedule and let you know.\" She never does.",
+    options: [
+      { id: "a", text: "Try one more time with an even better plan" },
+      { id: "b", text: "Ask her directly: \"Are you interested or not?\"" },
+      { id: "c", text: "Stop suggesting plans — if she's interested she'll initiate", correct: true },
+      { id: "d", text: "Give her two weeks of space then try again" }
+    ],
+    signal_state: "NEGATIVE",
+    behaviors: [
+      "Avoids commitment to specific plans (consistent pattern)",
+      "Promises to check but doesn't follow through (inaction)",
+      "Pattern repeats across three attempts (not isolated)"
+    ],
+    analysis: "This is a soft no disguised as \"maybe later.\" If someone wants to see you, they make time or counter with an alternative. Repeatedly avoiding concrete plans while staying vaguely positive is a way to avoid confrontation, not a sign of interest.",
+    recommended_response: "Stop suggesting plans. If she's interested, she'll bring it up or propose something herself. If she doesn't, you have your answer without forcing a confrontation. Stop treating \"maybe\" as \"yes if I try harder.\""
+  },
+  {
+    id: 9,
+    title: "The Comfort Compliment",
+    category: "Texting",
+    difficulty: "advanced",
+    situation: "After your third date, she texts: \"You're really easy to talk to, I feel so comfortable with you.\" She hasn't suggested another date.",
+    options: [
+      { id: "a", text: "Take it as a strong positive sign — comfort means she likes you" },
+      { id: "b", text: "Thank her warmly and observe physical/romantic energy on the next in-person date", correct: true },
+      { id: "c", text: "Tell her you feel the same way and that you really like her too" },
+      { id: "d", text: "Treat it as a friend-zone signal and step back entirely" }
+    ],
+    signal_state: "AMBIGUOUS",
+    behaviors: [
+      "Initiated contact (positive)",
+      "Gave compliment (positive on surface)",
+      "Framed as \"comfortable\" and \"easy to talk to\" (could signal platonic framing)"
+    ],
+    analysis: "\"Comfortable\" and \"easy to talk to\" can mean attraction or friend-zone depending on context. If she's also initiating plans and showing romantic energy in person, this is positive. If she's distant physically, it might be setting up a \"I like you but not that way\" conversation.",
+    recommended_response: "Thank her warmly but don't escalate emotionally via text. On the next date, observe physical engagement and romantic energy. That will clarify whether \"comfortable\" means \"attracted\" or \"safe but not exciting.\""
+  },
+  {
+    id: 10,
+    title: "The Check-In",
+    category: "Mixed Signals",
+    difficulty: "beginner",
+    situation: "You haven't heard from her in 5 days. You send \"Hey, how's your week going?\" She replies warmly — \"Good! Busy but good, thanks for asking :)\" — but asks nothing back.",
+    options: [
+      { id: "a", text: "Keep the conversation going — warm is good, just needs momentum" },
+      { id: "b", text: "Respond briefly and leave it — don't try to keep a one-sided conversation going", correct: true },
+      { id: "c", text: "Ask her on a date immediately while you have a warm response" },
+      { id: "d", text: "Mirror her — send one emoji back and nothing else" }
+    ],
+    signal_state: "NEUTRAL",
+    behaviors: [
+      "She responded (acknowledgment)",
+      "Response was warm (politeness)",
+      "No question or continued conversation (no reciprocity)"
+    ],
+    analysis: "She's being kind, not interested. If she wanted to continue the conversation, she'd ask a question or share something that invites response. Warm replies without reciprocation are politeness, not engagement.",
+    recommended_response: "Respond briefly and leave it. Don't try to keep a one-sided conversation going. Reciprocity is the marker of interest — if she wants to talk, she'll initiate or engage more deeply next time."
+  },
+  {
+    id: 11,
+    title: "Coffee Shop Opening",
+    category: "In-Person",
+    difficulty: "beginner",
+    situation: "You're in line at a coffee shop. She initiates conversation, laughs at your jokes, and stands close. After ordering, she keeps talking — then mentions she comes here every Saturday.",
+    options: [
+      { id: "a", text: "Keep the conversation going but don't ask for her number — don't seem too eager" },
+      { id: "b", text: "Ask for her number or suggest meeting for coffee next Saturday", correct: true },
+      { id: "c", text: "Let the moment pass — if she's really interested she'll come back next week" },
+      { id: "d", text: "Add her on social media first to build more of a connection" }
+    ],
+    signal_state: "POSITIVE",
+    behaviors: [
+      "She initiated conversation (strong signal)",
+      "Engaged body language — proximity, laughter (attraction indicators)",
+      "Extended conversation voluntarily after ordering (time investment)",
+      "Offered future logistics (\"I come here every Saturday\") — creating easy re-encounter"
+    ],
+    analysis: "This is interest. She made it easy for you to see her again by volunteering her schedule. She didn't have to continue talking after ordering or stand close. She did those things because she wanted to.",
+    recommended_response: "Ask for her number or suggest coffee next Saturday. The opening is clear. \"I'd like to continue this conversation. Can I get your number?\" When someone makes it easy, take the opening."
+  },
+  {
+    id: 12,
+    title: "Dog Park Pattern",
+    category: "In-Person",
+    difficulty: "beginner",
+    situation: "You've seen the same woman at the dog park 4 times over two weeks. Today she initiates conversation about your dogs and talks for 15 minutes. She asks what days you usually come.",
+    options: [
+      { id: "a", text: "Answer her question but wait for more signals before doing anything" },
+      { id: "b", text: "Ask her out for coffee — the timing is right and she opened the door", correct: true },
+      { id: "c", text: "Give her your number and let her make the next move" },
+      { id: "d", text: "Keep building the pattern — next time you see her take it further" }
+    ],
+    signal_state: "POSITIVE",
+    behaviors: [
+      "She initiated after seeing you multiple times (deliberate choice)",
+      "Extended conversation (15 minutes = real time investment)",
+      "Asked about your schedule (creating opportunity to see you again)"
+    ],
+    analysis: "This is interest. She could have kept nodding politely like the previous four times. Instead she created an opening and made it easy for you to know when to see her again. When someone asks about your schedule, they're signaling availability.",
+    recommended_response: "\"I'm here most Saturdays. We should grab coffee after next time — there's a place right by the park.\" Make it easy and specific. She gave you the opening, take it."
+  },
+  {
+    id: 13,
+    title: "Bar Contact Info",
+    category: "In-Person",
+    difficulty: "intermediate",
+    situation: "Woman at the next table makes eye contact twice, then smiles on the third. You walk over and talk for 10 minutes — she's engaged. Then: \"I should get back to my friends.\" You didn't get her number.",
+    options: [
+      { id: "a", text: "Let her go — if she wanted to stay she would have" },
+      { id: "b", text: "Briefly go back and say you'd like to continue the conversation, ask for her number", correct: true },
+      { id: "c", text: "Wait and approach her again when her friends aren't around" },
+      { id: "d", text: "Send a drink to her table to show continued interest" }
+    ],
+    signal_state: "NEUTRAL",
+    behaviors: [
+      "Eye contact + smile (initial interest signal)",
+      "Engaged in conversation for 10 minutes (positive)",
+      "Set boundary politely to return to friends (normal, not necessarily rejection)",
+      "No contact info exchanged (neutral — window is still open)"
+    ],
+    analysis: "Initial signals were positive. Returning to friends is normal and doesn't mean disinterest. The question is whether you got her number before she left. If not, the window may close — go back briefly and directly.",
+    recommended_response: "\"I don't want to interrupt again, but I'd like to continue this conversation sometime. Can I get your number?\" If she gives it, it was interest. If she deflects, she was being polite. Social settings require acting on windows of opportunity."
+  },
+  {
+    id: 14,
+    title: "The Party Conversation",
+    category: "In-Person",
+    difficulty: "beginner",
+    situation: "At a mutual friend's party, a woman spends 45 minutes talking with you — asks about your work, shares about her recent divorce, touches your arm once while laughing. You haven't asked for her number yet.",
+    options: [
+      { id: "a", text: "Wait — she shared something personal (divorce) which means she needs more time before you ask" },
+      { id: "b", text: "Ask for her number before she leaves the party", correct: true },
+      { id: "c", text: "Get it from the mutual friend later — less pressure" },
+      { id: "d", text: "Connect on LinkedIn since she mentioned she's going through a life transition" }
+    ],
+    signal_state: "POSITIVE",
+    behaviors: [
+      "Prioritized 45 minutes with you (significant time investment)",
+      "Asked personal questions (invested in knowing you)",
+      "Shared personal information about divorce (vulnerability = trust and comfort)",
+      "Physical touch — arm touch while laughing (comfort and attraction)"
+    ],
+    analysis: "This is unambiguous interest. All behaviors point in the same direction. She made time, created intimacy through sharing, added physical touch. When all signals align, trust them. Don't create doubt where none exists.",
+    recommended_response: "Ask for her number before she leaves. Follow up within 1-2 days with specific plans: \"Really enjoyed talking at the party. Let's grab dinner this week — Thursday or Friday work?\" Don't let this momentum sit."
+  },
+  {
+    id: 15,
+    title: "Professional to Personal",
+    category: "Mixed Signals",
+    difficulty: "advanced",
+    situation: "Industry conference. She approaches you after your presentation, conversation flows easily for 20 minutes. She suggests connecting on LinkedIn. You're interested in something more.",
+    options: [
+      { id: "a", text: "Ask her to dinner right now — you connected well and she'll respect directness" },
+      { id: "b", text: "Connect on LinkedIn and then see if she engages, or add a light personal invitation", correct: true },
+      { id: "c", text: "Connect on LinkedIn only and wait — never mix professional and personal" },
+      { id: "d", text: "Ask a mutual colleague for her personal number" }
+    ],
+    signal_state: "NEUTRAL",
+    behaviors: [
+      "She initiated conversation (positive in general, common at networking events)",
+      "Professional topic focus (contextually appropriate, not necessarily personal interest)",
+      "Suggested LinkedIn (professional connection, not personal channel)"
+    ],
+    analysis: "Professional contexts blur signals. This could be professional interest or personal interest disguised as professional. Context matters — networking events are designed for this kind of interaction. The signal to watch is whether it moves from LinkedIn to personal channels.",
+    recommended_response: "Connect on LinkedIn as suggested. You could add: \"I'd enjoy continuing this conversation over coffee sometime if you're in the area.\" That creates a pathway from professional to personal without being inappropriate. Then observe whether she responds personally or keeps it professional."
+  }
+];
+
+// ══════════════════════════════════════════════
+// USAGE TRACKING
+// ══════════════════════════════════════════════
+function getWeekKey() {
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
+  const week = Math.ceil(((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+  return `${now.getFullYear()}_w${week}`;
+}
+
+function getUsage() {
+  const key = getWeekKey();
+  const stored = localStorage.getItem(`st_usage_${key}`);
+  return stored ? JSON.parse(stored) : { scenarios: 0, analyses: 0 };
+}
+
+function incrementUsage(type) {
+  const key = getWeekKey();
+  const usage = getUsage();
+  usage[type] = (usage[type] || 0) + 1;
+  localStorage.setItem(`st_usage_${key}`, JSON.stringify(usage));
+}
+
+function getTotals() {
+  const stored = localStorage.getItem('st_totals');
+  return stored ? JSON.parse(stored) : { scenariosCompleted: 0, analysesDone: 0, correct: 0 };
+}
+
+function incrementTotal(field) {
+  const totals = getTotals();
+  totals[field] = (totals[field] || 0) + 1;
+  localStorage.setItem('st_totals', JSON.stringify(totals));
+}
+
+function getCompletedScenarios() {
+  const stored = localStorage.getItem('st_completed_scenarios');
+  return stored ? JSON.parse(stored) : [];
+}
+
+function markScenarioCompleted(id) {
+  const completed = getCompletedScenarios();
+  if (!completed.includes(id)) {
+    completed.push(id);
+    localStorage.setItem('st_completed_scenarios', JSON.stringify(completed));
+  }
+}
+
+function updateUsageUI() {
+  const usage = getUsage();
+  const totals = getTotals();
+  const completed = getCompletedScenarios();
+  const el = (id) => document.getElementById(id);
+  if (el('scenariosUsedCount')) el('scenariosUsedCount').textContent = usage.scenarios || 0;
+  if (el('scenariosCompletedCount')) el('scenariosCompletedCount').textContent = completed.length;
+  if (el('analysesUsedCount')) el('analysesUsedCount').textContent = usage.analyses || 0;
+  if (el('statScenariosCompleted')) el('statScenariosCompleted').textContent = totals.scenariosCompleted || 0;
+  if (el('statAnalysesDone')) el('statAnalysesDone').textContent = totals.analysesDone || 0;
+  if (el('statCorrect')) el('statCorrect').textContent = totals.correct || 0;
+  if (el('statAccuracy')) {
+    const total = totals.scenariosCompleted || 0;
+    const correct = totals.correct || 0;
+    el('statAccuracy').textContent = total > 0 ? Math.round((correct / total) * 100) + '%' : '—';
+  }
+}
+
+// ══════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════
+function showLogin() {
+  document.getElementById('signupForm').classList.add('hidden');
+  document.getElementById('loginForm').classList.remove('hidden');
+}
+function showSignup() {
+  document.getElementById('loginForm').classList.add('hidden');
+  document.getElementById('signupForm').classList.remove('hidden');
+}
+function showMsg(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'output-msg ' + type;
+}
+
+function onAuthSuccess(newToken, email) {
+  token = newToken;
+  userEmail = email || '';
+  localStorage.setItem('signal_theory_token', newToken);
+  if (email) localStorage.setItem('signal_theory_email', email);
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('appScreen').classList.remove('hidden');
+  document.getElementById('appScreen').style.display = 'flex';
+  document.getElementById('profileEmail').textContent = userEmail;
+  document.getElementById('headerSub').textContent = userEmail ? `Signed in as ${userEmail}` : 'AI-Powered Dating Coach';
+  renderScenarioGrid();
+  updateUsageUI();
+}
+
+function logout() {
+  token = '';
+  userEmail = '';
+  localStorage.removeItem('signal_theory_token');
+  localStorage.removeItem('signal_theory_email');
+  document.getElementById('appScreen').classList.add('hidden');
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('signupForm').classList.remove('hidden');
+  document.getElementById('loginForm').classList.add('hidden');
+  document.getElementById('headerSub').textContent = 'AI-Powered Dating Coach';
+}
+
+async function register() {
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const display_name = document.getElementById('regName').value.trim();
+  if (!email || !password) { showMsg('regOutput', 'Email and password required.', 'error'); return; }
+  try {
+    const res = await fetch(`${API}/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, display_name })
+    });
+    const data = await res.json();
+    if (res.ok) { onAuthSuccess(data.access_token, email); }
+    else { showMsg('regOutput', data.error || 'Registration failed', 'error'); }
+  } catch (err) { showMsg('regOutput', 'Network error: ' + err.message, 'error'); }
+}
+
+async function login() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { showMsg('loginOutput', 'Email and password required.', 'error'); return; }
+  try {
+    const res = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (res.ok) { onAuthSuccess(data.access_token, email); }
+    else { showMsg('loginOutput', data.error || 'Login failed', 'error'); }
+  } catch (err) { showMsg('loginOutput', 'Network error: ' + err.message, 'error'); }
+}
+
+// ══════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════
+function switchTab(tab) {
+  ['Scenarios', 'Analyze', 'Profile'].forEach(t => {
+    document.getElementById(`tab${t}`).classList.add('hidden');
+    document.getElementById(`tabBtn${t}`).classList.remove('active');
+  });
+  document.getElementById(`tab${tab}`).classList.remove('hidden');
+  document.getElementById(`tabBtn${tab}`).classList.add('active');
+  updateUsageUI();
+}
+
+// ══════════════════════════════════════════════
+// SCENARIO LIST
+// ══════════════════════════════════════════════
+function filterCategory(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.cat === cat);
+  });
+  renderScenarioGrid();
+}
+
+function renderScenarioGrid() {
+  const completed = getCompletedScenarios();
+  const filtered = currentFilter === 'all'
+    ? SCENARIOS
+    : SCENARIOS.filter(s => s.category === currentFilter);
+
+  const grid = document.getElementById('scenarioGrid');
+  grid.innerHTML = filtered.map(s => {
+    const isDone = completed.includes(s.id);
+    return `
+      <div class="scenario-card ${isDone ? 'completed' : ''}" onclick="showScenarioDetail(${s.id})">
+        <div class="card-category">${s.category}</div>
+        <div class="card-title">${s.title}</div>
+        <div class="card-desc">${s.situation.substring(0, 60)}...</div>
+        <div class="card-footer">
+          <span class="badge ${s.difficulty}">${s.difficulty}</span>
+          <span>${isDone ? '<span class="completed-check">✅</span>' : '<span class="card-arrow">→</span>'}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function showScenarioList() {
+  document.getElementById('viewScenarioList').classList.remove('hidden');
+  document.getElementById('viewScenarioDetail').classList.add('hidden');
+  document.getElementById('viewScenarioResult').classList.add('hidden');
+  renderScenarioGrid();
+  updateUsageUI();
+}
+
+// ══════════════════════════════════════════════
+// SCENARIO DETAIL
+// ══════════════════════════════════════════════
+function showScenarioDetail(id) {
+  const scenario = SCENARIOS.find(s => s.id === id);
+  if (!scenario) return;
+  currentScenarioId = id;
+  selectedChoiceId = null;
+
+  const detailCard = document.getElementById('detailCard');
+  const shuffled = [...scenario.options].sort(() => Math.random() - 0.5);
+
+  detailCard.innerHTML = `
+    <div class="detail-title">${scenario.title}</div>
+    <div class="detail-meta">
+      <span class="badge ${scenario.difficulty}">${scenario.difficulty}</span>
+      <span class="badge" style="background:#e0e7ff;color:#3730a3;">${scenario.category}</span>
+    </div>
+    <div class="detail-situation">${scenario.situation}</div>
+    <div class="choices-label">What do you do?</div>
+    <div id="choicesList">
+      ${shuffled.map(opt => `
+        <div class="choice-option" id="choice_${opt.id}" onclick="selectChoice('${opt.id}')">
+          <div class="choice-radio" id="radio_${opt.id}"></div>
+          <div class="choice-text">${opt.text}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  document.getElementById('viewScenarioList').classList.add('hidden');
+  document.getElementById('viewScenarioDetail').classList.remove('hidden');
+  document.getElementById('viewScenarioResult').classList.add('hidden');
+  document.getElementById('mainContent').scrollTop = 0;
+}
+
+function selectChoice(id) {
+  selectedChoiceId = id;
+  document.querySelectorAll('.choice-option').forEach(el => el.classList.remove('selected'));
+  const chosen = document.getElementById('choice_' + id);
+  if (chosen) chosen.classList.add('selected');
+}
+
+function submitAnswer() {
+  if (!selectedChoiceId) {
+    document.getElementById('detailCard').style.border = '2px solid #ef4444';
+    setTimeout(() => document.getElementById('detailCard').style.border = '', 800);
+    return;
+  }
+  const scenario = SCENARIOS.find(s => s.id === currentScenarioId);
+  const correct = scenario.options.find(o => o.correct);
+  const isCorrect = selectedChoiceId === correct.id;
+
+  // Track usage
+  incrementUsage('scenarios');
+  incrementTotal('scenariosCompleted');
+  if (isCorrect) incrementTotal('correct');
+  markScenarioCompleted(currentScenarioId);
+
+  showScenarioResult(scenario, isCorrect);
+}
+
+// ══════════════════════════════════════════════
+// SCENARIO RESULT
+// ══════════════════════════════════════════════
+function showScenarioResult(scenario, isCorrect) {
+  const header = document.getElementById('resultHeader');
+  header.className = 'result-header ' + (isCorrect ? 'correct' : 'incorrect');
+  document.getElementById('resultIcon').textContent = isCorrect ? '✅' : '❌';
+  document.getElementById('resultVerdict').textContent = isCorrect ? 'Correct!' : 'Not Quite';
+  document.getElementById('resultVerdict').className = 'result-verdict ' + (isCorrect ? 'correct' : 'incorrect');
+  document.getElementById('resultSubtext').textContent = isCorrect
+    ? 'You read the signal right.'
+    : `The better move: ${scenario.options.find(o => o.correct).text.substring(0, 60)}...`;
+
+  const stateColors = { POSITIVE: 'POSITIVE', NEGATIVE: 'NEGATIVE', NEUTRAL: 'NEUTRAL', AMBIGUOUS: 'AMBIGUOUS' };
+  const stateKey = Object.keys(stateColors).find(k => scenario.signal_state.toUpperCase().includes(k)) || 'NEUTRAL';
+
+  document.getElementById('resultBody').innerHTML = `
+    <span class="signal-state-badge ${stateKey}">
+      Signal State: ${scenario.signal_state}
+    </span>
+
+    <div class="result-section">
+      <div class="result-section-title">What I See</div>
+      <ul class="behavior-list">
+        ${scenario.behaviors.map(b => `<li>${b}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="result-section">
+      <div class="result-section-title">Analysis</div>
+      <div class="result-section-body">${scenario.analysis}</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="result-section">
+      <div class="result-section-title">Recommended Response</div>
+      <div class="result-section-body">${scenario.recommended_response}</div>
+    </div>
+  `;
+
+  document.getElementById('viewScenarioDetail').classList.add('hidden');
+  document.getElementById('viewScenarioResult').classList.remove('hidden');
+  document.getElementById('mainContent').scrollTop = 0;
+  updateUsageUI();
+}
+
+function nextScenario() {
+  const currentIndex = SCENARIOS.findIndex(s => s.id === currentScenarioId);
+  const next = SCENARIOS[(currentIndex + 1) % SCENARIOS.length];
+  showScenarioDetail(next.id);
+}
+
+// ══════════════════════════════════════════════
+// ANALYZE
+// ══════════════════════════════════════════════
+function showAnalyzeInput() {
+  document.getElementById('viewAnalyzeInput').classList.remove('hidden');
+  document.getElementById('viewAnalyzeResult').classList.add('hidden');
+  document.getElementById('analysisText').value = '';
+}
+
+async function analyze() {
+  const input_text = document.getElementById('analysisText').value.trim();
+  if (!input_text) return;
+
+  const btn = document.querySelector('#viewAnalyzeInput .btn-primary');
+  btn.textContent = 'Analyzing...';
+  btn.disabled = true;
+
+  const resultContent = document.getElementById('analysisResultContent');
+  resultContent.innerHTML = `<div class="loading-spinner"><div class="spinner"></div> Analyzing with Claude AI...</div>`;
+  document.getElementById('viewAnalyzeInput').classList.add('hidden');
+  document.getElementById('viewAnalyzeResult').classList.remove('hidden');
+
+  try {
+    const res = await fetch(`${API}/analyze`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ input_text })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      const a = data.analysis;
+      const stateKey = a.signal_state ? a.signal_state.split(' ')[0].toUpperCase() : 'NEUTRAL';
+
+      incrementUsage('analyses');
+      incrementTotal('analysesDone');
+      updateUsageUI();
+
+      resultContent.innerHTML = `
+        <div class="analysis-result-card">
+          <div class="analysis-result-header">
+            <h3>Analysis Results</h3>
+            <span class="signal-tag signal-state-badge ${stateKey}" style="margin-top:8px;">
+              Signal State: ${a.signal_state || 'Unknown'}
+            </span>
+          </div>
+          <div class="analysis-result-body">
+            <div class="analysis-section">
+              <div class="analysis-section-title">What I See</div>
+              <div class="analysis-section-body">${a.what_i_see || '—'}</div>
+            </div>
+            <div class="analysis-section">
+              <div class="analysis-section-title">What It Means</div>
+              <div class="analysis-section-body">${a.what_it_means || '—'}</div>
+            </div>
+            <div class="analysis-section">
+              <div class="analysis-section-title">Your Move</div>
+              <div class="analysis-section-body">${a.your_move || '—'}</div>
+            </div>
+            <div class="analysis-section">
+              <div class="analysis-section-title">Watch For</div>
+              <div class="analysis-section-body">${a.watch_for || '—'}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      resultContent.innerHTML = `
+        <div class="auth-card">
+          <div class="output-msg error">${data.error || 'Analysis failed. Please try again.'}</div>
+          <button class="btn-secondary" onclick="showAnalyzeInput()" style="margin-top:12px;">Try Again</button>
+        </div>
+      `;
+    }
+  } catch (err) {
+    resultContent.innerHTML = `
+      <div class="auth-card">
+        <div class="output-msg error">Network error: ${err.message}</div>
+        <button class="btn-secondary" onclick="showAnalyzeInput()" style="margin-top:12px;">Try Again</button>
+      </div>
+    `;
+  } finally {
+    btn.textContent = 'Analyze with AI →';
+    btn.disabled = false;
+  }
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+if (token) {
+  onAuthSuccess(token, userEmail);
+}
+</script>
 </body>
 </html>
