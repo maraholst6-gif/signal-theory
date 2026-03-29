@@ -18,8 +18,7 @@ dotenv.config();
 const REQUIRED_ENV = [
   'DATABASE_URL',
   'JWT_SECRET',
-  'JWT_REFRESH_SECRET',
-  'OPENAI_API_KEY',
+  'ANTHROPIC_API_KEY',
 ];
 
 for (const key of REQUIRED_ENV) {
