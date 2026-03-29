@@ -652,7 +652,7 @@ async function login() {
   try {
     const res = await fetch(API_BASE+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
     const data = await res.json();
-    if (data.token) { onAuthSuccess(data.token,email,data.user?.name||email.split('@')[0]); }
+    if (data.accessToken) { onAuthSuccess(data.accessToken,email,data.user?.display_name||email.split('@')[0]); }
     else { document.getElementById('loginError').textContent=data.error||data.message||'Login failed.'; }
   } catch(e) { document.getElementById('loginError').textContent='Connection error. Please try again.'; }
 }
@@ -664,9 +664,9 @@ async function register() {
   document.getElementById('signupError').textContent='';
   if (!name||!email||!password) { document.getElementById('signupError').textContent='Please fill in all fields.'; return; }
   try {
-    const res = await fetch(API_BASE+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password})});
+    const res = await fetch(API_BASE+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({display_name:name,email,password})});
     const data = await res.json();
-    if (data.token) { onAuthSuccess(data.token,email,name); }
+    if (data.accessToken) { onAuthSuccess(data.accessToken,email,name); }
     else { document.getElementById('signupError').textContent=data.error||data.message||'Registration failed.'; }
   } catch(e) { document.getElementById('signupError').textContent='Connection error. Please try again.'; }
 }
