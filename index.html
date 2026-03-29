@@ -205,8 +205,12 @@
         }
         
         /* Views */
-        .view { display: none; }
-        .view.active { display: block; }
+        .view { display: none !important; }
+        .view.active { display: block !important; }
+        
+        /* Module views */
+        .module-view { display: none !important; }
+        .module-view.active { display: block !important; }
         
         /* Quiz specific */
         .quiz-card { margin-bottom: 16px; }
@@ -317,7 +321,7 @@
         <!-- Content Area -->
         <div class="main-content">
             <!-- Dashboard View -->
-            <div id="dashboard-view" class="module-view active">
+            <div id="dashboard-view" class="module-view">
                 <h2 style="margin-bottom:16px;">Welcome back!</h2>
                 
                 <div class="card">
@@ -596,6 +600,11 @@ async function apiGet(endpoint) {
     const res = await fetch(`${API_BASE}${endpoint}`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
+    if (res.status === 401) {
+        // Invalid token - logout
+        logout();
+        throw new Error('Session expired');
+    }
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     return res.json();
 }
@@ -610,6 +619,11 @@ async function apiPost(endpoint, body) {
         },
         body: JSON.stringify(body)
     });
+    if (res.status === 401) {
+        // Invalid token - logout
+        logout();
+        throw new Error('Session expired');
+    }
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     return res.json();
 }
@@ -742,6 +756,9 @@ function logout() {
 async function initApp() {
     document.getElementById('auth-view').classList.remove('active');
     document.getElementById('main-app').classList.add('active');
+    
+    // Show dashboard by default
+    showModule('dashboard');
     
     // Load dashboard data
     await loadDashboard();
@@ -996,11 +1013,19 @@ function showUpgrade() {
 }
 
 // ── Init on load ──
-window.onload = function() {
+window.onload = async function() {
     const token = localStorage.getItem('signal_theory_token');
     if (token) {
         authToken = token;
-        initApp();
+        try {
+            // Validate token by making a test API call
+            await apiGet('/api/usage');
+            // Token is valid - proceed to app
+            initApp();
+        } catch (err) {
+            // Token invalid - stay on login
+            console.log('Token invalid, showing login');
+        }
     }
 };
 </script>
