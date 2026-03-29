@@ -117,6 +117,17 @@
             text-decoration: underline;
         }
         .toggle-link:hover { color: #764ba2; }
+        .logout-bar {
+            text-align: right;
+            padding: 0 0 10px 0;
+        }
+        .logout-link {
+            color: #9ca3af;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .logout-link:hover { color: #ef4444; }
     </style>
 </head>
 <body>
@@ -155,6 +166,7 @@
 
             <!-- Analysis (shown after login) -->
             <div id="analysisSection" class="section hidden">
+                <div class="logout-bar"><span class="logout-link" onclick="logout()">Log out</span></div>
                 <h2>Get Dating Advice</h2>
                 <label class="label">Describe your situation:</label>
                 <textarea id="analysisText" placeholder="Example: She said 'we should hang out sometime' but hasn't responded to my follow-up text..."></textarea>
@@ -166,7 +178,13 @@
 
     <script>
         const API = 'https://signal-theory-backend.onrender.com/api';
-        let token = '';
+        let token = localStorage.getItem('signal_theory_token') || '';
+
+        // On page load, if we have a token already, skip auth
+        if (token) {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('analysisSection').classList.remove('hidden');
+        }
 
         function showOutput(id, content, type = '') {
             const el = document.getElementById(id);
@@ -185,10 +203,21 @@
             document.getElementById('signupForm').classList.remove('hidden');
         }
 
-        function onAuthSuccess() {
+        function onAuthSuccess(newToken) {
+            token = newToken;
+            localStorage.setItem('signal_theory_token', token);
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('analysisSection').classList.remove('hidden');
             document.getElementById('analysisSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function logout() {
+            token = '';
+            localStorage.removeItem('signal_theory_token');
+            document.getElementById('analysisSection').classList.add('hidden');
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('signupForm').classList.remove('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
         }
 
         async function register() {
@@ -206,8 +235,7 @@
                 const data = await res.json();
 
                 if (res.ok) {
-                    token = data.access_token;
-                    onAuthSuccess();
+                    onAuthSuccess(data.access_token);
                 } else {
                     showOutput('regOutput', `<strong>❌ Error:</strong> ${data.error || 'Registration failed'}`, 'error');
                 }
@@ -230,8 +258,7 @@
                 const data = await res.json();
 
                 if (res.ok) {
-                    token = data.access_token;
-                    onAuthSuccess();
+                    onAuthSuccess(data.access_token);
                 } else {
                     showOutput('loginOutput', `<strong>❌ Error:</strong> ${data.error || 'Login failed'}`, 'error');
                 }
