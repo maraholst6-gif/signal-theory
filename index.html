@@ -710,13 +710,19 @@ async function signup() {
             body: JSON.stringify({email, password})
         });
         const data = await res.json();
+        
+        if (!res.ok) {
+            alert(data.error || `Signup failed (${res.status})`);
+            return;
+        }
+        
         const token = data.token || data.accessToken;
         if (token) {
             localStorage.setItem('signal_theory_token', token);
             authToken = token;
             initApp();
         } else {
-            alert(data.error || 'Signup failed');
+            alert('Signup succeeded but no token received');
         }
     } catch (err) {
         alert('Signup error: ' + err.message);
@@ -734,13 +740,19 @@ async function login() {
             body: JSON.stringify({email, password})
         });
         const data = await res.json();
+        
+        if (!res.ok) {
+            alert(data.error || `Login failed (${res.status})`);
+            return;
+        }
+        
         const token = data.token || data.accessToken;
         if (token) {
             localStorage.setItem('signal_theory_token', token);
             authToken = token;
             initApp();
         } else {
-            alert(data.error || 'Login failed');
+            alert('Login succeeded but no token received');
         }
     } catch (err) {
         alert('Login error: ' + err.message);
