@@ -178,12 +178,17 @@
                         <strong>✅ Account created!</strong><br>
                         User ID: ${data.user.user_id}<br>
                         Email: ${data.user.email}<br>
-                        <div class="status">You're now logged in and ready to use the AI.</div>
+                        <div class="status">✅ You're logged in! Scroll down to get AI advice.</div>
                     `, 'success');
                     
-                    // Auto-fill login
+                    // Auto-fill login (in case they want to test it)
                     document.getElementById('loginEmail').value = email;
                     document.getElementById('loginPassword').value = password;
+                    
+                    // Auto-scroll to analysis section
+                    setTimeout(() => {
+                        document.querySelector('textarea').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 1000);
                 } else {
                     showOutput('regOutput', `<strong>❌ Error:</strong> ${data.error || 'Registration failed'}`, 'error');
                 }
@@ -210,8 +215,13 @@
                     showOutput('loginOutput', `
                         <strong>✅ Logged in!</strong><br>
                         Email: ${data.user.email}<br>
-                        <div class="status">Token saved. You can now get AI advice.</div>
+                        <div class="status">✅ Ready! Scroll down to get AI advice.</div>
                     `, 'success');
+                    
+                    // Auto-scroll to analysis section
+                    setTimeout(() => {
+                        document.querySelector('textarea').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 1000);
                 } else {
                     showOutput('loginOutput', `<strong>❌ Error:</strong> ${data.error || 'Login failed'}`, 'error');
                 }
