@@ -205,7 +205,7 @@
 
         function onAuthSuccess(newToken) {
             token = newToken;
-            localStorage.setItem('signal_theory_token', token);
+            localStorage.setItem('signal_theory_token', newToken);
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('analysisSection').classList.remove('hidden');
             document.getElementById('analysisSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
