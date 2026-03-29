@@ -710,9 +710,10 @@ async function signup() {
             body: JSON.stringify({email, password})
         });
         const data = await res.json();
-        if (data.token) {
-            localStorage.setItem('signal_theory_token', data.token);
-            authToken = data.token;
+        const token = data.token || data.accessToken;
+        if (token) {
+            localStorage.setItem('signal_theory_token', token);
+            authToken = token;
             initApp();
         } else {
             alert(data.error || 'Signup failed');
@@ -733,9 +734,10 @@ async function login() {
             body: JSON.stringify({email, password})
         });
         const data = await res.json();
-        if (data.token) {
-            localStorage.setItem('signal_theory_token', data.token);
-            authToken = data.token;
+        const token = data.token || data.accessToken;
+        if (token) {
+            localStorage.setItem('signal_theory_token', token);
+            authToken = token;
             initApp();
         } else {
             alert(data.error || 'Login failed');
