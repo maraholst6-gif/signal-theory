@@ -164,7 +164,7 @@
             const display_name = document.getElementById('regName').value;
 
             try {
-                const res = await fetch(`${API}/auth/register`, {
+                const res = await fetch(`${API}/auth/signup`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password, display_name })
