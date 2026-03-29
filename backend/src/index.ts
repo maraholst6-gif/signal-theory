@@ -8,6 +8,9 @@ import scenarioRoutes from './routes/scenarios';
 import analysisRoutes from './routes/analysis';
 import usageRoutes from './routes/usage';
 import webhookRoutes from './routes/webhooks';
+import quizRoutes from './routes/quizzes';
+import adminRoutes, { getActivePrompt } from './routes/admin';
+import { requireAuth } from './middleware/auth';
 
 dotenv.config();
 
@@ -37,7 +40,7 @@ const app = express();
 app.use(
   cors({
     origin: '*',
-    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-secret'],
   })
 );
@@ -63,6 +66,9 @@ app.use('/api/scenarios', scenarioRoutes);
 app.use('/api/analyze', analysisRoutes);
 app.use('/api/usage', usageRoutes);
 app.use('/api/webhooks', webhookRoutes);
+app.use('/api/quizzes', quizRoutes);
+app.use('/api/admin', adminRoutes);
+app.get('/api/prompts/scenario-coach', requireAuth, getActivePrompt);
 
 // ─────────────────────────────────────────────
 // Health check
