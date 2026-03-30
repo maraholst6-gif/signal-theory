@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { pool } from '../db/pool';
+import pool from '../db/pool';
 import { requireAuth } from '../middleware/auth';
 
 const router = Router();
