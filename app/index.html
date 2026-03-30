@@ -770,8 +770,11 @@ async function startQuiz(level) {
   if (level!=='beginner') {
     if (!localStorage.getItem('signal_theory_pro')) { showUpgrade(); return; }
   }
-  const allowed = await checkUsage('quiz');
-  if (!allowed) return;
+  // Only check usage limits for paid tiers (intermediate/advanced)
+  if (level !== 'beginner') {
+    const allowed = await checkUsage('quiz');
+    if (!allowed) return;
+  }
   quizState.level=level; quizState.currentQuestion=0; quizState.answers=[];
   quizState.scenarios=shuffleArray(QUIZ_SCENARIOS[level]); quizState.reviewing=false; quizState.selectedOption=null;
   const badge=document.getElementById('quizLevelBadge');
