@@ -38,10 +38,11 @@ export default function Results() {
 
     try {
       // Submit to ConvertKit
-      const response = await fetch(`https://api.convertkit.com/v3/forms/9264094/subscribe?api_key=z9c_QCm0VIwY74gbl-AxAg`, {
+      const response = await fetch(`https://api.convertkit.com/v3/forms/9264094/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          api_key: 'z9c_QCm0VIwY74gbl-AxAg',
           email: email.trim(),
           tags: [profileId] // Tag with profile type (e.g., 'self-aware-learner')
         })
@@ -53,8 +54,8 @@ export default function Results() {
         setSubmitted(true);
         console.log('[ConvertKit] Subscription success:', data);
       } else {
-        console.error('[ConvertKit] Subscription failed:', data);
-        setSubmitError('Something went wrong. Please try again.');
+        console.error('[ConvertKit] Subscription failed:', response.status, data);
+        setSubmitError(`Error: ${data.error || data.message || 'Unknown error'}`);
       }
     } catch (error) {
       console.error('[ConvertKit] Network error:', error);
