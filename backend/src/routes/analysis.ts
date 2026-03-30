@@ -76,7 +76,8 @@ router.post('/', analysisLimiter, async (req: AuthRequest, res: Response) => {
     res.json({ analysis: insertResult.rows[0] });
   } catch (err) {
     console.error('[analysis/post]', err);
-    res.status(502).json({ error: 'Analysis failed. Please try again.' });
+    const errMsg = err instanceof Error ? err.message : String(err);
+    res.status(502).json({ error: 'Analysis failed. Please try again.', debug: errMsg });
   }
 });
 
