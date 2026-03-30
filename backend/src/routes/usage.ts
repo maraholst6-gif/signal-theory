@@ -22,6 +22,20 @@ function isNewWeek(weekResetAt: Date): boolean {
 }
 
 // ─────────────────────────────────────────────
+// Week start helper — returns Monday of current week (UTC) as YYYY-MM-DD
+// ─────────────────────────────────────────────
+
+function getWeekStart(): string {
+  const now = new Date();
+  const day = now.getUTCDay();
+  const diff = (day === 0 ? -6 : 1) - day;
+  const monday = new Date(now);
+  monday.setUTCDate(now.getUTCDate() + diff);
+  monday.setUTCHours(0, 0, 0, 0);
+  return monday.toISOString().split('T')[0];
+}
+
+// ─────────────────────────────────────────────
 // GET /api/usage
 // ─────────────────────────────────────────────
 
@@ -41,7 +55,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    // Auto-reset if new week
+    // Auto-reset legacy counters if new week
     if (isNewWeek(new Date(user.week_reset_at))) {
       const resetResult = await pool.query(
         `UPDATE users
@@ -50,25 +64,72 @@ router.get('/', async (req: AuthRequest, res: Response) => {
          RETURNING scenarios_used_week, analyses_used_week, week_reset_at`,
         [userId]
       );
-
-      const updated = resetResult.rows[0];
-      return res.json({
-        scenarios_used_week: updated.scenarios_used_week,
-        analyses_used_week: updated.analyses_used_week,
-        week_reset_at: updated.week_reset_at,
-        subscription_status: user.subscription_status,
-      });
+      user.scenarios_used_week = resetResult.rows[0].scenarios_used_week;
+      user.analyses_used_week = resetResult.rows[0].analyses_used_week;
+      user.week_reset_at = resetResult.rows[0].week_reset_at;
     }
+
+    // Fetch weekly usage from user_usage table
+    const weekStart = getWeekStart();
+    const usageResult = await pool.query(
+      `SELECT quizzes_completed, scenarios_completed, analyzer_uses
+       FROM user_usage WHERE user_id = $1 AND week_start = $2`,
+      [userId, weekStart]
+    );
+    const weeklyUsage = usageResult.rows[0] || {
+      quizzes_completed: 0,
+      scenarios_completed: 0,
+      analyzer_uses: 0,
+    };
 
     res.json({
       scenarios_used_week: user.scenarios_used_week,
       analyses_used_week: user.analyses_used_week,
       week_reset_at: user.week_reset_at,
       subscription_status: user.subscription_status,
+      quizzes_completed: weeklyUsage.quizzes_completed,
+      scenarios_completed: weeklyUsage.scenarios_completed,
+      analyzer_uses: weeklyUsage.analyzer_uses,
     });
   } catch (err) {
     console.error('[usage/get]', err);
     res.status(500).json({ error: 'Failed to fetch usage.' });
+  }
+});
+
+// ─────────────────────────────────────────────
+// POST /api/usage/track
+// ─────────────────────────────────────────────
+
+router.post('/track', async (req: AuthRequest, res: Response) => {
+  const userId = req.user!.userId;
+  const { type } = req.body as { type?: string };
+
+  const VALID_TYPES = ['quiz', 'scenario', 'analyzer'] as const;
+  if (!type || !VALID_TYPES.includes(type as typeof VALID_TYPES[number])) {
+    res.status(400).json({ error: 'Invalid type. Must be quiz, scenario, or analyzer.' });
+    return;
+  }
+
+  const column = type === 'quiz' ? 'quizzes_completed'
+               : type === 'scenario' ? 'scenarios_completed'
+               : 'analyzer_uses';
+
+  const weekStart = getWeekStart();
+
+  try {
+    await pool.query(
+      `INSERT INTO user_usage (user_id, week_start, ${column})
+       VALUES ($1, $2, 1)
+       ON CONFLICT (user_id, week_start)
+       DO UPDATE SET ${column} = user_usage.${column} + 1, updated_at = NOW()`,
+      [userId, weekStart]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[usage/track]', err);
+    res.status(500).json({ error: 'Failed to track usage.' });
   }
 });
 

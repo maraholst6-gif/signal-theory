@@ -766,10 +766,12 @@ function loadQuizHistory() {
   });
 }
 
-function startQuiz(level) {
+async function startQuiz(level) {
   if (level!=='beginner') {
     if (!localStorage.getItem('signal_theory_pro')) { showUpgrade(); return; }
   }
+  const allowed = await checkUsage('quiz');
+  if (!allowed) return;
   quizState.level=level; quizState.currentQuestion=0; quizState.answers=[];
   quizState.scenarios=[...QUIZ_SCENARIOS[level]]; quizState.reviewing=false; quizState.selectedOption=null;
   const badge=document.getElementById('quizLevelBadge');
@@ -898,6 +900,7 @@ function saveQuizResults(level,score,total) {
   history.push({level,score,total,date:new Date().toISOString()});
   localStorage.setItem('quiz_history',JSON.stringify(history));
   apiPost('/api/quizzes/complete',{level,score,total,answers:quizState.answers}).catch(()=>{});
+  trackUsage('quiz');
 }
 
 function reviewQuiz(level) {
@@ -1077,6 +1080,39 @@ async function analyze() {
 
 function showUpgrade() { document.getElementById('upgradeModal').classList.add('show'); }
 function hideUpgrade() { document.getElementById('upgradeModal').classList.remove('show'); }
+
+// ─────────────────────────────────────────────
+// Usage tracking (account-level, syncs across devices)
+// ─────────────────────────────────────────────
+
+async function checkUsage(type) {
+  if (!token) return true; // Not logged in — allow (auth wall handles this)
+  try {
+    const usage = await apiGet('/api/usage');
+    const limits = { quiz: 3, scenario: 1, analyzer: 5 };
+    const field = type === 'quiz' ? 'quizzes_completed'
+                : type === 'scenario' ? 'scenarios_completed'
+                : 'analyzer_uses';
+    if (usage[field] >= limits[type]) {
+      alert('Weekly limit reached! Upgrade to Pro for unlimited access.');
+      return false;
+    }
+    return true;
+  } catch (e) {
+    return true; // Fail open
+  }
+}
+
+async function trackUsage(type) {
+  if (!token) return;
+  try {
+    await fetch(API_BASE + '/api/usage/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ type })
+    });
+  } catch (e) {}
+}
 
 if (token) { onAuthSuccess(token,userEmail,userName); }
 </script>
