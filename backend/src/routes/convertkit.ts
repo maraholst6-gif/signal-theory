@@ -37,7 +37,7 @@ router.post('/subscribe', generalLimiter, async (req, res) => {
       })
     });
 
-    const data = await response.json();
+    const data = await response.json() as any;
 
     if (response.ok && data.subscription) {
       return res.json({
