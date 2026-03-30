@@ -10,6 +10,7 @@ import usageRoutes from './routes/usage';
 import webhookRoutes from './routes/webhooks';
 import quizRoutes from './routes/quizzes';
 import adminRoutes, { getActivePrompt } from './routes/admin';
+import convertkitRoutes from './routes/convertkit';
 import { requireAuth } from './middleware/auth';
 
 dotenv.config();
@@ -68,6 +69,7 @@ app.use('/api/usage', usageRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/convertkit', convertkitRoutes);
 app.get('/api/prompts/scenario-coach', requireAuth, getActivePrompt);
 
 // ─────────────────────────────────────────────

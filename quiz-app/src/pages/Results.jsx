@@ -37,12 +37,11 @@ export default function Results() {
     console.log('[Signal Theory Quiz] Email submitted:', email.trim(), '| Profile:', profileId);
 
     try {
-      // Submit to ConvertKit
-      const response = await fetch(`https://api.convertkit.com/v3/forms/9264094/subscribe`, {
+      // Submit to backend proxy (which calls ConvertKit)
+      const response = await fetch('https://signal-theory-backend.onrender.com/api/convertkit/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          api_key: 'z9c_QCm0VIwY74gbl-AxAg',
           email: email.trim(),
           tags: [profileId] // Tag with profile type (e.g., 'self-aware-learner')
         })
