@@ -282,7 +282,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
             <p class="quiz-stats" id="beginnerBestScore"></p>
             <div style="display:flex;gap:8px">
               <button class="btn-primary" style="flex:1" onclick="startQuiz('beginner')">Start Quiz &#8594;</button>
-              <button class="btn-secondary" style="flex:1" onclick="reviewQuiz('beginner')">Review</button>
+              <button class="btn-secondary" style="flex:1" onclick="showSavedResults('beginner')">Review</button>
             </div>
           </div>
           <div class="card quiz-card">
@@ -294,7 +294,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
             <p class="quiz-stats" id="intermediateBestScore"></p>
             <div style="display:flex;gap:8px">
               <button class="btn-primary" style="flex:1" onclick="startQuiz('intermediate')">Start Quiz &#8594;</button>
-              <button class="btn-secondary" style="flex:1" onclick="reviewQuiz('intermediate')">Review</button>
+              <button class="btn-secondary" style="flex:1" onclick="showSavedResults('intermediate')">Review</button>
             </div>
           </div>
           <div class="card quiz-card">
@@ -306,7 +306,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
             <p class="quiz-stats" id="advancedBestScore"></p>
             <div style="display:flex;gap:8px">
               <button class="btn-primary" style="flex:1" onclick="startQuiz('advanced')">Start Quiz &#8594;</button>
-              <button class="btn-secondary" style="flex:1" onclick="reviewQuiz('advanced')">Review</button>
+              <button class="btn-secondary" style="flex:1" onclick="showSavedResults('advanced')">Review</button>
             </div>
           </div>
         </div>
@@ -773,7 +773,7 @@ async function startQuiz(level) {
   const allowed = await checkUsage('quiz');
   if (!allowed) return;
   quizState.level=level; quizState.currentQuestion=0; quizState.answers=[];
-  quizState.scenarios=[...QUIZ_SCENARIOS[level]]; quizState.reviewing=false; quizState.selectedOption=null;
+  quizState.scenarios=shuffleArray(QUIZ_SCENARIOS[level]); quizState.reviewing=false; quizState.selectedOption=null;
   const badge=document.getElementById('quizLevelBadge');
   if (badge) { badge.className=level==='beginner'?'badge-free':'badge-pro'; badge.textContent=level.charAt(0).toUpperCase()+level.slice(1); }
   showView('viewQuizQuestion');
@@ -903,7 +903,38 @@ function saveQuizResults(level,score,total) {
   trackUsage('quiz');
 }
 
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function showSavedResults(level) {
+  if (level !== 'beginner' && !localStorage.getItem('signal_theory_pro')) { showUpgrade(); return; }
+  const history = JSON.parse(localStorage.getItem('quiz_history')||'[]');
+  const levelHistory = history.filter(h => h.level === level);
+  if (!levelHistory.length) { alert('No results yet — complete the quiz first!'); return; }
+  const last = levelHistory[levelHistory.length - 1];
+  const correct = last.score;
+  const total = last.total;
+  document.getElementById('scoreNumber').textContent = correct;
+  document.getElementById('scorePct').textContent = Math.round(correct/total*100) + '% accuracy';
+  ['Interest','Uncertainty','Comfort','Disengagement'].forEach(state => {
+    const el = document.getElementById('breakdown' + state);
+    if (el) el.textContent = '—';
+  });
+  const strEl = document.getElementById('struggleAreas');
+  if (strEl) strEl.textContent = '';
+  document.getElementById('retakeBtn').onclick = () => startQuiz(level);
+  document.getElementById('reviewResultsBtn').onclick = () => reviewQuiz(level);
+  showView('viewQuizResults');
+}
+
 function reviewQuiz(level) {
+  if (level !== 'beginner' && !localStorage.getItem('signal_theory_pro')) { showUpgrade(); return; }
   quizState.level=level; quizState.currentQuestion=0;
   quizState.scenarios=[...QUIZ_SCENARIOS[level]]; quizState.reviewing=true;
   showView('viewQuizQuestion'); renderQuizQuestion();
@@ -1054,7 +1085,7 @@ async function analyze() {
     const res=await fetch(API_BASE+'/api/analyze',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({situation:input})
+      body:JSON.stringify({input_text:input})
     });
     clearTimeout(timeoutId);
     if (!res.ok) {
