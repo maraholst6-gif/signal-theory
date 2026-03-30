@@ -81,6 +81,26 @@ app.get('/health', (_req, res) => {
 });
 
 // ─────────────────────────────────────────────
+// Claude API key diagnostic
+// ─────────────────────────────────────────────
+
+app.get('/api/diag/claude', async (_req, res) => {
+  const Anthropic = (await import('@anthropic-ai/sdk')).default;
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  try {
+    await client.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 5,
+      messages: [{ role: 'user', content: 'hi' }],
+    });
+    res.json({ ok: true });
+  } catch (err: unknown) {
+    const e = err as { status?: number; message?: string };
+    res.json({ ok: false, status: e.status, message: e.message, key_prefix: (process.env.ANTHROPIC_API_KEY ?? '').slice(0, 12) + '...' });
+  }
+});
+
+// ─────────────────────────────────────────────
 // 404 handler
 // ─────────────────────────────────────────────
 
