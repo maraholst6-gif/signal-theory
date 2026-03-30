@@ -5,6 +5,7 @@ services:
     plan: starter
     region: oregon
     rootDir: backend
+    preDeployCommand: node ../run-migration.js
     envVars:
       - key: PORT
         value: 3000
