@@ -36,17 +36,29 @@ export default function Results() {
     setSubmitting(true);
     console.log('[Signal Theory Quiz] Email submitted:', email.trim(), '| Profile:', profileId);
 
-    const result = await saveQuizSubmission({
-      email: email.trim(),
-      name: null,
-      profileType: profileId,
-      scores,
-      answers: answers.map(a => a?.value || null),
-    });
+    try {
+      // Submit to ConvertKit
+      const response = await fetch('https://api.convertkit.com/v3/forms/9264094/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: 'z9c_QCm0VIwY74gbl-AxAg',
+          email: email.trim(),
+          tags: [profileId] // Tag with profile type (e.g., 'self-aware-learner')
+        })
+      });
 
-    if (result.success) {
-      setSubmitted(true);
-    } else {
+      const data = await response.json();
+
+      if (response.ok && data.subscription) {
+        setSubmitted(true);
+        console.log('[ConvertKit] Subscription success:', data);
+      } else {
+        console.error('[ConvertKit] Subscription failed:', data);
+        setSubmitError('Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      console.error('[ConvertKit] Network error:', error);
       setSubmitError('Something went wrong. Please try again.');
     }
 
