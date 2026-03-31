@@ -11,6 +11,7 @@ import webhookRoutes from './routes/webhooks';
 import quizRoutes from './routes/quizzes';
 import adminRoutes, { getActivePrompt } from './routes/admin';
 import convertkitRoutes from './routes/convertkit';
+import emailRoutes from './routes/email';
 import { requireAuth } from './middleware/auth';
 
 dotenv.config();
@@ -70,6 +71,8 @@ app.use('/api/webhooks', webhookRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/convertkit', convertkitRoutes);
+app.use('/api/email', emailRoutes);
+app.use('/unsubscribe', emailRoutes);   // GET /unsubscribe/:token
 app.get('/api/prompts/scenario-coach', requireAuth, getActivePrompt);
 
 // ─────────────────────────────────────────────
