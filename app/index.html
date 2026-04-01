@@ -691,7 +691,7 @@ async function register() {
   document.getElementById('signupError').textContent='';
   if (!name||!email||!password) { document.getElementById('signupError').textContent='Please fill in all fields.'; return; }
   try {
-    const res = await fetch(API_BASE+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({display_name:name,email,password})});
+    const res = await fetch(API_BASE+'/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({display_name:name,email,password})});
     const data = await res.json();
     if (data.accessToken) { onAuthSuccess(data.accessToken,email,name); }
     else { document.getElementById('signupError').textContent=data.error||data.message||'Registration failed.'; }
