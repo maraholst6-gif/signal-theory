@@ -7,6 +7,7 @@ RUN npm ci
 
 COPY tsconfig.json ./
 COPY src ./src
+COPY email-action-plans ./email-action-plans
 RUN npm run build
 
 # ─────────────────────────────────────────────
