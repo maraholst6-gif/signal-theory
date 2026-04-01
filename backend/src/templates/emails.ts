@@ -24,9 +24,10 @@ export interface EmailTemplate {
 // ─────────────────────────────────────────────
 
 const BASE_URL = process.env.APP_BASE_URL ?? 'https://signaltheory.app';
+const BACKEND_URL = process.env.BACKEND_URL ?? 'https://signal-theory-backend.onrender.com';
 
 function unsubscribeUrl(token: string): string {
-  return `${BASE_URL}/unsubscribe/${token}`;
+  return `${BACKEND_URL}/api/email/unsubscribe/${token}`;
 }
 
 function greet(firstName?: string): string {
