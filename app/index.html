@@ -201,10 +201,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="loginPassword" placeholder="••••••••">
+        <div style="position:relative">
+          <input type="password" id="loginPassword" placeholder="••••••••" style="width:100%;padding-right:40px">
+          <button type="button" onclick="togglePasswordVisibility('loginPassword',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:#aaa">👁</button>
+        </div>
       </div>
       <button class="btn-primary" onclick="login()">Log In</button>
       <div id="loginError" class="auth-error"></div>
+      <div style="text-align:center;margin-top:8px"><button type="button" onclick="showForgotPassword()" style="background:none;border:none;color:#FF6B35;cursor:pointer;font-size:13px">Forgot Password?</button></div>
     </div>
     <div id="signupForm" style="display:none">
       <div class="form-group">
@@ -217,7 +221,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="signupPassword" placeholder="••••••••">
+        <div style="position:relative">
+          <input type="password" id="signupPassword" placeholder="••••••••" style="width:100%;padding-right:40px">
+          <button type="button" onclick="togglePasswordVisibility('signupPassword',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:#aaa">👁</button>
+        </div>
       </div>
       <button class="btn-primary" onclick="register()">Create Account</button>
       <div id="signupError" class="auth-error"></div>
@@ -694,8 +701,19 @@ async function register() {
   try {
     const res = await fetch(API_BASE+'/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({display_name:name,email,password})});
     const data = await res.json();
-    if (data.accessToken) { onAuthSuccess(data.accessToken,email,name); }
-    else { document.getElementById('signupError').textContent=data.error||data.message||'Registration failed.'; }
+    if (data.accessToken) {
+      onAuthSuccess(data.accessToken,email,name);
+      try {
+        await fetch(API_BASE+'/api/email/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,firstName:name.split(' ')[0],quizProfile:'Unknown',source:'signup'})});
+      } catch(emailErr) { console.warn('Email subscription failed:',emailErr); }
+    } else {
+      const errorMsg = data.error||data.message||'Registration failed.';
+      if (errorMsg.toLowerCase().includes('already')||errorMsg.toLowerCase().includes('exists')) {
+        document.getElementById('signupError').textContent='An account with this email already exists. Try logging in instead.';
+      } else {
+        document.getElementById('signupError').textContent=errorMsg;
+      }
+    }
   } catch(e) { document.getElementById('signupError').textContent='Connection error. Please try again.'; }
 }
 
@@ -1153,7 +1171,86 @@ async function trackUsage(type) {
 }
 
 if (token) { onAuthSuccess(token,userEmail,userName); }
+
+function togglePasswordVisibility(inputId, button) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') { input.type='text'; button.textContent='🙈'; }
+  else { input.type='password'; button.textContent='👁'; }
+}
+
+function showForgotPassword() {
+  document.getElementById('forgotPasswordModal').style.display='flex';
+}
+
+function closeForgotPassword() {
+  document.getElementById('forgotPasswordModal').style.display='none';
+  document.getElementById('forgotEmail').value='';
+  document.getElementById('forgotMessage').textContent='';
+}
+
+async function sendForgotPassword() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const msgEl = document.getElementById('forgotMessage');
+  msgEl.textContent='';
+  if (!email) { msgEl.style.color='#e74c3c'; msgEl.textContent='Please enter your email.'; return; }
+  try {
+    await fetch(API_BASE+'/api/auth/forgot-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    msgEl.style.color='#2ecc71';
+    msgEl.textContent='If that email exists, we sent a reset link. Check your inbox.';
+    setTimeout(closeForgotPassword, 4000);
+  } catch(e) { msgEl.style.color='#e74c3c'; msgEl.textContent='Connection error. Please try again.'; }
+}
+
+async function submitResetPassword() {
+  const password = document.getElementById('resetNewPassword').value;
+  const msgEl = document.getElementById('resetMessage');
+  msgEl.textContent='';
+  if (!password||password.length<6) { msgEl.style.color='#e74c3c'; msgEl.textContent='Password must be at least 6 characters.'; return; }
+  const resetToken = new URLSearchParams(window.location.search).get('reset');
+  try {
+    const res = await fetch(API_BASE+'/api/auth/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:resetToken,newPassword:password})});
+    const data = await res.json();
+    if (data.success) {
+      msgEl.style.color='#2ecc71';
+      msgEl.textContent='Password reset! You can now log in.';
+      setTimeout(()=>{ document.getElementById('resetPasswordModal').style.display='none'; showAuthTab('login'); },2500);
+    } else {
+      msgEl.style.color='#e74c3c'; msgEl.textContent=data.error||'Reset failed. The link may have expired.';
+    }
+  } catch(e) { msgEl.style.color='#e74c3c'; msgEl.textContent='Connection error. Please try again.'; }
+}
+
+// Check for password reset token in URL
+const _resetToken = new URLSearchParams(window.location.search).get('reset');
+if (_resetToken) { document.getElementById('resetPasswordModal').style.display='flex'; }
 </script>
+<!-- FORGOT PASSWORD MODAL -->
+<div id="forgotPasswordModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:28px;width:90%;max-width:400px">
+    <h2 style="color:#FF6B35;margin:0 0 8px">Reset Password</h2>
+    <p style="color:#aaa;margin:0 0 16px;font-size:14px">Enter your email and we'll send a reset link.</p>
+    <input type="email" id="forgotEmail" placeholder="you@example.com" style="width:100%;padding:10px;background:#111;border:1px solid #444;border-radius:8px;color:#fff;font-size:15px;box-sizing:border-box;margin-bottom:12px">
+    <div id="forgotMessage" style="font-size:13px;min-height:18px;margin-bottom:12px"></div>
+    <div style="display:flex;gap:10px">
+      <button onclick="sendForgotPassword()" style="flex:1;padding:12px;background:#FF6B35;border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:600;cursor:pointer">Send Reset Link</button>
+      <button onclick="closeForgotPassword()" style="padding:12px 16px;background:#333;border:none;border-radius:8px;color:#aaa;cursor:pointer">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESET PASSWORD MODAL -->
+<div id="resetPasswordModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center">
+  <div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:28px;width:90%;max-width:400px">
+    <h2 style="color:#FF6B35;margin:0 0 8px">Set New Password</h2>
+    <p style="color:#aaa;margin:0 0 16px;font-size:14px">Enter your new password below.</p>
+    <div style="position:relative;margin-bottom:12px">
+      <input type="password" id="resetNewPassword" placeholder="New password (min. 6 chars)" style="width:100%;padding:10px;padding-right:40px;background:#111;border:1px solid #444;border-radius:8px;color:#fff;font-size:15px;box-sizing:border-box">
+      <button type="button" onclick="togglePasswordVisibility('resetNewPassword',this)" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:#aaa">👁</button>
+    </div>
+    <div id="resetMessage" style="font-size:13px;min-height:18px;margin-bottom:12px"></div>
+    <button onclick="submitResetPassword()" style="width:100%;padding:12px;background:#FF6B35;border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:600;cursor:pointer">Reset Password</button>
+  </div>
+</div>
 </body>
 </html>
 
