@@ -46,7 +46,15 @@ export function getActionPlan(profileId: string): ActionPlanContent | null {
   console.log(`[actionPlans] ACTION_PLANS_DIR:`, ACTION_PLANS_DIR);
   
   try {
+    // Check if file exists first
+    if (!fs.existsSync(filePath)) {
+      console.error(`[actionPlans] File not found: ${filePath}`);
+      console.error(`[actionPlans] Directory contents:`, fs.readdirSync(ACTION_PLANS_DIR));
+      return null;
+    }
+    
     const markdown = fs.readFileSync(filePath, 'utf-8');
+    console.log(`[actionPlans] Successfully loaded ${filename}, length: ${markdown.length}`);
     
     // Extract subject from markdown (look for "**Subject:**" line)
     const subjectMatch = markdown.match(/\*\*Subject:\*\*\s*(.+)/);
