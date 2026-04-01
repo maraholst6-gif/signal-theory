@@ -1,61 +1,167 @@
-# Signal Theory - Production TODO
+# Signal Theory - TODO List
 
-## Critical Fixes
-
-- [ ] **Password reset with 2FA** - Email verification flow before password change
-- [ ] **Add remaining 27 quiz scenarios** - Currently only 3 beginner scenarios (need all 30)
-- [ ] **Build interactive scenario engine** - 5-turn AI conversation with dynamic responses
-- [ ] **Deploy backend migration** - Run `002_features.sql` on production database
-
-## Infrastructure
-
-- [ ] **Email capture system integration** - Connect web quiz signups to email list
-- [ ] **Email automation** - Welcome sequences, drip campaigns
-- [ ] **Host web quiz separately** - Marketing funnel landing page (separate from app)
-- [ ] **Connect quiz → app** - Link quiz completions to app accounts
-- [ ] **Backend usage tracking endpoint** - `/api/usage/track` for scenarios/analyses
-
-## Features to Build
-
-- [ ] **Interactive scenario categories** - Bar/Social, Texting, First Dates, Mixed Signals
-- [ ] **Create Your Own Scenario** (Pro feature)
-- [ ] **Admin panel UI** - Frontend for `/api/admin/*` endpoints
-- [ ] **AI coaching prompt editor** - Visual interface for updating scenario coach logic
-- [ ] **Stripe integration** - Payment processing for Pro tier ($19/mo)
-- [ ] **Usage reset cron job** - Weekly reset (Monday 00:00)
-
-## Polish / UX
-
-- [ ] **Loading states** - Show spinners during API calls
-- [ ] **Error handling** - Better user-facing error messages
-- [ ] **Quiz review mode** - Review past quiz answers
-- [ ] **Progress charts** - Visual dashboard for training progress
-- [ ] **Mobile optimization** - Test on actual devices
-- [ ] **Onboarding flow** - First-time user tutorial
-
-## Marketing / Growth
-
-- [ ] **Landing page** - Public marketing site (separate from app)
-- [ ] **SEO optimization** - Meta tags, descriptions
-- [ ] **Social sharing** - Share results on social media
-- [ ] **Referral system** - Invite friends for bonus scenarios
-- [ ] **Analytics** - Track user behavior, conversion funnels
-
-## Backend Architecture
-
-- [ ] **Rate limiting** - Prevent API abuse
-- [ ] **Logging** - Better error tracking
-- [ ] **Database backups** - Automated backup strategy
-- [ ] **Monitoring** - Uptime alerts, error notifications
+**Last updated:** April 1, 2026
 
 ---
 
-**Priority Order:**
-1. Add all 30 scenarios (needed for complete product)
-2. Deploy backend migration (needed for quiz/admin features)
-3. Interactive scenario engine (core differentiator)
-4. Email integration (marketing funnel)
-5. Stripe (revenue)
-6. Everything else
+## 🔴 Blockers (Can't Launch Without These)
 
-**Last updated:** 2026-03-29
+### 1. **OpenAI Credits ($5-10)**
+**Status:** Blocked - account needs funding  
+**Impact:** Analyzer feature non-functional  
+**Action:** Top up OpenAI account  
+**Owner:** Jeff (requires payment method)
+
+---
+
+## 🟡 High Priority (Core Features)
+
+### 2. **Scenarios Tab - AI Generation**
+**Status:** Placeholder content only  
+**Requirements:**
+- Build AI scenario generator (relationship situations)
+- Create database table for scenarios
+- API endpoint for fetching scenarios
+- Frontend UI for browsing/filtering
+**Questions:**
+- Should Jeff review/approve scenarios before they go live?
+- Do scenarios get personalized by quiz profile?
+- Static library vs. dynamic generation per user?
+
+### 3. **Premium Upgrade Flow (Stripe)**
+**Status:** Not started  
+**Requirements:**
+- Stripe account setup
+- Payment processing integration
+- Premium user flag in database
+- Gated content logic (free vs. premium)
+- Pricing page/checkout flow
+**Questions:**
+- Pricing model? (One-time, subscription, tiered?)
+- What features are premium-only?
+- Free trial period?
+
+### 4. **Onboarding/Training Module**
+**Status:** Not started  
+**Requirements:**
+- Explainer for 8 relationship profiles
+- "How to interpret your results" guide
+- Profile comparison tool
+- Interactive training flow
+**Questions:**
+- Before or after first quiz?
+- Required vs. skippable?
+- Text-heavy vs. video/interactive?
+
+---
+
+## 🟢 Medium Priority (Polish & Growth)
+
+### 5. **Landing Page Rewrite**
+**Status:** Minimal placeholder  
+**Requirements:**
+- Compelling copy (problem → solution → CTA)
+- Social proof (testimonials, case studies)
+- Clear value proposition
+- Mobile-responsive design
+**Questions:**
+- Who writes the copy? (Jeff vs. Mara draft)
+- Do we need professional design, or keep it minimal?
+
+### 6. **Email Segmentation by Profile**
+**Status:** Not started  
+**Requirements:**
+- Profile-specific email sequences
+- Dynamic content based on quiz results
+- Personalized follow-up recommendations
+**Complexity:** Medium (email CRM already working)
+
+### 7. **Analytics & Tracking**
+**Status:** Basic usage tracking only  
+**Requirements:**
+- Email open/click tracking
+- Funnel analysis (signup → quiz → analyzer → premium)
+- A/B testing framework
+- User engagement metrics
+**Tools:** Could use PostHog, Mixpanel, or custom
+
+---
+
+## 🔵 Low Priority (Nice-to-Have)
+
+### 8. **In-App Email Preferences**
+**Status:** Not started  
+**Requirements:**
+- User dashboard for email frequency
+- Topic preferences
+- Pause/resume emails (not full unsubscribe)
+
+### 9. **Re-Engagement Campaigns**
+**Status:** Not started  
+**Requirements:**
+- Detect inactive users
+- Automated win-back emails
+- Special offers for churned users
+
+### 10. **Mobile App (React Native)**
+**Status:** Not started  
+**Requirements:**
+- Port web app to React Native
+- Push notifications
+- Offline quiz capability
+**Note:** Probably not needed for MVP launch
+
+---
+
+## 📋 Process Improvements (Meta)
+
+### 11. **Build Process Documentation**
+**Status:** In progress  
+**Action:** Create "How This Build Worked" retrospective  
+**Purpose:** Make future builds faster/smoother
+
+### 12. **Deployment Checklist**
+**Status:** Not documented  
+**Action:** Write step-by-step deployment guide  
+**Purpose:** Reproducible launch process
+
+---
+
+## ✅ Completed
+
+- [x] Authentication system (signup/login/password reset)
+- [x] Quiz system (3 levels, 8 profiles, backend storage)
+- [x] Email CRM (custom-built, Microsoft Graph API)
+- [x] Training dashboard (progress tracking, accuracy stats)
+- [x] Database schema (7 tables, 5 migrations)
+- [x] Auto-deploy pipeline (GitHub → Render/Pages)
+- [x] Email auto-subscribe on signup
+- [x] 3-email drip sequence
+- [x] Password visibility toggle
+- [x] "Account exists" error handling
+- [x] Session persistence across devices
+- [x] Email queue processor (Render cron)
+
+---
+
+## Decision Log
+
+**Decisions that need to be made:**
+
+1. **Scenarios approval workflow** - Auto-publish vs. manual review?
+2. **Premium pricing model** - One-time, subscription, tiered?
+3. **Landing page copy** - Jeff writes vs. Mara drafts?
+4. **Onboarding timing** - Before quiz, after quiz, or optional?
+5. **Analytics tool** - Custom vs. third-party (PostHog, Mixpanel)?
+6. **Stripe account owner** - Personal vs. business entity?
+
+---
+
+## Notes
+
+- OpenAI analyzer uses `gpt-4o-mini` (~$0.0006 per analysis)
+- Email CRM sends from `contact@learnsignaltheory.com`
+- Deployment is auto (just push to GitHub)
+- Backend sleeps on free tier (cold starts ~10-15 sec)
+
+**Next review:** After OpenAI credits are added
