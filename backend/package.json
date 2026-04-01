@@ -4,7 +4,7 @@
   "description": "Signal Theory API server",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node -e \"const fs=require('fs'),path=require('path');const src=path.join(__dirname,'..','email-action-plans');const dest=path.join(__dirname,'dist','email-action-plans');fs.mkdirSync(dest,{recursive:true});fs.readdirSync(src).forEach(f=>fs.copyFileSync(path.join(src,f),path.join(dest,f)))\"",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "migrate": "node -e \"require('./dist/db/migrate')\"",

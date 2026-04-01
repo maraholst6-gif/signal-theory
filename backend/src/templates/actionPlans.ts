@@ -6,10 +6,9 @@
 import fs from 'fs';
 import path from 'path';
 
-// In production (Render), __dirname is in backend/dist/templates
-// In dev, __dirname is in backend/src/templates
-// Both need to go up to repo root, then into email-action-plans
-const ACTION_PLANS_DIR = path.join(__dirname, '../../../email-action-plans');
+// After build, action plans are copied to backend/dist/email-action-plans
+// From backend/dist/templates, go up one level to dist, then into email-action-plans
+const ACTION_PLANS_DIR = path.join(__dirname, '../email-action-plans');
 
 interface ActionPlanContent {
   subject: string;
