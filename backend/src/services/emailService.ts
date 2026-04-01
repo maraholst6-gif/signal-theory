@@ -12,8 +12,8 @@
 const GRAPH_TOKEN_URL = (tenantId: string) =>
   `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
 
-const GRAPH_SEND_URL = (fromAddress: string) =>
-  `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(fromAddress)}/sendMail`;
+// Use the actual mailbox, not the alias, for the endpoint
+const GRAPH_SEND_URL = 'https://graph.microsoft.com/v1.0/users/jeffrey@learnsignaltheory.com/sendMail';
 
 interface TokenResponse {
   access_token: string;
@@ -79,6 +79,11 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
   const token = await getAccessToken();
 
   const message = {
+    from: {
+      emailAddress: {
+        address: fromAddress,
+      },
+    },
     subject: payload.subject,
     body: {
       contentType: 'HTML',
@@ -94,7 +99,7 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
     ],
   };
 
-  const res = await fetch(GRAPH_SEND_URL(fromAddress), {
+  const res = await fetch(GRAPH_SEND_URL, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
