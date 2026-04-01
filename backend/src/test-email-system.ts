@@ -54,10 +54,10 @@ async function run(): Promise<void> {
     unsubscribeToken: 'abc123',
   };
   for (const name of ['immediate', 'followup_2d', 'followup_4d']) {
-    const tmpl = getTemplate(name, sub);
+    const tmpl = await getTemplate(name, sub);
     check(`Template "${name}" renders`, Boolean(tmpl && tmpl.subject && tmpl.htmlBody && tmpl.textBody));
   }
-  check('Unknown template returns null', getTemplate('not_a_template', sub) === null);
+  check('Unknown template returns null', await getTemplate('not_a_template', sub) === null);
   console.log('');
 
   // 3. Graph API configured
@@ -93,7 +93,11 @@ async function run(): Promise<void> {
   if (isEmailConfigured() && process.env.TEST_SEND_TO) {
     console.log('5. Live send test (TEST_SEND_TO is set)');
     const { sendEmail } = await import('./services/emailService');
-    const tmpl = getTemplate('immediate', sub)!;
+    const tmpl = await getTemplate('immediate', sub);
+    if (!tmpl) {
+      console.log('  ❌ Template failed to load');
+      return;
+    }
     try {
       await sendEmail({
         toEmail:  process.env.TEST_SEND_TO,
