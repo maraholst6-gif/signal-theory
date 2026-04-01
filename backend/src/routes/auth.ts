@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import pool from '../db/pool';
 import { authLimiter } from '../middleware/rateLimit';
 import { requireAuth, AuthRequest } from '../middleware/auth';
+import { sendEmail, isEmailConfigured } from '../services/emailService';
 
 const router = Router();
 
@@ -265,6 +266,119 @@ router.post('/logout', requireAuth, async (req: AuthRequest, res: Response) => {
   }
 
   res.json({ success: true });
+});
+
+// ─────────────────────────────────────────────
+// POST /api/auth/forgot-password
+// ─────────────────────────────────────────────
+
+router.post('/forgot-password', authLimiter, async (req: Request, res: Response) => {
+  const { email } = req.body as { email?: string };
+
+  if (!email?.trim()) {
+    res.status(400).json({ error: 'Email is required.' });
+    return;
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  try {
+    const user = await pool.query<{ id: string; display_name: string | null }>(
+      'SELECT id, display_name FROM users WHERE email = $1',
+      [normalizedEmail]
+    );
+
+    // Always respond the same way — don't reveal if email exists
+    if (user.rows.length === 0) {
+      res.json({ success: true, message: 'If that email exists, we sent a reset link.' });
+      return;
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await pool.query(
+      `INSERT INTO password_reset_tokens (user_id, token, expires_at)
+       VALUES ($1, $2, $3)`,
+      [user.rows[0].id, resetToken, expiresAt]
+    );
+
+    const resetUrl = `https://learnsignaltheory.com/app/?reset=${resetToken}`;
+    const firstName = user.rows[0].display_name?.split(' ')[0] ?? 'there';
+
+    if (isEmailConfigured()) {
+      try {
+        await sendEmail({
+          toEmail: normalizedEmail,
+          toName: firstName,
+          subject: 'Reset your Signal Theory password',
+          htmlBody: `<p>Hi ${firstName},</p>
+<p>Click the link below to reset your password. This link expires in 1 hour.</p>
+<p><a href="${resetUrl}" style="background:#FF6B35;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">Reset Password</a></p>
+<p>If you didn't request this, you can safely ignore this email.</p>
+<p>— Signal Theory</p>`,
+          textBody: `Hi ${firstName},\n\nReset your Signal Theory password here:\n${resetUrl}\n\nThis link expires in 1 hour. If you didn't request this, ignore this email.`,
+        });
+      } catch (emailErr) {
+        console.error('[auth/forgot-password] Failed to send reset email:', emailErr);
+      }
+    } else {
+      console.warn('[auth/forgot-password] Email not configured — reset token:', resetToken);
+    }
+
+    res.json({ success: true, message: 'If that email exists, we sent a reset link.' });
+  } catch (err) {
+    console.error('[auth/forgot-password]', err);
+    res.status(500).json({ error: 'Request failed. Please try again.' });
+  }
+});
+
+// ─────────────────────────────────────────────
+// POST /api/auth/reset-password
+// ─────────────────────────────────────────────
+
+router.post('/reset-password', authLimiter, async (req: Request, res: Response) => {
+  const { token, newPassword } = req.body as { token?: string; newPassword?: string };
+
+  if (!token || !newPassword?.trim()) {
+    res.status(400).json({ error: 'Token and new password are required.' });
+    return;
+  }
+
+  if (newPassword.length < 6) {
+    res.status(400).json({ error: 'Password must be at least 6 characters.' });
+    return;
+  }
+
+  try {
+    const tokenData = await pool.query<{ user_id: string }>(
+      `SELECT user_id FROM password_reset_tokens
+       WHERE token = $1 AND expires_at > NOW() AND used_at IS NULL`,
+      [token]
+    );
+
+    if (tokenData.rows.length === 0) {
+      res.status(400).json({ error: 'Invalid or expired reset link.' });
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+
+    await pool.query(
+      'UPDATE users SET password_hash = $1 WHERE id = $2',
+      [hashedPassword, tokenData.rows[0].user_id]
+    );
+
+    await pool.query(
+      'UPDATE password_reset_tokens SET used_at = NOW() WHERE token = $1',
+      [token]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[auth/reset-password]', err);
+    res.status(500).json({ error: 'Reset failed. Please try again.' });
+  }
 });
 
 export default router;
