@@ -66,9 +66,13 @@ function htmlWrapper(content: string, unsubToken: string): string {
 export function templateImmediate(sub: SubscriberData): EmailTemplate {
   const name = sub.firstName ?? 'there';
   
+  console.log(`[emails] templateImmediate called with profile: ${sub.quizProfile}`);
+  
   // Try to load profile-specific action plan
   if (sub.quizProfile) {
+    console.log(`[emails] Attempting to load action plan for: ${sub.quizProfile}`);
     const actionPlan = getActionPlan(sub.quizProfile);
+    console.log(`[emails] Action plan loaded:`, actionPlan ? 'SUCCESS' : 'FAILED');
     if (actionPlan) {
       // Replace {firstName} placeholder in the loaded content
       const personalizedHtml = actionPlan.htmlBody.replace(/\{firstName\}/g, name);
