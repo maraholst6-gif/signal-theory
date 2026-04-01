@@ -64,7 +64,7 @@ router.post('/subscribe', generalLimiter, async (req: Request, res: Response) =>
 
     // Send Email 1 immediately (best-effort; don't fail the whole request if Graph isn't configured yet)
     if (isEmailConfigured()) {
-      const tmpl = getTemplate('immediate', subData);
+      const tmpl = await getTemplate('immediate', subData);
       if (tmpl) {
         try {
           await sendEmail({ toEmail: cleaned, toName: firstName, ...tmpl });

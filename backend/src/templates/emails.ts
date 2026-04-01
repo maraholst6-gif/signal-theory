@@ -63,12 +63,12 @@ function htmlWrapper(content: string, unsubToken: string): string {
 // Template 1 — Immediate (sent on signup)
 // ─────────────────────────────────────────────
 
-export function templateImmediate(sub: SubscriberData): EmailTemplate {
+export async function templateImmediate(sub: SubscriberData): Promise<EmailTemplate> {
   const name = sub.firstName ?? 'there';
   
   // Try to load profile-specific action plan
   if (sub.quizProfile) {
-    const actionPlan = getActionPlan(sub.quizProfile);
+    const actionPlan = await getActionPlan(sub.quizProfile);
     if (actionPlan) {
       // Replace {firstName} placeholder in the loaded content
       const personalizedHtml = actionPlan.htmlBody.replace(/\{firstName\}/g, name);
@@ -191,13 +191,13 @@ Unsubscribe: ${unsubscribeUrl(sub.unsubscribeToken)}
 // Registry — maps template_name → function
 // ─────────────────────────────────────────────
 
-export const TEMPLATES: Record<string, (sub: SubscriberData) => EmailTemplate> = {
+export const TEMPLATES: Record<string, (sub: SubscriberData) => Promise<EmailTemplate> | EmailTemplate> = {
   immediate:    templateImmediate,
   followup_2d:  templateFollowup2d,
   followup_4d:  templateFollowup4d,
 };
 
-export function getTemplate(name: string, sub: SubscriberData): EmailTemplate | null {
+export async function getTemplate(name: string, sub: SubscriberData): Promise<EmailTemplate | null> {
   const fn = TEMPLATES[name];
-  return fn ? fn(sub) : null;
+  return fn ? await fn(sub) : null;
 }

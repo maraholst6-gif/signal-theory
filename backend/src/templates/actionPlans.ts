@@ -1,64 +1,34 @@
 /**
  * actionPlans.ts
- * Profile-specific action plan content loaded from markdown files
+ * Profile-specific action plan content loaded from database
  */
 
-import fs from 'fs';
-import path from 'path';
+import pool from '../db/pool';
 
 // After build, action plans are copied to backend/dist/email-action-plans
 // From backend/dist/templates, go up one level to dist, then into email-action-plans
-const ACTION_PLANS_DIR = path.join(__dirname, '../email-action-plans');
-
 interface ActionPlanContent {
   subject: string;
   htmlBody: string;
   textBody: string;
 }
 
-// Map quiz profile IDs to action plan filenames
-const PROFILE_FILES: Record<string, string> = {
-  'ready-navigator': 'ready-navigator.md',
-  'rusty-romantic': 'rusty-romantic.md',
-  'eager-rebuilder': 'eager-rebuilder.md',
-  'cautious-observer': 'cautious-observer.md',
-  'wounded-analyst': 'wounded-analyst.md',
-  'pattern-repeater': 'pattern-repeater.md',
-  'inconsistent-dater': 'inconsistent-dater-example.md',
-  'self-aware-learner': 'self-aware-learner.md',
-};
-
 /**
- * Load action plan content for a quiz profile
+ * Load action plan content for a quiz profile from database
  */
-export function getActionPlan(profileId: string): ActionPlanContent | null {
-  const filename = PROFILE_FILES[profileId];
-  if (!filename) {
-    console.warn(`[actionPlans] No action plan file mapped for profile: ${profileId}`);
-    return null;
-  }
-
-  const filePath = path.join(ACTION_PLANS_DIR, filename);
-  
-  // Debug logging
-  console.log(`[actionPlans] Loading ${profileId} from ${filePath}`);
-  console.log(`[actionPlans] __dirname:`, __dirname);
-  console.log(`[actionPlans] ACTION_PLANS_DIR:`, ACTION_PLANS_DIR);
-  
+export async function getActionPlan(profileId: string): Promise<ActionPlanContent | null> {
   try {
-    // Check if file exists first
-    if (!fs.existsSync(filePath)) {
-      console.error(`[actionPlans] File not found: ${filePath}`);
-      console.error(`[actionPlans] Directory contents:`, fs.readdirSync(ACTION_PLANS_DIR));
+    const result = await pool.query(
+      'SELECT subject, body FROM email_templates WHERE profile_id = $1',
+      [profileId]
+    );
+    
+    if (result.rows.length === 0) {
+      console.warn(`[actionPlans] No template found for profile: ${profileId}`);
       return null;
     }
     
-    const markdown = fs.readFileSync(filePath, 'utf-8');
-    console.log(`[actionPlans] Successfully loaded ${filename}, length: ${markdown.length}`);
-    
-    // Extract subject from markdown (look for "**Subject:**" line)
-    const subjectMatch = markdown.match(/\*\*Subject:\*\*\s*(.+)/);
-    const subject = subjectMatch ? subjectMatch[1].trim() : `Your Dating Readiness Profile`;
+    const { subject, body: markdown } = result.rows[0];
     
     // Convert markdown to HTML
     const htmlBody = markdownToHtml(markdown);
@@ -68,7 +38,7 @@ export function getActionPlan(profileId: string): ActionPlanContent | null {
     
     return { subject, htmlBody, textBody };
   } catch (err) {
-    console.error(`[actionPlans] Failed to load ${filename}:`, err);
+    console.error(`[actionPlans] Database error for profile ${profileId}:`, err);
     return null;
   }
 }

@@ -64,7 +64,7 @@ export async function processQueue(): Promise<void> {
       unsubscribeToken: row.unsubscribe_token,
     };
 
-    const tmpl = getTemplate(row.template_name, subData);
+    const tmpl = await getTemplate(row.template_name, subData);
 
     if (!tmpl) {
       console.error(`[queue] Unknown template: ${row.template_name} — marking failed`);
