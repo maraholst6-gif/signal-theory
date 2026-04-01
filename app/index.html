@@ -562,6 +562,7 @@ async function apiPost(endpoint, body) {
 
 const quizState = { level: 'beginner', currentQuestion: 0, answers: [], scenarios: [], reviewing: false, selectedOption: null };
 const interactiveState = { scenarioId: '', turn: 1, maxTurns: 5, history: [], scenario: null, pendingAction: '', showingResponse: false };
+let cachedQuizHistory = null; // in-memory cache; reset on login/logout to prevent cross-account bleed
 
 const QUIZ_SCENARIOS = {
 beginner: [
@@ -700,6 +701,9 @@ async function register() {
 
 function onAuthSuccess(tok, email, name) {
   token=tok; userEmail=email; userName=name||email.split('@')[0];
+  cachedQuizHistory = null;
+  localStorage.removeItem('quiz_history');
+  localStorage.removeItem('scenarios_used_week');
   localStorage.setItem('signal_theory_token',token);
   localStorage.setItem('signal_theory_email',userEmail);
   localStorage.setItem('signal_theory_name',userName);
@@ -710,7 +714,8 @@ function onAuthSuccess(tok, email, name) {
 
 function logout() {
   token=''; userEmail=''; userName='';
-  ['signal_theory_token','signal_theory_email','signal_theory_name'].forEach(k=>localStorage.removeItem(k));
+  cachedQuizHistory = null;
+  ['signal_theory_token','signal_theory_email','signal_theory_name','quiz_history','scenarios_used_week'].forEach(k=>localStorage.removeItem(k));
   document.getElementById('appScreen').style.display='none';
   document.getElementById('authScreen').style.display='flex';
 }
@@ -718,54 +723,53 @@ function logout() {
 async function loadDashboard() {
   const nameEl = document.getElementById('dashUserName');
   if (nameEl) nameEl.textContent = userName||'there';
-  const history = JSON.parse(localStorage.getItem('quiz_history')||'[]');
   const greetEl = document.getElementById('dashGreeting');
-  if (greetEl) {
-    if (history.length===0) { greetEl.textContent='Welcome!'; }
-    else { greetEl.innerHTML='Welcome back, <span id="dashUserName">'+(userName||'there')+'</span>'; }
-  }
-  const pct = Math.round(Math.min(history.length*10/30*100,100));
+  if (greetEl) greetEl.textContent = 'Welcome!';
   const pctEl = document.getElementById('dashTrainingPct');
-  if (pctEl) pctEl.textContent = pct+'%';
-  if (history.length>0) {
-    const acc = Math.round(history.reduce((s,h)=>s+h.score,0)/history.reduce((s,h)=>s+h.total,0)*100);
-    const accEl = document.getElementById('dashAccuracy');
-    if (accEl) accEl.textContent = acc+'%';
-  } else {
-    const accEl = document.getElementById('dashAccuracy');
-    if (accEl) accEl.textContent = '—';
-  }
-  const used = parseInt(localStorage.getItem('scenarios_used_week')||'0');
+  if (pctEl) pctEl.textContent = '0%';
+  const accEl = document.getElementById('dashAccuracy');
+  if (accEl) accEl.textContent = '—';
   const leftEl = document.getElementById('dashScenariosLeft');
-  if (leftEl) leftEl.textContent = used+' used this week';
+  if (leftEl) leftEl.textContent = '0 used this week';
   try {
     const usage = await apiGet('/api/usage');
     if (usage&&usage.scenarios_used_week!==undefined) {
       localStorage.setItem('scenarios_used_week',usage.scenarios_used_week);
       if (leftEl) leftEl.textContent=usage.scenarios_used_week+' used this week';
     }
-    const qh = await apiGet('/api/quizzes/history');
+    const qhData = await apiGet('/api/quizzes/history');
+    const qh = qhData&&qhData.history ? qhData.history : (Array.isArray(qhData) ? qhData : []);
+    cachedQuizHistory = qh;
     if (greetEl) {
       if (!qh||qh.length===0) { greetEl.textContent='Welcome!'; }
       else { greetEl.innerHTML='Welcome back, <span id="dashUserName">'+(userName||'there')+'</span>'; }
     }
     if (qh&&qh.length>0) {
       const acc2=Math.round(qh.reduce((s,h)=>s+(h.score||0),0)/qh.reduce((s,h)=>s+(h.total||10),0)*100);
-      const accEl=document.getElementById('dashAccuracy');
-      if (accEl) accEl.textContent=acc2+'%';
+      const accEl2=document.getElementById('dashAccuracy');
+      if (accEl2) accEl2.textContent=acc2+'%';
       const pct2=Math.round(Math.min(qh.length*10/30*100,100));
       if (pctEl) pctEl.textContent=pct2+'%';
     }
   } catch(e) {}
 }
 
-function loadQuizHistory() {
-  const history = JSON.parse(localStorage.getItem('quiz_history')||'[]');
-  ['beginner','intermediate','advanced'].forEach(level=>{
-    const lh=history.filter(h=>h.level===level);
-    const el=document.getElementById(level+'BestScore');
-    if (el) el.textContent=lh.length>0?'Best: '+Math.max(...lh.map(h=>h.score))+'/10':'Not attempted';
-  });
+async function loadQuizHistory() {
+  try {
+    const qhData = await apiGet('/api/quizzes/history');
+    const history = qhData&&qhData.history ? qhData.history : (Array.isArray(qhData) ? qhData : []);
+    cachedQuizHistory = history;
+    ['beginner','intermediate','advanced'].forEach(level=>{
+      const lh=history.filter(h=>h.level===level);
+      const el=document.getElementById(level+'BestScore');
+      if (el) el.textContent=lh.length>0?'Best: '+Math.max(...lh.map(h=>h.score))+'/10':'Not attempted';
+    });
+  } catch(e) {
+    ['beginner','intermediate','advanced'].forEach(level=>{
+      const el=document.getElementById(level+'BestScore');
+      if (el) el.textContent='Not attempted';
+    });
+  }
 }
 
 async function startQuiz(level) {
@@ -901,9 +905,7 @@ function showQuizResults() {
 }
 
 function saveQuizResults(level,score,total) {
-  const history=JSON.parse(localStorage.getItem('quiz_history')||'[]');
-  history.push({level,score,total,date:new Date().toISOString()});
-  localStorage.setItem('quiz_history',JSON.stringify(history));
+  if (cachedQuizHistory) cachedQuizHistory.push({level,score,total,completed_at:new Date().toISOString()});
   apiPost('/api/quizzes/complete',{level,score,total,answers:quizState.answers}).catch(()=>{});
   trackUsage('quiz');
 }
@@ -919,7 +921,7 @@ function shuffleArray(array) {
 
 function showSavedResults(level) {
   if (level !== 'beginner' && !localStorage.getItem('signal_theory_pro')) { showUpgrade(); return; }
-  const history = JSON.parse(localStorage.getItem('quiz_history')||'[]');
+  const history = cachedQuizHistory || [];
   const levelHistory = history.filter(h => h.level === level);
   if (!levelHistory.length) { alert('No results yet — complete the quiz first!'); return; }
   const last = levelHistory[levelHistory.length - 1];
