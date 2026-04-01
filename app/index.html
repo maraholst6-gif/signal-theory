@@ -1222,7 +1222,18 @@ async function submitResetPassword() {
 
 // Check for password reset token in URL
 const _resetToken = new URLSearchParams(window.location.search).get('reset');
-if (_resetToken) { document.getElementById('resetPasswordModal').style.display='flex'; }
+if (_resetToken) {
+  // Log out the user if they're logged in
+  token = '';
+  localStorage.removeItem('token');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userName');
+  // Show reset modal
+  document.getElementById('resetPasswordModal').style.display='flex';
+  // Hide the app
+  document.getElementById('app').style.display='none';
+  document.getElementById('authPage').style.display='flex';
+}
 </script>
 <!-- FORGOT PASSWORD MODAL -->
 <div id="forgotPasswordModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center">
