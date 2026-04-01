@@ -20,6 +20,36 @@ async function requireAdmin(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+// GET /api/admin/subscribers/check — check if emails exist in database
+router.get('/subscribers/check', async (req: Request, res: Response) => {
+  const { emails } = req.query;
+  
+  if (!emails || typeof emails !== 'string') {
+    res.status(400).json({ error: 'emails query param required (comma-separated)' });
+    return;
+  }
+
+  const emailList = emails.split(',').map(e => e.trim().toLowerCase());
+
+  try {
+    const result = await pool.query(
+      `SELECT email, first_name, quiz_profile, source, created_at, unsubscribed_at
+       FROM email_subscribers 
+       WHERE email = ANY($1::text[])
+       ORDER BY created_at DESC`,
+      [emailList]
+    );
+
+    res.json({ 
+      count: result.rows.length,
+      subscribers: result.rows 
+    });
+  } catch (err) {
+    console.error('[admin/check]', err);
+    res.status(500).json({ error: 'Query failed' });
+  }
+});
+
 // GET /api/admin/stats — usage statistics
 router.get('/stats', requireAuth, requireAdmin, async (_req: Request, res: Response) => {
   try {
