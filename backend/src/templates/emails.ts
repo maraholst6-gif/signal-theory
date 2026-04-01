@@ -1,10 +1,9 @@
 /**
  * emails.ts
  * Email templates for the Signal Theory onboarding sequence.
- *
- * PLACEHOLDER COPY — Jeff will provide final content before launch.
- * Each template receives subscriber data and returns subject + html + text.
  */
+
+import { getActionPlan } from './actionPlans';
 
 export interface SubscriberData {
   email:       string;
@@ -66,30 +65,40 @@ function htmlWrapper(content: string, unsubToken: string): string {
 
 export function templateImmediate(sub: SubscriberData): EmailTemplate {
   const name = sub.firstName ?? 'there';
-  const profile = sub.quizProfile ? ` — ${sub.quizProfile}` : '';
-
-  const subject = `Your Signal Theory results${profile}`;
+  
+  // Try to load profile-specific action plan
+  if (sub.quizProfile) {
+    const actionPlan = getActionPlan(sub.quizProfile);
+    if (actionPlan) {
+      // Replace {firstName} placeholder in the loaded content
+      const personalizedHtml = actionPlan.htmlBody.replace(/\{firstName\}/g, name);
+      const personalizedText = actionPlan.textBody.replace(/\{firstName\}/g, name);
+      
+      return {
+        subject: actionPlan.subject,
+        htmlBody: htmlWrapper(personalizedHtml, sub.unsubscribeToken),
+        textBody: personalizedText + `\n\nUnsubscribe: ${unsubscribeUrl(sub.unsubscribeToken)}`,
+      };
+    }
+  }
+  
+  // Fallback if no profile or action plan not found
+  const subject = `Your Signal Theory results`;
 
   const bodyHtml = `
     <p>Hi ${name},</p>
-    <p><strong>[PLACEHOLDER — Jeff to provide copy]</strong></p>
-    <p>Thanks for taking the Signal Theory quiz. Here's what your results mean and what to do next.</p>
-    <p>Your profile: <strong>${sub.quizProfile ?? 'See your results'}</strong></p>
-    <p>More to come soon.</p>
-    <p>— Jeff</p>
+    <p>Thanks for taking the Signal Theory quiz. Your personalized action plan is being prepared.</p>
+    <p>Check back soon for your custom recommendations.</p>
+    <p>— The Signal Theory Team</p>
   `;
 
   const bodyText = `Hi ${name},
 
-[PLACEHOLDER — Jeff to provide copy]
+Thanks for taking the Signal Theory quiz. Your personalized action plan is being prepared.
 
-Thanks for taking the Signal Theory quiz. Here's what your results mean and what to do next.
+Check back soon for your custom recommendations.
 
-Your profile: ${sub.quizProfile ?? 'See your results'}
-
-More to come soon.
-
-— Jeff
+— The Signal Theory Team
 
 Unsubscribe: ${unsubscribeUrl(sub.unsubscribeToken)}
 `;
