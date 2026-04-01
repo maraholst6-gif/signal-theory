@@ -6,6 +6,9 @@
 import fs from 'fs';
 import path from 'path';
 
+// In production (Render), __dirname is in backend/dist/templates
+// In dev, __dirname is in backend/src/templates
+// Both need to go up to repo root, then into email-action-plans
 const ACTION_PLANS_DIR = path.join(__dirname, '../../../email-action-plans');
 
 interface ActionPlanContent {
@@ -37,6 +40,11 @@ export function getActionPlan(profileId: string): ActionPlanContent | null {
   }
 
   const filePath = path.join(ACTION_PLANS_DIR, filename);
+  
+  // Debug logging
+  console.log(`[actionPlans] Loading ${profileId} from ${filePath}`);
+  console.log(`[actionPlans] __dirname:`, __dirname);
+  console.log(`[actionPlans] ACTION_PLANS_DIR:`, ACTION_PLANS_DIR);
   
   try {
     const markdown = fs.readFileSync(filePath, 'utf-8');
