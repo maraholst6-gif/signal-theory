@@ -20,6 +20,20 @@ async function requireAdmin(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+// GET /api/admin/templates/check — check if email templates are loaded
+router.get('/templates/check', async (_req: Request, res: Response) => {
+  try {
+    const result = await pool.query('SELECT profile_id, subject FROM email_templates ORDER BY profile_id');
+    res.json({ 
+      count: result.rows.length,
+      templates: result.rows 
+    });
+  } catch (err) {
+    console.error('[admin/templates]', err);
+    res.status(500).json({ error: 'Query failed', message: String(err) });
+  }
+});
+
 // GET /api/admin/subscribers/check — check if emails exist in database
 router.get('/subscribers/check', async (req: Request, res: Response) => {
   const { emails } = req.query;
