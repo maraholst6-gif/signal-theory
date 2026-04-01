@@ -24,8 +24,10 @@ RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
 COPY src/db/migrations ./dist/db/migrations
+COPY load-templates.js ./
+COPY email-action-plans ./email-action-plans
 
 EXPOSE 3000
 
-# Run migrations then start server
-CMD ["sh", "-c", "node dist/db/migrate.js && node dist/index.js"]
+# Run migrations, load templates, then start server
+CMD ["sh", "-c", "node dist/db/migrate.js && node load-templates.js && node dist/index.js"]
