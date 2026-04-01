@@ -3,7 +3,7 @@
  * Email templates for the Signal Theory onboarding sequence.
  */
 
-import { getActionPlan } from './actionPlans';
+import { ACTION_PLAN_CONTENT } from './actionPlanContent';
 
 export interface SubscriberData {
   email:       string;
@@ -66,24 +66,29 @@ function htmlWrapper(content: string, unsubToken: string): string {
 export function templateImmediate(sub: SubscriberData): EmailTemplate {
   const name = sub.firstName ?? 'there';
   
-  console.log(`[emails] templateImmediate called with profile: ${sub.quizProfile}`);
-  
-  // Try to load profile-specific action plan
-  if (sub.quizProfile) {
-    console.log(`[emails] Attempting to load action plan for: ${sub.quizProfile}`);
-    const actionPlan = getActionPlan(sub.quizProfile);
-    console.log(`[emails] Action plan loaded:`, actionPlan ? 'SUCCESS' : 'FAILED');
-    if (actionPlan) {
-      // Replace {firstName} placeholder in the loaded content
-      const personalizedHtml = actionPlan.htmlBody.replace(/\{firstName\}/g, name);
-      const personalizedText = actionPlan.textBody.replace(/\{firstName\}/g, name);
-      
-      return {
-        subject: actionPlan.subject,
-        htmlBody: htmlWrapper(personalizedHtml, sub.unsubscribeToken),
-        textBody: personalizedText + `\n\nUnsubscribe: ${unsubscribeUrl(sub.unsubscribeToken)}`,
-      };
-    }
+  // Try to load profile-specific action plan from embedded content
+  if (sub.quizProfile && ACTION_PLAN_CONTENT[sub.quizProfile]) {
+    const actionPlan = ACTION_PLAN_CONTENT[sub.quizProfile];
+    
+    // Replace {firstName} placeholder
+    const personalizedBody = actionPlan.body.replace(/\{firstName\}/g, name);
+    
+    // Convert markdown to HTML (simple conversion for now)
+    const htmlBody = personalizedBody
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^---$/gm, '<hr>')
+      .split('\n\n')
+      .map(para => para.startsWith('<') || para.trim() === '' ? para : `<p>${para.replace(/\n/g, ' ')}</p>`)
+      .join('\n');
+    
+    return {
+      subject: actionPlan.subject,
+      htmlBody: htmlWrapper(htmlBody, sub.unsubscribeToken),
+      textBody: personalizedBody + `\n\nUnsubscribe: ${unsubscribeUrl(sub.unsubscribeToken)}`,
+    };
   }
   
   // Fallback if no profile or action plan not found
