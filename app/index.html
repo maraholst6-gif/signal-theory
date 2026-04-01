@@ -1231,9 +1231,11 @@ async function submitResetPassword() {
   } catch(e) { msgEl.style.color='#e74c3c'; msgEl.textContent='Connection error. Please try again.'; }
 }
 
-// Show reset modal if token exists (already cleared session above)
+// Show reset modal if token exists (after DOM loads)
 if (_resetToken) {
-  document.getElementById('resetPasswordModal').style.display='flex';
+  window.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('resetPasswordModal').style.display='flex';
+  });
 }
 </script>
 <!-- FORGOT PASSWORD MODAL -->
@@ -1266,5 +1268,6 @@ if (_resetToken) {
 </body>
 </html>
 
- 
+
+ 
  
