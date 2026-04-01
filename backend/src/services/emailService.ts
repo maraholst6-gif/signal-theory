@@ -82,6 +82,7 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
     from: {
       emailAddress: {
         address: fromAddress,
+        name: 'Signal Theory',
       },
     },
     subject: payload.subject,

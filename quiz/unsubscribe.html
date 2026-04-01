@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!--
+  Signal Theory — Unsubscribe Redirect Page
+
+  Usage:
+    Link emails to: https://learnsignaltheory.com/unsubscribe.html?t=TOKEN
+    Page redirects to: https://signal-theory-backend.onrender.com/api/email/unsubscribe/TOKEN
+
+  Test URL example:
+    https://learnsignaltheory.com/unsubscribe.html?t=abc123xyz
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unsubscribe | Signal Theory</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #1a1a1a;
+      color: #f5f5f5;
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      background-color: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .brand {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #FF6B35;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f5f5f5;
+      margin-bottom: 0.75rem;
+    }
+
+    .message {
+      color: #a0a0a0;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid #3a3a3a;
+      border-top-color: #FF6B35;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Error state */
+    .error-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .manual-link {
+      color: #FF6B35;
+      text-decoration: none;
+      font-size: 0.875rem;
+      border: 1px solid #FF6B35;
+      border-radius: 6px;
+      padding: 0.5rem 1.25rem;
+      display: inline-block;
+      margin-top: 0.5rem;
+      transition: background-color 0.15s, color 0.15s;
+    }
+
+    .manual-link:hover {
+      background-color: #FF6B35;
+      color: #1a1a1a;
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: #4a4a4a;
+    }
+
+    /* Hidden by default */
+    #state-loading { display: block; }
+    #state-error   { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="brand">Signal Theory™</div>
+
+    <!-- Loading state -->
+    <div id="state-loading">
+      <div class="spinner"></div>
+      <h1>Unsubscribing…</h1>
+      <p class="message">Hang on — we're processing your request.</p>
+    </div>
+
+    <!-- Error state -->
+    <div id="state-error">
+      <div class="error-icon">⚠️</div>
+      <h1>Invalid Link</h1>
+      <p class="message" id="error-message">
+        This unsubscribe link is missing or invalid.<br />
+        Please contact us and we'll remove you manually.
+      </p>
+      <a id="support-link" class="manual-link" href="mailto:jeff@learnsignaltheory.com">
+        Contact Support
+      </a>
+    </div>
+  </div>
+
+  <footer>Based on the Signal Theory™ framework</footer>
+
+  <script>
+    (function () {
+      var BACKEND = 'https://signal-theory-backend.onrender.com';
+
+      function showError(msg) {
+        document.getElementById('state-loading').style.display = 'none';
+        var errorEl = document.getElementById('state-error');
+        errorEl.style.display = 'block';
+        errorEl.querySelector('.error-icon').style.display = 'block';
+        if (msg) {
+          document.getElementById('error-message').textContent = msg;
+        }
+      }
+
+      var params = new URLSearchParams(window.location.search);
+      var token  = params.get('t');
+
+      if (!token || token.trim() === '') {
+        showError('This unsubscribe link is missing a token. Please contact us and we\'ll remove you manually.');
+        return;
+      }
+
+      // Redirect immediately — user sees the branded page briefly
+      var destination = BACKEND + '/api/email/unsubscribe/' + encodeURIComponent(token);
+      window.location.replace(destination);
+    })();
+  </script>
+
+</body>
+</html>

@@ -550,6 +550,17 @@ let token = localStorage.getItem('signal_theory_token') || '';
 let userEmail = localStorage.getItem('signal_theory_email') || '';
 let userName = localStorage.getItem('signal_theory_name') || '';
 
+// Check for password reset token IMMEDIATELY (before app loads)
+const _resetToken = new URLSearchParams(window.location.search).get('reset');
+if (_resetToken) {
+  // Clear any existing session
+  token = '';
+  localStorage.removeItem('signal_theory_token');
+  localStorage.removeItem('signal_theory_email');
+  localStorage.removeItem('signal_theory_name');
+  // Don't auto-show dashboard
+}
+
 async function apiGet(endpoint) {
   try {
     const res = await fetch(API_BASE + endpoint, { headers: { 'Authorization': 'Bearer ' + token } });
@@ -1220,19 +1231,9 @@ async function submitResetPassword() {
   } catch(e) { msgEl.style.color='#e74c3c'; msgEl.textContent='Connection error. Please try again.'; }
 }
 
-// Check for password reset token in URL
-const _resetToken = new URLSearchParams(window.location.search).get('reset');
+// Show reset modal if token exists (already cleared session above)
 if (_resetToken) {
-  // Log out the user if they're logged in
-  token = '';
-  localStorage.removeItem('token');
-  localStorage.removeItem('userEmail');
-  localStorage.removeItem('userName');
-  // Show reset modal
   document.getElementById('resetPasswordModal').style.display='flex';
-  // Hide the app
-  document.getElementById('app').style.display='none';
-  document.getElementById('authPage').style.display='flex';
 }
 </script>
 <!-- FORGOT PASSWORD MODAL -->

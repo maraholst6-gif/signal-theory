@@ -37,27 +37,28 @@ export default function Results() {
     console.log('[Signal Theory Quiz] Email submitted:', email.trim(), '| Profile:', profileId);
 
     try {
-      // Submit to backend proxy (which calls ConvertKit)
-      const response = await fetch('https://signal-theory-backend.onrender.com/api/convertkit/subscribe', {
+      // Submit to custom email system
+      const response = await fetch('https://signal-theory-backend.onrender.com/api/email/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: email.trim(),
-          tags: [profileId] // Tag with profile type (e.g., 'self-aware-learner')
+          quizProfile: profileId, // Tag with profile type (e.g., 'self-aware-learner')
+          source: 'quiz'
         })
       });
 
       const data = await response.json();
 
-      if (response.ok && data.subscription) {
+      if (response.ok && data.success) {
         setSubmitted(true);
-        console.log('[ConvertKit] Subscription success:', data);
+        console.log('[Email] Subscription success:', data);
       } else {
-        console.error('[ConvertKit] Subscription failed:', response.status, data);
+        console.error('[Email] Subscription failed:', response.status, data);
         setSubmitError(`Error: ${data.error || data.message || 'Unknown error'}`);
       }
     } catch (error) {
-      console.error('[ConvertKit] Network error:', error);
+      console.error('[Email] Network error:', error);
       setSubmitError('Something went wrong. Please try again.');
     }
 
