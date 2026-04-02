@@ -515,6 +515,131 @@
     border-radius: 2px;
   }
 
+  /* ── CHAT BUBBLES ── */
+  .chat-bubbles {
+    margin: 28px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .chat-bubble {
+    background: #2c3a4a;
+    border-radius: 18px 18px 18px 4px;
+    padding: 14px 18px;
+    max-width: 85%;
+    align-self: flex-start;
+  }
+
+  .chat-bubble p {
+    font-size: 15px;
+    color: #dae8f5;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .chat-bubble-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  /* ── INLINE QUIZ CTA ── */
+  .inline-quiz-cta {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin: 40px 0 0;
+    text-align: center;
+  }
+
+  .inline-quiz-cta h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .inline-quiz-cta p {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  /* ── COST OF INACTION ── */
+  .cost-of-inaction {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #b0b0b0;
+    font-style: italic;
+    margin-top: 20px;
+    padding-left: 16px;
+    border-left: 2px solid var(--border);
+  }
+
+  /* ── WHAT HAPPENS NEXT ── */
+  .what-next {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .what-next-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .what-next-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .what-next-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .what-next-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .what-next-text {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+    padding-top: 4px;
+  }
+
+  @media (min-width: 600px) {
+    .what-next-steps {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+  }
+
   /* ── RESPONSIVE ── */
   @media (min-width: 600px) {
     .hero-ctas {
@@ -543,7 +668,7 @@
 <nav>
   <div class="nav-inner">
     <div class="nav-logo">Signal <span>Theory</span></div>
-    <a href="/app" class="nav-cta">Try It Free</a>
+    <a href="/app" class="nav-cta">Get Started Free</a>
   </div>
 </nav>
 
@@ -554,7 +679,7 @@
     <h1 class="hero-headline">Stop Guessing.<br>Start Reading the Signals.</h1>
     <p class="hero-subhead">Dating doesn't have to be confusing. Learn to see what's actually happening—and how to respond.</p>
     <div class="hero-ctas">
-      <a href="/app" class="btn-primary">Try Signal Theory Free</a>
+      <a href="/app" class="btn-primary">Start Reading Signals Clearly</a>
       <a href="#quiz-cta" class="btn-outline">Take the Readiness Quiz</a>
     </div>
     <p class="hero-secondary" style="margin-top: 20px;">
@@ -570,14 +695,31 @@
     <div class="section-label">The Problem</div>
     <h2 class="section-headline">You're Not Confused.<br>You're Just Reading the Wrong Signals.</h2>
     <p class="body-copy">After years in a relationship, getting back into dating feels like landing on a different planet.</p>
-    <div class="signal-examples">
-      <p>She says she had a great time, but never follows up.</p>
-      <p>She texts constantly for three days, then goes silent.</p>
-      <p>She agrees to plans, but cancels last minute.</p>
+    <div class="chat-bubbles">
+      <div>
+        <div class="chat-bubble-label">Sound familiar?</div>
+        <div class="chat-bubble"><p>She says she had a great time, but never follows up.</p></div>
+      </div>
+      <div>
+        <div class="chat-bubble-label">Or this one?</div>
+        <div class="chat-bubble"><p>She texts constantly for three days, then goes silent.</p></div>
+      </div>
+      <div>
+        <div class="chat-bubble-label">How about this?</div>
+        <div class="chat-bubble"><p>She agrees to plans, but cancels last minute.</p></div>
+      </div>
     </div>
     <p class="body-copy">You tell yourself stories to make sense of it: <em>Maybe she's busy. Maybe she's just nervous. Maybe I said something wrong.</em></p>
     <p class="body-copy" style="margin-top: 16px;">But here's the truth: <strong>Women aren't confusing. You're just not trained to read what they're actually showing you.</strong></p>
     <p class="body-copy" style="margin-top: 16px;">You're filling the gaps with hope, assumptions, and narratives that don't exist. And it's costing you time, energy, and confidence you can't afford to waste.</p>
+
+    <p class="cost-of-inaction">And it doesn't get better on its own. Six more months of "maybe she's just busy." Three more first dates that go nowhere. The growing suspicion that maybe you're just not cut out for this anymore. You are. You just need to see what's actually happening.</p>
+
+    <div class="inline-quiz-cta">
+      <h3>Not sure if you're ready to date again?</h3>
+      <p>Take our 5-minute readiness quiz — instant results, no email required.</p>
+      <a href="/quiz/" class="btn-outline">Take the Free Quiz</a>
+    </div>
   </div>
 </section>
 
@@ -616,7 +758,7 @@
     </div>
 
     <div class="solution-cta">
-      <a href="/app" class="btn-primary">Get Started Free</a>
+      <a href="/app" class="btn-primary">Get Started — It's Free</a>
     </div>
   </div>
 </section>
@@ -709,8 +851,30 @@
     <p class="body-copy" style="margin-top: 12px;">Signal Theory teaches you how.</p>
     <p class="body-copy" style="margin-top: 16px;"><strong>It's free. It works. And it's ready when you are.</strong></p>
     <div class="cta-group" style="margin-top: 40px;">
-      <a href="/app" class="btn-primary">Try Signal Theory Free</a>
+      <a href="/app" class="btn-primary">Stop Guessing — Get Clarity Now</a>
       <a href="/quiz/" class="btn-outline">Take the Readiness Quiz</a>
+    </div>
+
+    <div class="what-next">
+      <div class="what-next-label">What Happens Next</div>
+      <div class="what-next-steps">
+        <div class="what-next-step">
+          <div class="what-next-num">1</div>
+          <div class="what-next-text">Sign up (30 seconds)</div>
+        </div>
+        <div class="what-next-step">
+          <div class="what-next-num">2</div>
+          <div class="what-next-text">Complete your first training scenario</div>
+        </div>
+        <div class="what-next-step">
+          <div class="what-next-num">3</div>
+          <div class="what-next-text">Get your first "oh, that's what I was doing wrong" moment</div>
+        </div>
+        <div class="what-next-step">
+          <div class="what-next-num">4</div>
+          <div class="what-next-text">Start dating with clarity, not confusion</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
