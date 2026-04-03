@@ -120,6 +120,23 @@ const PORT = parseInt(process.env.PORT ?? '3000', 10);
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`[server] Signal Theory API running on port ${PORT}`);
   console.log(`[server] Environment: ${process.env.NODE_ENV ?? 'development'}`);
+
+  // Process email queue every 15 minutes
+  const QUEUE_INTERVAL_MS = 15 * 60 * 1000;
+  async function runEmailQueue() {
+    try {
+      const { processQueue } = await import('./jobs/processEmailQueue');
+      await processQueue();
+    } catch (err) {
+      console.error('[email-queue] Error processing queue:', err);
+    }
+  }
+
+  // Run once on startup (after 30s delay to let things settle)
+  setTimeout(runEmailQueue, 30_000);
+  // Then every 15 minutes
+  setInterval(runEmailQueue, QUEUE_INTERVAL_MS);
+  console.log('[server] Email queue processor scheduled (every 15 min)');
 });
 
 export default app;
