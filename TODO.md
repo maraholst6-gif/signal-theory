@@ -1,6 +1,6 @@
 # Signal Theory - TODO List
 
-**Last updated:** April 1, 2026
+**Last updated:** April 2, 2026
 
 ---
 
@@ -127,6 +127,26 @@
 
 ---
 
+## 🟡 Content (Ready to Publish)
+
+### 13. **Blog Posts (8 Articles Written)**
+**Status:** ✅ Drafted, ready for review/publish  
+**Location:** `signal-theory/blog/BLOG-POSTS.md`  
+**Posts:**
+1. How to Tell If She's Interested or Just Being Polite
+2. 5 Dating Signals Men Over 40 Almost Always Misread
+3. Why You Keep Getting Ghosted (And How to Stop)
+4. The Biggest Mistake Divorced Men Make When They Start Dating Again
+5. She Said "Let's Just Be Friends" — Here's What Actually Happened
+6. How to Read Texting Patterns (Without Overthinking)
+7. The 4 Signal States Every Man Should Know Before His Next Date
+8. "She Canceled Plans Again." How to Know When to Walk Away
+
+**Recommended publish order:** 6, 3, 2, 1, 7, 4, 8, 5 (highest SEO potential first)  
+**Needs:** Blog section built on site (`/blog`), individual post URLs, schema markup  
+
+---
+
 ## ✅ Completed
 
 - [x] Authentication system (signup/login/password reset)
@@ -141,6 +161,11 @@
 - [x] "Account exists" error handling
 - [x] Session persistence across devices
 - [x] Email queue processor (Render cron)
+- [x] Landing page (live at learnsignaltheory.com)
+- [x] Landing page conversion fixes (chat bubbles, quiz CTA placement, progressive CTAs, cost of inaction, what happens next)
+- [x] Build process retrospective documented
+- [x] Business strategy documented
+- [x] 8 blog posts drafted
 
 ---
 
