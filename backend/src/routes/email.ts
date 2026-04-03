@@ -39,21 +39,22 @@ router.post('/subscribe', generalLimiter, async (req: Request, res: Response) =>
       return res.status(400).json({ error: 'Invalid email format' });
     }
 
-    // Upsert subscriber (idempotent — re-subscribing is fine)
+    // Insert new subscriber, or do nothing if email already exists
     const token = crypto.randomBytes(32).toString('hex');
 
-    const upsert = await pool.query<{ id: number; unsubscribe_token: string; unsubscribed_at: Date | null }>(
+    const upsert = await pool.query<{ id: number; unsubscribe_token: string; unsubscribed_at: Date | null; is_new: boolean }>(
       `INSERT INTO email_subscribers (email, first_name, quiz_profile, source, unsubscribe_token)
        VALUES ($1, $2, $3, $4, $5)
        ON CONFLICT (email) DO UPDATE
          SET first_name    = COALESCE(EXCLUDED.first_name, email_subscribers.first_name),
              quiz_profile  = COALESCE(EXCLUDED.quiz_profile, email_subscribers.quiz_profile),
              unsubscribed_at = NULL
-       RETURNING id, unsubscribe_token, unsubscribed_at`,
+       RETURNING id, unsubscribe_token, unsubscribed_at, (xmax = 0) AS is_new`,
       [cleaned, firstName ?? null, quizProfile ?? null, source ?? 'quiz', token]
     );
 
     const subscriber = upsert.rows[0];
+    const isNewSubscriber = subscriber.is_new;
 
     const subData: SubscriberData = {
       email:            cleaned,
@@ -62,32 +63,35 @@ router.post('/subscribe', generalLimiter, async (req: Request, res: Response) =>
       unsubscribeToken: subscriber.unsubscribe_token,
     };
 
-    // Send Email 1 immediately (best-effort; don't fail the whole request if Graph isn't configured yet)
-    if (isEmailConfigured()) {
-      const tmpl = await getTemplate('immediate', subData);
-      if (tmpl) {
-        try {
-          await sendEmail({ toEmail: cleaned, toName: firstName, ...tmpl });
-          await logQueued(subscriber.id, 'immediate', new Date(), 'sent');
-        } catch (err) {
-          console.error('[email] Failed to send immediate email:', err);
-          await logQueued(subscriber.id, 'immediate', new Date(), 'failed', String(err));
+    // Only queue emails if this is a new subscriber (prevents duplicate sequences for repeat quiz takers)
+    if (isNewSubscriber) {
+      // Send Email 1 immediately (best-effort; don't fail the whole request if Graph isn't configured yet)
+      if (isEmailConfigured()) {
+        const tmpl = await getTemplate('immediate', subData);
+        if (tmpl) {
+          try {
+            await sendEmail({ toEmail: cleaned, toName: firstName, ...tmpl });
+            await logQueued(subscriber.id, 'immediate', new Date(), 'sent');
+          } catch (err) {
+            console.error('[email] Failed to send immediate email:', err);
+            await logQueued(subscriber.id, 'immediate', new Date(), 'failed', String(err));
+          }
         }
+      } else {
+        console.warn('[email] Graph API not configured — immediate email skipped. Will queue for later.');
+        await enqueue(subscriber.id, 'immediate', new Date());
       }
-    } else {
-      console.warn('[email] Graph API not configured — immediate email skipped. Will queue for later.');
-      await enqueue(subscriber.id, 'immediate', new Date());
-    }
 
-    // Schedule follow-up emails
-    const now = Date.now();
-    const day = 24 * 60 * 60 * 1000;
-    await enqueue(subscriber.id, 'followup_2d',  new Date(now +  2 * day));
-    await enqueue(subscriber.id, 'followup_4d',  new Date(now +  4 * day));
-    await enqueue(subscriber.id, 'followup_7d',  new Date(now +  7 * day));
-    await enqueue(subscriber.id, 'followup_10d', new Date(now + 10 * day));
-    await enqueue(subscriber.id, 'followup_14d', new Date(now + 14 * day));
-    await enqueue(subscriber.id, 'followup_21d', new Date(now + 21 * day));
+      // Schedule follow-up emails
+      const now = Date.now();
+      const day = 24 * 60 * 60 * 1000;
+      await enqueue(subscriber.id, 'followup_2d',  new Date(now +  2 * day));
+      await enqueue(subscriber.id, 'followup_4d',  new Date(now +  4 * day));
+      await enqueue(subscriber.id, 'followup_7d',  new Date(now +  7 * day));
+      await enqueue(subscriber.id, 'followup_10d', new Date(now + 10 * day));
+      await enqueue(subscriber.id, 'followup_14d', new Date(now + 14 * day));
+      await enqueue(subscriber.id, 'followup_21d', new Date(now + 21 * day));
+    }
 
     return res.json({ success: true });
 

@@ -62,6 +62,55 @@ router.get('/templates/check', async (_req: Request, res: Response) => {
   }
 });
 
+// GET /api/admin/subscribers/since/:timestamp — get subscribers created after timestamp (for CRM sync)
+router.get('/subscribers/since/:timestamp', async (req: Request, res: Response) => {
+  const { timestamp } = req.params;
+  const sinceDate = new Date(timestamp);
+
+  if (isNaN(sinceDate.getTime())) {
+    res.status(400).json({ error: 'Invalid timestamp. Use ISO 8601 format (e.g. 2024-01-01T00:00:00Z)' });
+    return;
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT id, email, first_name, quiz_profile, source, created_at, unsubscribed_at
+       FROM email_subscribers
+       WHERE created_at > $1
+       ORDER BY created_at ASC`,
+      [sinceDate.toISOString()]
+    );
+
+    res.json({
+      count: result.rows.length,
+      since: sinceDate.toISOString(),
+      subscribers: result.rows
+    });
+  } catch (err) {
+    console.error('[admin/subscribers/since]', err);
+    res.status(500).json({ error: 'Query failed', message: String(err) });
+  }
+});
+
+// GET /api/admin/subscribers/all — get all subscribers (for CRM initial import)
+router.get('/subscribers/all', async (_req: Request, res: Response) => {
+  try {
+    const result = await pool.query(
+      `SELECT id, email, first_name, quiz_profile, source, created_at, unsubscribed_at
+       FROM email_subscribers
+       ORDER BY created_at ASC`
+    );
+
+    res.json({
+      count: result.rows.length,
+      subscribers: result.rows
+    });
+  } catch (err) {
+    console.error('[admin/subscribers/all]', err);
+    res.status(500).json({ error: 'Query failed', message: String(err) });
+  }
+});
+
 // GET /api/admin/subscribers/check — check if emails exist in database
 router.get('/subscribers/check', async (req: Request, res: Response) => {
   const { emails } = req.query;
