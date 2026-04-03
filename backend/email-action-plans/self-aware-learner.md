@@ -133,7 +133,7 @@ Start with #2 this week. It's the bridge between your awareness and your real-ti
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios designed for your level — not basics, but targeted practice for converting awareness into instinct. Think of it as the reps you need, customized to where you actually are. You already know the theory. This is the practice.
 
-**[Try Signal Theory Free →]**
+**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
 
 Either way — you're closer than you think. The awareness is built. Now just add mileage.
 

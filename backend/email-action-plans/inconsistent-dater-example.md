@@ -133,7 +133,7 @@ Start with #1 this week. Practice pausing before you act.
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios where you can practice consistent responses — customized to your Inconsistent Dater profile. Think of it as a flight simulator for dating. You get the reps without the risk.
 
-**[Try Signal Theory Free →]**
+**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
 
 Either way — you've got what you need to start. The difference between winging it and being calibrated is just practice.
 

@@ -121,7 +121,7 @@ Start with #2 this week. You'll have an escalation decision soon — use the win
 
 If you want to go further, the Signal Theory app gives you advanced scenarios built for your level — edge cases, timing puzzles, multi-dating management — customized to your Ready Navigator profile. Think of it as a flight simulator for the situations you haven't encountered yet. You get the reps without the risk.
 
-**[Try Signal Theory Free →]**
+**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
 
 Either way — you're ahead of the game. The difference between good and great is just reps.
 

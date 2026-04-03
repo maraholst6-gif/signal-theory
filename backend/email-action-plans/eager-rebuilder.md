@@ -133,7 +133,7 @@ Start with #2 today. Just start logging comparisons. It takes 10 seconds each ti
 
 When you're ready — genuinely ready — the Signal Theory app will be here. It's designed for men re-entering dating, and your Eager Rebuilder profile means you'll get scenarios specifically built for where you are: processing the past, recognizing reactive patterns, and building healthy instincts from scratch.
 
-**[Try Signal Theory Free →]**
+**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
 
 But first — do the work. The dating world isn't going anywhere. It'll be there when you're ready.
 

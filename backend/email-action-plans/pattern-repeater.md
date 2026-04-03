@@ -138,7 +138,7 @@ Start with #1 today. Think about the last person you were attracted to and write
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios where you practice recognizing patterns — customized to your Pattern Repeater profile. Think of it as pattern-recognition training. You'll start seeing the loop before you're in it.
 
-**[Try Signal Theory Free →]**
+**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
 
 Either way — the pattern is learnable and breakable. You just have to see it first.
 

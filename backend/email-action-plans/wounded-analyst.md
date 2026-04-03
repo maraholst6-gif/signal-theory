@@ -135,7 +135,7 @@ Start with #2 this week. The next time you feel the urge to double-text, seek re
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios where you can practice separating anxiety from actual signals — customized to your Wounded Analyst profile. Think of it as a safe space to practice reading situations without your wound running the interpretation.
 
-**[Try Signal Theory Free →]**
+**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
 
 Either way — the work ahead is real, and so is the payoff. You feel deeply. Once you're not filtering through fear, that depth becomes your greatest strength.
 

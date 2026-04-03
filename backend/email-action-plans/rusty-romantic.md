@@ -129,7 +129,7 @@ Start with #1 this week. In your next conversation with someone you find attract
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios where you can practice reading modern signals — customized to your Rusty Romantic profile. Think of it as a recalibration tool. You get the updated instincts without the real-world misreads.
 
-**[Try Signal Theory Free →]**
+**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
 
 Either way — the instincts are there. They just need updating.
 
