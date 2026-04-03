@@ -20,6 +20,34 @@ async function requireAdmin(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+// DELETE /api/admin/subscribers/delete — delete a subscriber by email
+router.delete('/subscribers/delete', async (req: Request, res: Response) => {
+  const { email } = req.query;
+  if (!email || typeof email !== 'string') {
+    res.status(400).json({ error: 'email query param required' });
+    return;
+  }
+  try {
+    // Delete queue entries first (foreign key)
+    await pool.query(
+      `DELETE FROM email_queue WHERE subscriber_id IN (SELECT id FROM email_subscribers WHERE email = $1)`,
+      [email.trim().toLowerCase()]
+    );
+    await pool.query(
+      `DELETE FROM email_log WHERE subscriber_id IN (SELECT id FROM email_subscribers WHERE email = $1)`,
+      [email.trim().toLowerCase()]
+    );
+    const result = await pool.query(
+      'DELETE FROM email_subscribers WHERE email = $1 RETURNING email',
+      [email.trim().toLowerCase()]
+    );
+    res.json({ deleted: result.rowCount });
+  } catch (err) {
+    console.error('[admin/delete]', err);
+    res.status(500).json({ error: 'Delete failed', message: String(err) });
+  }
+});
+
 // GET /api/admin/templates/check — check if email templates are loaded
 router.get('/templates/check', async (_req: Request, res: Response) => {
   try {
