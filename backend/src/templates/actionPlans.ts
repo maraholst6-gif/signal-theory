@@ -61,13 +61,13 @@ function markdownToHtml(md: string): string {
   html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
   html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
   
+  // Links FIRST (before bold processing strips the markdown)
+  html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" style="color:#FF6B35;font-weight:600;text-decoration:underline">$1</a>');
+  
   // Bold + italic
   html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  
-  // Links - preserve markdown format for now, we'll add URLs in template
-  html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
   
   // Unordered lists
   html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
