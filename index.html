@@ -76,6 +76,22 @@
 
   .nav-logo span { color: var(--accent); }
 
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .nav-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: color 0.2s;
+  }
+
+  .nav-link:hover { color: var(--text); }
+
   .nav-cta {
     background: var(--accent);
     color: white;
@@ -654,6 +670,7 @@
   }
 
   @media (max-width: 500px) {
+    .nav-links { display: none; }
     section { padding: 56px 0; }
     #hero { padding: 64px 0 56px; }
     .author-card { padding: 24px; }
@@ -668,6 +685,11 @@
 <nav>
   <div class="nav-inner">
     <div class="nav-logo">Signal <span>Theory</span></div>
+    <div class="nav-links">
+      <a href="/app" class="nav-link">App</a>
+      <a href="/quiz" class="nav-link">Quiz</a>
+      <a href="/blog/" class="nav-link">Blog</a>
+    </div>
     <a href="/app" class="nav-cta">Get Started Free</a>
   </div>
 </nav>
