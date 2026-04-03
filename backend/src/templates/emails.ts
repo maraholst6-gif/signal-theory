@@ -64,15 +64,18 @@ function htmlWrapper(content: string, unsubToken: string): string {
 // ─────────────────────────────────────────────
 
 export async function templateImmediate(sub: SubscriberData): Promise<EmailTemplate> {
-  const name = sub.firstName ?? 'there';
+  const name = sub.firstName?.trim() || 'there';
   
   // Try to load profile-specific action plan
   if (sub.quizProfile) {
     const actionPlan = await getActionPlan(sub.quizProfile);
     if (actionPlan) {
       // Replace {firstName} placeholder in the loaded content
-      const personalizedHtml = actionPlan.htmlBody.replace(/\{firstName\}/g, name);
-      const personalizedText = actionPlan.textBody.replace(/\{firstName\}/g, name);
+      const resultsUrl = `https://learnsignaltheory.com/quiz/results?profile=${sub.quizProfile}`;
+      const personalizedHtml = actionPlan.htmlBody.replace(/\{firstName\}/g, name)
+        + `<hr><p style="text-align:center;margin-top:32px"><a href="${resultsUrl}" style="color:#8b5e3c;font-weight:600">View your full results anytime →</a></p>`;
+      const personalizedText = actionPlan.textBody.replace(/\{firstName\}/g, name)
+        + `\n\n---\nView your full results anytime: ${resultsUrl}`;
       
       return {
         subject: actionPlan.subject,
@@ -115,7 +118,7 @@ Unsubscribe: ${unsubscribeUrl(sub.unsubscribeToken)}
 // ─────────────────────────────────────────────
 
 export function templateFollowup2d(sub: SubscriberData): EmailTemplate {
-  const name = sub.firstName ?? 'there';
+  const name = sub.firstName?.trim() || 'there';
 
   const subject = `The one signal most people miss`;
 
@@ -155,7 +158,7 @@ Unsubscribe: ${unsubscribeUrl(sub.unsubscribeToken)}
 // ─────────────────────────────────────────────
 
 export function templateFollowup4d(sub: SubscriberData): EmailTemplate {
-  const name = sub.firstName ?? 'there';
+  const name = sub.firstName?.trim() || 'there';
 
   const subject = `What to do when you're getting mixed signals`;
 
