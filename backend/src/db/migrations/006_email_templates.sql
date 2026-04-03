@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS email_templates (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_email_templates_profile ON email_templates(profile_id);
+CREATE INDEX IF NOT EXISTS idx_email_templates_profile ON email_templates(profile_id);
