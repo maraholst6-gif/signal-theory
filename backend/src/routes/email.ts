@@ -79,10 +79,15 @@ router.post('/subscribe', generalLimiter, async (req: Request, res: Response) =>
       await enqueue(subscriber.id, 'immediate', new Date());
     }
 
-    // Schedule Email 2 (+2 days) and Email 3 (+4 days)
+    // Schedule follow-up emails
     const now = Date.now();
-    await enqueue(subscriber.id, 'followup_2d', new Date(now + 2 * 24 * 60 * 60 * 1000));
-    await enqueue(subscriber.id, 'followup_4d', new Date(now + 4 * 24 * 60 * 60 * 1000));
+    const day = 24 * 60 * 60 * 1000;
+    await enqueue(subscriber.id, 'followup_2d',  new Date(now +  2 * day));
+    await enqueue(subscriber.id, 'followup_4d',  new Date(now +  4 * day));
+    await enqueue(subscriber.id, 'followup_7d',  new Date(now +  7 * day));
+    await enqueue(subscriber.id, 'followup_10d', new Date(now + 10 * day));
+    await enqueue(subscriber.id, 'followup_14d', new Date(now + 14 * day));
+    await enqueue(subscriber.id, 'followup_21d', new Date(now + 21 * day));
 
     return res.json({ success: true });
 
