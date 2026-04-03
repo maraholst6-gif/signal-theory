@@ -130,24 +130,74 @@ router.get('/unsubscribe/:token', async (req: Request, res: Response) => {
       );
     }
 
-    // Simple HTML confirmation — replace with a real page if desired
     res.send(`<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><title>Unsubscribed</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>body{font-family:Georgia,serif;background:#f9f6f1;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
-.box{background:#fff;border-radius:8px;padding:48px;max-width:480px;text-align:center}
-h1{color:#2c2c2c;margin:0 0 16px}p{color:#666;line-height:1.6}</style>
+.box{background:#fff;border-radius:12px;padding:48px;max-width:480px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.08)}
+h1{color:#2c2c2c;margin:0 0 16px;font-size:24px}p{color:#666;line-height:1.6;margin:0 0 12px}
+a.resub{display:inline-block;margin-top:20px;padding:12px 28px;background:#FF6B35;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px}
+a.resub:hover{background:#e55a28}</style>
 </head>
 <body>
 <div class="box">
-  <h1>You've been unsubscribed.</h1>
-  <p>You won't receive any more emails from Signal Theory.</p>
+  <h1>We're sorry to see you go.</h1>
+  <p>You've been unsubscribed and won't receive any more emails from Signal Theory.</p>
+  <p>You're welcome back whenever you're ready.</p>
+  <p style="margin-top:24px;font-size:14px;color:#999">If this was a mistake:</p>
+  <a class="resub" href="/api/email/resubscribe/${token}">Re-subscribe</a>
 </div>
 </body>
 </html>`);
 
   } catch (err) {
     console.error('[email] Unsubscribe error:', err);
+    res.status(500).send('Something went wrong. Please try again.');
+  }
+});
+
+// ─────────────────────────────────────────────
+// GET /resubscribe/:token
+// ─────────────────────────────────────────────
+
+router.get('/resubscribe/:token', async (req: Request, res: Response) => {
+  const { token } = req.params;
+
+  if (!token || token.length < 32) {
+    return res.status(400).send('Invalid link.');
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE email_subscribers
+       SET unsubscribed_at = NULL
+       WHERE unsubscribe_token = $1 AND unsubscribed_at IS NOT NULL
+       RETURNING email`,
+      [token]
+    );
+
+    const resubscribed = result.rowCount && result.rowCount > 0;
+
+    res.send(`<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Re-subscribed</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{font-family:Georgia,serif;background:#f9f6f1;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
+.box{background:#fff;border-radius:12px;padding:48px;max-width:480px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.08)}
+h1{color:#2c2c2c;margin:0 0 16px;font-size:24px}p{color:#666;line-height:1.6}</style>
+</head>
+<body>
+<div class="box">
+  ${resubscribed
+    ? '<h1>Welcome back! 🎉</h1><p>You\'ve been re-subscribed to Signal Theory emails.</p>'
+    : '<h1>You\'re already subscribed.</h1><p>No changes needed — you\'ll continue receiving emails from Signal Theory.</p>'}
+</div>
+</body>
+</html>`);
+
+  } catch (err) {
+    console.error('[email] Resubscribe error:', err);
     res.status(500).send('Something went wrong. Please try again.');
   }
 });
