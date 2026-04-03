@@ -1,4 +1,4 @@
-# Action Plan Email: The Ready Navigator
+﻿# Action Plan Email: The Ready Navigator
 
 **Subject:** Your Dating Readiness Profile: The Ready Navigator  
 **Preview:** Plus 3 advanced practices for your blind spots
@@ -121,7 +121,7 @@ Start with #2 this week. You'll have an escalation decision soon — use the win
 
 If you want to go further, the Signal Theory app gives you advanced scenarios built for your level — edge cases, timing puzzles, multi-dating management — customized to your Ready Navigator profile. Think of it as a flight simulator for the situations you haven't encountered yet. You get the reps without the risk.
 
-**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
+**[Try Signal Theory Free →](https://learnsignaltheory.com/app)**→
 
 Either way — you're ahead of the game. The difference between good and great is just reps.
 
@@ -131,4 +131,4 @@ Good luck out there.
 
 ---
 
-**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: [link]
+**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: https://learnsignaltheory.com/quiz/

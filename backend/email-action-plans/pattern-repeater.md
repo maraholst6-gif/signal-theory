@@ -1,4 +1,4 @@
-# Action Plan Email: The Pattern Repeater
+﻿# Action Plan Email: The Pattern Repeater
 
 **Subject:** Your Dating Readiness Profile: The Pattern Repeater  
 **Preview:** Plus 3 practices to break the cycle
@@ -138,7 +138,7 @@ Start with #1 today. Think about the last person you were attracted to and write
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios where you practice recognizing patterns — customized to your Pattern Repeater profile. Think of it as pattern-recognition training. You'll start seeing the loop before you're in it.
 
-**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
+**[Try Signal Theory Free →](https://learnsignaltheory.com/app)**→
 
 Either way — the pattern is learnable and breakable. You just have to see it first.
 
@@ -148,4 +148,4 @@ Good luck out there.
 
 ---
 
-**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: [link]
+**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: https://learnsignaltheory.com/quiz/

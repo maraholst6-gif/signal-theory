@@ -1,4 +1,4 @@
-# Action Plan Email: The Self-Aware Learner
+﻿# Action Plan Email: The Self-Aware Learner
 
 **Subject:** Your Dating Readiness Profile: The Self-Aware Learner  
 **Preview:** Plus 3 practices to turn awareness into results
@@ -133,7 +133,7 @@ Start with #2 this week. It's the bridge between your awareness and your real-ti
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios designed for your level — not basics, but targeted practice for converting awareness into instinct. Think of it as the reps you need, customized to where you actually are. You already know the theory. This is the practice.
 
-**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
+**[Try Signal Theory Free →](https://learnsignaltheory.com/app)**→
 
 Either way — you're closer than you think. The awareness is built. Now just add mileage.
 
@@ -143,4 +143,4 @@ Good luck out there.
 
 ---
 
-**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: [link]
+**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: https://learnsignaltheory.com/quiz/

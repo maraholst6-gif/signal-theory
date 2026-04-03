@@ -1,4 +1,4 @@
-# Action Plan Email: The Inconsistent Dater
+﻿# Action Plan Email: The Inconsistent Dater
 
 **Subject:** Your Dating Readiness Profile: The Inconsistent Dater  
 **Preview:** Plus 3 practices tailored to your pattern
@@ -133,7 +133,7 @@ Start with #1 this week. Practice pausing before you act.
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios where you can practice consistent responses — customized to your Inconsistent Dater profile. Think of it as a flight simulator for dating. You get the reps without the risk.
 
-**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
+**[Try Signal Theory Free →](https://learnsignaltheory.com/app)**→
 
 Either way — you've got what you need to start. The difference between winging it and being calibrated is just practice.
 
@@ -143,5 +143,5 @@ Good luck out there.
 
 ---
 
-**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: [link]
+**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: https://learnsignaltheory.com/quiz/
 

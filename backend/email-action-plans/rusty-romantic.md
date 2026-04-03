@@ -1,4 +1,4 @@
-# Action Plan Email: The Rusty Romantic
+﻿# Action Plan Email: The Rusty Romantic
 
 **Subject:** Your Dating Readiness Profile: The Rusty Romantic  
 **Preview:** Plus 3 practices to recalibrate your signal reading
@@ -129,7 +129,7 @@ Start with #1 this week. In your next conversation with someone you find attract
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios where you can practice reading modern signals — customized to your Rusty Romantic profile. Think of it as a recalibration tool. You get the updated instincts without the real-world misreads.
 
-**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
+**[Try Signal Theory Free →](https://learnsignaltheory.com/app)**→
 
 Either way — the instincts are there. They just need updating.
 
@@ -139,4 +139,4 @@ Good luck out there.
 
 ---
 
-**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: [link]
+**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: https://learnsignaltheory.com/quiz/

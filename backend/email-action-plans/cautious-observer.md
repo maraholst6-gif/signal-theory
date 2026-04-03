@@ -1,4 +1,4 @@
-# Action Plan Email: The Cautious Observer
+﻿# Action Plan Email: The Cautious Observer
 
 **Subject:** Your Dating Readiness Profile: The Cautious Observer  
 **Preview:** Plus 3 practices to turn observation into action
@@ -129,7 +129,7 @@ Start with #1 this week. Think about someone you're interested in. Rate your cer
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios where you practice acting on what you see — customized to your Cautious Observer profile. Think of it as a training ground for decisiveness. You get to practice making moves, reading responses, and building confidence without the real-world stakes.
 
-**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
+**[Try Signal Theory Free →](https://learnsignaltheory.com/app)**→
 
 Either way — you see more than most men. Now start acting on it.
 
@@ -139,4 +139,4 @@ Good luck out there.
 
 ---
 
-**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: [link]
+**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: https://learnsignaltheory.com/quiz/

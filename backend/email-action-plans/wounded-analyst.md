@@ -1,4 +1,4 @@
-# Action Plan Email: The Wounded Analyst
+﻿# Action Plan Email: The Wounded Analyst
 
 **Subject:** Your Dating Readiness Profile: The Wounded Analyst  
 **Preview:** Plus 3 practices to separate anxiety from reality
@@ -135,7 +135,7 @@ Start with #2 this week. The next time you feel the urge to double-text, seek re
 
 If you want to go further, the Signal Theory app gives you realistic dating scenarios where you can practice separating anxiety from actual signals — customized to your Wounded Analyst profile. Think of it as a safe space to practice reading situations without your wound running the interpretation.
 
-**[Try Signal Theory Free ](https://learnsignaltheory.com/app)**→
+**[Try Signal Theory Free →](https://learnsignaltheory.com/app)**→
 
 Either way — the work ahead is real, and so is the payoff. You feel deeply. Once you're not filtering through fear, that depth becomes your greatest strength.
 
@@ -145,4 +145,4 @@ Good luck out there.
 
 ---
 
-**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: [link]
+**P.S.** If this email was helpful, forward it to a friend who's figuring out dating after divorce. They can take the quiz here: https://learnsignaltheory.com/quiz/

@@ -142,8 +142,10 @@
 7. The 4 Signal States Every Man Should Know Before His Next Date
 8. "She Canceled Plans Again." How to Know When to Walk Away
 
-**Recommended publish order:** 6, 3, 2, 1, 7, 4, 8, 5 (highest SEO potential first)  
-**Needs:** Blog section built on site (`/blog`), individual post URLs, schema markup  
+**Recommended publish order:** 6, 3, 2, 1, 7, 4, 8, 5, 9, 10, 11, 12 (highest SEO potential first)  
+**Posts 9-12:** Male Signaling series (repurposed from Google Doc, Signal Theory voice, no red pill)  
+**Needs:** Individual post URLs for posts 2-12, schema markup  
+**Blog section:** ✅ Built (`/blog/`), first post live  
 
 ---
 
@@ -166,6 +168,9 @@
 - [x] Build process retrospective documented
 - [x] Business strategy documented
 - [x] 8 blog posts drafted
+- [x] 7-email sequence written (expanded from 3)
+- [x] 4 male signaling blog posts written (Posts 9-12)
+- [x] Male signaling source notes saved for future Pro module
 
 ---
 
