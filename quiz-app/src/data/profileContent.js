@@ -71,13 +71,14 @@ export const profileContent = {
     ],
     consequencesCoda: "These are small losses. But for someone at your level, small losses are the difference between good and great.",
 
-    gateHeadline: 'Your Personalized Ready Navigator Action Plan',
-    gateIntro: "You don't need basic training. You need advanced calibration.",
+    gateHeadline: "Advanced Calibration Guide (Top 10% Only)",
+    gateIntro: "You're already good. Here's how to go from good to great:",
     gatePlanItems: [
-      'Edge-case pattern recognition (genuinely mixed signals)',
-      'Timing optimization (when to escalate, when to wait)',
-      'Multi-dating management (attention, context, momentum)',
+      "The 3 edge cases even strong readers miss",
+      "Escalation timing — when \"patience\" becomes \"too late\"",
+      "Multi-dating playbook — managing 2-4 prospects without dropping balls",
     ],
+    gateButtonText: "Get My Calibration Guide",
     gateEmailDesc: 'Advanced calibration strategies for edge cases, timing, and multi-dating balance — based on your quiz results.',
     gatePrivacyNote: 'Just your plan + advanced insights. Unsubscribe anytime.',
 
@@ -141,13 +142,14 @@ export const profileContent = {
     ],
     consequencesCoda: "Eventually, you'll either burn out or become cynical. Neither helps you find what you're looking for.",
 
-    gateHeadline: 'Your Personalized Rusty Romantic Action Plan',
-    gateIntro: "You're ready. You just need to recalibrate.",
+    gateHeadline: "Your Signal Recalibration Guide",
+    gateIntro: "You're not broken — just rusty. Here's how to recalibrate:",
     gatePlanItems: [
-      'Learn to distinguish politeness from interest (the #1 mistake)',
-      'Understand modern texting norms (response time anxiety)',
-      'Know when to let ambiguity sit (vs when to force clarity)',
+      "The politeness vs. interest decoder — stop pursuing the wrong women",
+      "Modern texting norms — when \"slow reply\" means nothing vs. everything",
+      "The ambiguity framework — when to wait vs. when to ask",
     ],
+    gateButtonText: "Get My Recalibration Guide",
     gateEmailDesc: 'How to recalibrate your signal reading for modern dating — based on where you\'re misreading now.',
     gatePrivacyNote: 'Just your plan + recalibration guide. Unsubscribe anytime.',
 
@@ -212,14 +214,15 @@ export const profileContent = {
     ],
     consequencesCoda: "Dating before you're ready doesn't accelerate healing. It delays it.",
 
-    gateHeadline: 'Your Personalized Eager Rebuilder Action Plan',
-    gateIntro: 'Stop dating. Start processing.',
+    gateHeadline: "Your Readiness Roadmap (2-8 Weeks)",
+    gateIntro: "Get ready first, then date successfully:",
     gatePlanItems: [
-      'Self-assessment questions to determine your actual readiness',
-      'Pattern recognition (why you\'re attracted to certain types)',
-      'Processing work you need to do before dating will work',
-      'Readiness markers (how to know when you\'re actually ready)',
+      "Self-assessment: are you dating to connect or to cope?",
+      "Why you're attracted to certain types right now (it's not what you think)",
+      "The 3 signs you're ACTUALLY ready — not just lonely",
+      "4-week processing roadmap",
     ],
+    gateButtonText: "Get My Readiness Roadmap",
     gateEmailDesc: "The emotional work you need to do before dating — and how to know when you're ready.",
     gatePrivacyNote: 'Just your plan + readiness guidance. Unsubscribe anytime.',
 
@@ -284,13 +287,14 @@ export const profileContent = {
     ],
     consequencesCoda: "You'll end up only dating women who are extremely overt — which is a tiny subset of quality matches.",
 
-    gateHeadline: 'Your Personalized Cautious Observer Action Plan',
-    gateIntro: 'You already read situations well. You just need to act on what you see.',
+    gateHeadline: "The Timing Playbook: When to Act (Even When You're Not Sure)",
+    gateIntro: "Passivity is costing you more than you think:",
     gatePlanItems: [
-      'Recognizing when passivity kills momentum (not when it\'s cautious — when it\'s costly)',
-      'Calibrated risk-taking (when to act despite uncertainty)',
-      'Timing windows (when waiting becomes "too late")',
+      "How to tell when \"waiting\" becomes \"too late\"",
+      "Calibrated risk-taking — act on 60% certainty, not 100%",
+      "The hidden cost of passivity (quantified — it's worse than rejection)",
     ],
+    gateButtonText: "Get My Timing Playbook",
     gateEmailDesc: 'When to act on what you see — timing, momentum, and calibrated risk-taking.',
     gatePrivacyNote: 'Just your plan + timing guidance. Unsubscribe anytime.',
 
@@ -355,13 +359,14 @@ export const profileContent = {
     ],
     consequencesCoda: "These patterns come from one place: You're not over your ex, and the wound is still raw.",
 
-    gateHeadline: 'Your Personalized Wounded Analyst Action Plan',
-    gateIntro: 'You need two things: emotional work and signal training.',
+    gateHeadline: "Separate Anxiety from Reality — 3 Practices",
+    gateIntro: "Your wound is real. These practices stop it from destroying opportunities:",
     gatePlanItems: [
-      "Processing the grief/pain from your ex (so you're not dating from a wound)",
-      'Learning to separate anxiety from reality (what signals actually mean)',
-      'Stopping reassurance-seeking patterns (that kill attraction)',
+      "The Anxiety Translator — write what anxiety says vs. what's actually happening",
+      "The 24-Hour Freeze — break the spiral before it becomes action",
+      "The Evidence Log — track the good signals your brain wants to ignore",
     ],
+    gateButtonText: "Get My 3 Practices",
     gateEmailDesc: 'How to separate anxiety from reality and stop self-sabotaging — based on your specific patterns.',
     gatePrivacyNote: 'Just your plan + healing guidance. Unsubscribe anytime.',
 
@@ -426,13 +431,14 @@ export const profileContent = {
     ],
     consequencesCoda: "All three are variations of the same problem: Your ex is still running your dating life.",
 
-    gateHeadline: 'Your Personalized Pattern Repeater Action Plan',
-    gateIntro: 'You need pattern interruption.',
+    gateHeadline: "Break the Pattern — See What You're Actually Doing",
+    gateIntro: "Your attraction isn't random. Here's what's driving it:",
     gatePlanItems: [
-      "Identifying WHY you're attracted to certain types (familiar vs compatible)",
-      'Recognizing when attraction is based on familiarity (not the person)',
-      "Slowing down (so you can see patterns playing out in real-time)",
+      "Why \"familiar\" feels like \"right\" (and how to tell the difference)",
+      "The opposite-type trap — why dating your ex's opposite doesn't work either",
+      "How to slow down enough to see the pattern before it plays out",
     ],
+    gateButtonText: "Get My Pattern Breaker Guide",
     gateEmailDesc: 'How to break the cycle and stop recreating the past — based on your specific pattern.',
     gatePrivacyNote: 'Just your plan + pattern-breaking guidance. Unsubscribe anytime.',
 
@@ -496,13 +502,14 @@ export const profileContent = {
     ],
     consequencesCoda: "Eventually you'll burn out from the constant recalibration.",
 
-    gateHeadline: 'Your Personalized Inconsistent Dater Action Plan',
-    gateIntro: "You need a framework that works regardless of how you feel.",
+    gateHeadline: "Your Dating Framework — Respond to Situations, Not Moods",
+    gateIntro: "Stop winging it. Get a consistent baseline:",
     gatePlanItems: [
-      'A consistent baseline approach (not mood-based)',
-      'Calibration guidelines (when to pursue, when to pull back)',
-      'Situational responses (not emotional reactions)',
+      "A default approach that works regardless of how you feel",
+      "Calibration guidelines — when to pursue, when to pull back (based on signals, not mood)",
+      "How to stop the chase/withdraw cycle that's confusing everyone",
     ],
+    gateButtonText: "Get My Framework",
     gateEmailDesc: 'A consistent framework for dating — so you respond to situations, not moods.',
     gatePrivacyNote: 'Just your plan + framework guidance. Unsubscribe anytime.',
 
@@ -566,13 +573,14 @@ export const profileContent = {
     ],
     consequencesCoda: "You're not starting from zero. You're refining. That means fast progress.",
 
-    gateHeadline: 'Your Personalized Self-Aware Learner Action Plan',
-    gateIntro: "You've done the hardest part — you know where you are. Now let's close the gap.",
+    gateHeadline: "Turn Awareness Into Action — Your Acceleration Guide",
+    gateIntro: "You know the problem. Now get the solution:",
     gatePlanItems: [
-      'The specific signal types you\'re still missing',
-      'Emotional readiness benchmarks (where you are and what\'s next)',
-      'Strategy calibration — turning awareness into consistent action',
+      "The specific signal types you're still missing",
+      "Emotional readiness benchmarks — where you are and what's next",
+      "How to turn awareness into consistent action (not just understanding)",
     ],
+    gateButtonText: "Get My Acceleration Guide",
     gateEmailDesc: "Targeted work for someone who's self-aware but needs to close the gap between knowing and doing.",
     gatePrivacyNote: 'Just your plan + targeted guidance. Unsubscribe anytime.',
 
