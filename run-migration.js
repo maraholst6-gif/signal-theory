@@ -7,17 +7,23 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-async function runMigration() {
+async function runMigrations() {
   try {
-    const sql = fs.readFileSync(
-      path.join(__dirname, 'backend/src/db/migrations/003_usage_tracking.sql'),
-      'utf8'
-    );
-    
-    console.log('Running migration...');
-    await pool.query(sql);
-    console.log('✅ Migration complete!');
-    
+    const migrationsDir = path.join(__dirname, 'backend/src/db/migrations');
+    const files = fs.readdirSync(migrationsDir)
+      .filter(f => f.endsWith('.sql'))
+      .sort();
+
+    console.log(`Running ${files.length} migrations...`);
+
+    for (const file of files) {
+      const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+      console.log(`Applying: ${file}`);
+      await pool.query(sql);
+      console.log(`✅ Done: ${file}`);
+    }
+
+    console.log('✅ All migrations complete!');
     await pool.end();
     process.exit(0);
   } catch (error) {
@@ -27,4 +33,4 @@ async function runMigration() {
   }
 }
 
-runMigration();
+runMigrations();
