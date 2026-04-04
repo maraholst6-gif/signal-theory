@@ -264,9 +264,13 @@ async function startScenario(scenarioId) {
     document.getElementById('upgrade-modal').style.display = 'flex';
     return;
   }
+  const scenario = allScenarios.find(s => s.id === scenarioId);
   localStorage.setItem('st_pending_scenario_id', scenarioId);
   localStorage.removeItem('st_pending_custom_setup');
-  window.location.href = '/scenario-play.html';
+  if (scenario) {
+    localStorage.setItem('st_pending_scenario_data', JSON.stringify(scenario));
+  }
+  window.location.href = '/scenario-play.html?preview=1';
 }
 
 async function startCustomScenario() {

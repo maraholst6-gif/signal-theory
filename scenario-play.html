@@ -42,18 +42,22 @@
   .pip.done { background: var(--accent); }
   .pip.current { background: var(--accent-light); }
 
+  /* CONVERSATION THREAD */
+  .conversation-thread { margin-bottom: 20px; }
+  .thread-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-muted); margin-bottom: 10px; }
+  .thread-turn { margin-bottom: 10px; }
+  .thread-you { font-size: 13px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px 8px 2px 8px; padding: 10px 12px; margin-bottom: 4px; }
+  .thread-you-label { font-size: 10px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 3px; }
+  .thread-her { font-size: 13px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 2px 8px 8px 8px; padding: 10px 12px; color: var(--text-muted); font-style: italic; }
+  .thread-her-label { font-size: 10px; font-weight: 700; color: var(--accent-light); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 3px; font-style: normal; }
+
   /* SITUATION CARD */
   .situation-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 20px; }
   .situation-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-muted); margin-bottom: 10px; }
   .situation-text { font-size: 15px; line-height: 1.65; }
 
-  /* HER RESPONSE */
-  .her-response { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; }
-  .her-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--accent-light); margin-bottom: 8px; }
-  .her-text { font-size: 15px; line-height: 1.65; font-style: italic; }
-
   /* OPTIONS */
-  .options-section { margin-bottom: 20px; }
+  .options-section { margin-bottom: 16px; }
   .options-label { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
   .option-btn { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 14px; line-height: 1.5; padding: 13px 16px; border-radius: 10px; cursor: pointer; text-align: left; margin-bottom: 8px; transition: border-color .2s, background .2s; }
   .option-btn:hover:not(:disabled) { border-color: var(--accent-light); background: var(--surface2); }
@@ -66,15 +70,17 @@
   .custom-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 14px; font-family: var(--font); line-height: 1.5; padding: 12px 14px; border-radius: 10px; resize: vertical; min-height: 80px; transition: border-color .2s; }
   .custom-input:focus { outline: none; border-color: var(--accent-light); }
   .custom-input::placeholder { color: var(--text-muted); }
+  .custom-input:disabled { opacity: .6; cursor: not-allowed; }
 
   /* ACTIONS */
   .actions { display: flex; gap: 10px; flex-wrap: wrap; }
   .btn { padding: 11px 20px; border-radius: 9px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: opacity .2s; }
   .btn-primary { background: var(--accent-light); color: #fff; flex: 1; }
-  .btn-primary:hover { opacity: .85; }
+  .btn-primary:hover:not(:disabled) { opacity: .85; }
   .btn-primary:disabled { opacity: .5; cursor: default; }
   .btn-disengage { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); font-size: 13px; padding: 11px 16px; }
-  .btn-disengage:hover { border-color: var(--text-muted); color: var(--text); }
+  .btn-disengage:hover:not(:disabled) { border-color: var(--text-muted); color: var(--text); }
+  .btn-disengage:disabled { opacity: .5; cursor: default; }
 
   /* LOADING */
   .thinking { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 14px; padding: 16px 0; }
@@ -87,6 +93,18 @@
 
   .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin: 80px auto; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* PREVIEW */
+  .preview-container { padding: 8px 0; }
+  .preview-cat-badge { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; padding: 4px 10px; border-radius: 20px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); margin-bottom: 14px; }
+  .preview-title { font-size: 24px; font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
+  .preview-setup { font-size: 15px; line-height: 1.7; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 10px; }
+  .preview-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+  .preview-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .preview-begin { background: var(--accent-light); color: #fff; padding: 13px 28px; border-radius: 9px; font-size: 15px; font-weight: 700; border: none; cursor: pointer; transition: opacity .2s; }
+  .preview-begin:hover { opacity: .85; }
+  .preview-back { font-size: 13px; color: var(--text-muted); cursor: pointer; padding: 8px 0; }
+  .preview-back:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -104,7 +122,14 @@
 const API_BASE = 'https://signal-theory-backend.onrender.com';
 let token = localStorage.getItem('signal_theory_token') || '';
 
-// Session state (also persisted to localStorage)
+const CATEGORY_LABELS = {
+  text: 'Text & App',
+  in_person: 'In Person',
+  post_relationship: 'Ambiguous',
+  processing_loss: 'Processing Loss',
+};
+
+// Session state
 let state = {
   session_id: null,
   scenario_title: '',
@@ -113,7 +138,7 @@ let state = {
   history: [],
   current_situation: '',
   suggested_responses: [],
-  her_latest_response: null,
+  custom_input_value: '',
   loading: false,
   error: null,
   complete: false,
@@ -140,6 +165,10 @@ async function apiCall(endpoint, method = 'GET', body = null) {
   return data;
 }
 
+function escapeHtml(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function confirmExit() {
   if (!state.session_id || state.complete) {
     localStorage.removeItem('active_scenario');
@@ -161,20 +190,45 @@ function renderTurnPips() {
 }
 
 function render() {
-  if (!state.session_id && !state.loading) {
-    document.getElementById('app').innerHTML = '<div class="spinner"></div>';
+  // Preserve textarea value before re-render
+  const existingInput = document.getElementById('custom-response');
+  if (existingInput) {
+    state.custom_input_value = existingInput.value;
+  }
+
+  // Loading or error before session starts
+  if (!state.session_id) {
+    if (state.loading) {
+      document.getElementById('app').innerHTML = '<div class="spinner"></div>';
+    } else if (state.error) {
+      document.getElementById('app').innerHTML = `<div class="error-msg" style="margin-top:40px">${state.error}</div>`;
+    } else {
+      document.getElementById('app').innerHTML = '<div class="spinner"></div>';
+    }
     return;
   }
 
-  const optionsHtml = state.suggested_responses.map((opt, i) =>
-    `<button class="option-btn" onclick="selectOption(${i})" ${state.loading ? 'disabled' : ''}>${opt}</button>`
-  ).join('');
+  // Conversation history (all previous turns)
+  const conversationThreadHtml = state.history.length > 0
+    ? `<div class="conversation-thread">
+        <div class="thread-label">Conversation so far</div>
+        ${state.history.map(turn => `
+          <div class="thread-turn">
+            <div class="thread-you">
+              <div class="thread-you-label">You</div>
+              ${escapeHtml(turn.user)}
+            </div>
+            <div class="thread-her">
+              <div class="thread-her-label">Her</div>
+              ${escapeHtml(turn.her)}
+            </div>
+          </div>
+        `).join('')}
+      </div>` : '';
 
-  const herResponseHtml = state.her_latest_response
-    ? `<div class="her-response">
-        <div class="her-label">Her response</div>
-        <div class="her-text">${state.her_latest_response}</div>
-       </div>` : '';
+  const optionsHtml = state.suggested_responses.map((opt, i) =>
+    `<button class="option-btn" onclick="selectOption(${i})" ${state.loading ? 'disabled' : ''}>${escapeHtml(opt)}</button>`
+  ).join('');
 
   const errorHtml = state.error
     ? `<div class="error-msg">${state.error}</div>` : '';
@@ -184,8 +238,8 @@ function render() {
 
   document.getElementById('app').innerHTML = `
     <div class="scenario-header">
-      <div class="scenario-title">${state.scenario_title}</div>
-      <div class="scenario-setup">${state.scenario_setup}</div>
+      <div class="scenario-title">${escapeHtml(state.scenario_title)}</div>
+      <div class="scenario-setup">${escapeHtml(state.scenario_setup)}</div>
     </div>
 
     <div class="turn-bar">
@@ -193,17 +247,16 @@ function render() {
       <div class="turn-pips">${renderTurnPips()}</div>
     </div>
 
-    ${herResponseHtml}
+    ${conversationThreadHtml}
 
     <div class="situation-card">
       <div class="situation-label">Current situation</div>
-      <div class="situation-text">${state.current_situation}</div>
+      <div class="situation-text">${escapeHtml(state.current_situation)}</div>
     </div>
 
     ${errorHtml}
     ${thinkingHtml}
 
-    ${!state.loading ? `
     <div class="options-section">
       <div class="options-label">Choose a response — or write your own below:</div>
       ${optionsHtml}
@@ -211,19 +264,21 @@ function render() {
 
     <div class="custom-section">
       <div class="custom-label">Your own response:</div>
-      <textarea class="custom-input" id="custom-response" placeholder="Type what you would actually say or do..."></textarea>
+      <textarea class="custom-input" id="custom-response" ${state.loading ? 'disabled' : ''} placeholder="Type what you would actually say or do...">${escapeHtml(state.custom_input_value)}</textarea>
     </div>
 
     <div class="actions">
-      <button class="btn btn-primary" onclick="submitCustom()">Send Response</button>
-      <button class="btn btn-disengage" onclick="confirmDisengage()">Disengage</button>
-    </div>` : ''}
+      <button class="btn btn-primary" onclick="submitCustom()" ${state.loading ? 'disabled' : ''}>Send Response</button>
+      <button class="btn btn-disengage" onclick="confirmDisengage()" ${state.loading ? 'disabled' : ''}>Disengage</button>
+    </div>
   `;
 }
 
 function selectOption(index) {
   const text = state.suggested_responses[index];
-  document.getElementById('custom-response').value = text;
+  state.custom_input_value = text;
+  const input = document.getElementById('custom-response');
+  if (input) input.value = text;
   document.querySelectorAll('.option-btn').forEach((b, i) => {
     b.classList.toggle('selected', i === index);
   });
@@ -243,6 +298,7 @@ async function submitCustom() {
 async function submitTurn(userResponse) {
   state.loading = true;
   state.error = null;
+  state.custom_input_value = '';
   render();
 
   try {
@@ -251,7 +307,6 @@ async function submitTurn(userResponse) {
       user_response: userResponse,
     });
 
-    state.her_latest_response = data.her_response;
     state.current_situation = data.situation;
     state.suggested_responses = data.suggested_responses || [];
     state.turn = data.turn;
@@ -290,7 +345,6 @@ async function endScenario(reason) {
       reason,
     });
 
-    // Store result and redirect to result page
     localStorage.setItem('st_scenario_result', JSON.stringify(data));
     localStorage.removeItem('active_scenario');
     window.location.href = '/scenario-result.html';
@@ -326,11 +380,10 @@ async function startScenario() {
     state.turn = data.turn;
     state.current_situation = data.situation;
     state.suggested_responses = data.suggested_responses || [];
-    state.her_latest_response = null;
 
-    // Clear pending
     localStorage.removeItem('st_pending_scenario_id');
     localStorage.removeItem('st_pending_custom_setup');
+    localStorage.removeItem('st_pending_scenario_data');
     saveState();
   } catch (err) {
     if (err.code === 'LIMIT_REACHED') {
@@ -352,10 +405,55 @@ async function startScenario() {
   render();
 }
 
+// ── Preview mode ──────────────────────────────────────────
+
+function showPreview() {
+  let scenarioData = null;
+  try {
+    scenarioData = JSON.parse(localStorage.getItem('st_pending_scenario_data') || 'null');
+  } catch (e) {}
+
+  if (!scenarioData) {
+    // No preview data — fall through to normal start
+    startScenario();
+    return;
+  }
+
+  const catLabel = CATEGORY_LABELS[scenarioData.category] || '';
+
+  document.getElementById('app').innerHTML = `
+    <div class="preview-container">
+      ${catLabel ? `<div class="preview-cat-badge">${catLabel}</div>` : ''}
+      <div class="preview-title">${escapeHtml(scenarioData.title)}</div>
+      <div class="preview-setup">${escapeHtml(scenarioData.setup)}</div>
+      <p class="preview-hint">5 turns to navigate this interaction. Signal Theory analyzes your responses at the end.</p>
+      <div class="preview-actions">
+        <button class="preview-begin" onclick="beginFromPreview()">Begin Scenario →</button>
+        <span class="preview-back" onclick="window.location.href='/scenarios.html'">← Back to Scenarios</span>
+      </div>
+    </div>
+  `;
+}
+
+function beginFromPreview() {
+  localStorage.removeItem('st_pending_scenario_data');
+  const url = new URL(window.location.href);
+  url.searchParams.delete('preview');
+  window.history.replaceState({}, '', url.toString());
+  startScenario();
+}
+
+// ── Init ──────────────────────────────────────────────────
+
 if (!token) {
   window.location.href = '/';
 } else {
-  startScenario();
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('preview') === '1') {
+    showPreview();
+  } else {
+    startScenario();
+  }
 }
 </script>
 </body>

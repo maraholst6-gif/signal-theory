@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import pool from '../db/pool';
 import { requireAuth, AuthRequest } from '../middleware/auth';
 import { analysisLimiter } from '../middleware/rateLimit';
-import { analyzeWithOpenAI } from '../services/openai-analyzer';
+import { analyzeWithClaude } from '../services/claude';
 
 const router = Router();
 
@@ -47,8 +47,8 @@ router.post('/', analysisLimiter, async (req: AuthRequest, res: Response) => {
       userData.weak_questions ?? [];
     const blindSpots = weakQuestions.map((q) => q.question_text);
 
-    // Call OpenAI
-    const analysisResult = await analyzeWithOpenAI({
+    // Call Claude
+    const analysisResult = await analyzeWithClaude({
       input_text: input_text.trim(),
       profile_type: userData.profile_type ?? 'unknown',
       signal_score: userData.signal_score ?? 5,
