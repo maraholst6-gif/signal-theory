@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scenario | Signal Theory</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0d0f;
+    --surface: #17171a;
+    --surface2: #1e1e22;
+    --border: #2a2a30;
+    --text: #e8e8ec;
+    --text-muted: #8888a0;
+    --accent: #c0392b;
+    --accent-light: #e74c3c;
+    --green: #27ae60;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+  /* NAV */
+  .nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .nav-brand { font-weight: 700; font-size: 15px; color: var(--accent-light); }
+  .nav-back { font-size: 13px; color: var(--text-muted); cursor: pointer; transition: color .2s; }
+  .nav-back:hover { color: var(--text); }
+
+  /* LAYOUT */
+  .container { max-width: 680px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* SCENARIO HEADER */
+  .scenario-header { margin-bottom: 24px; }
+  .scenario-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .scenario-setup { font-size: 14px; color: var(--text-muted); line-height: 1.6; padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+
+  /* TURN COUNTER */
+  .turn-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .turn-label { font-size: 13px; color: var(--text-muted); }
+  .turn-pips { display: flex; gap: 6px; }
+  .pip { width: 32px; height: 6px; border-radius: 3px; background: var(--border); transition: background .3s; }
+  .pip.done { background: var(--accent); }
+  .pip.current { background: var(--accent-light); }
+
+  /* SITUATION CARD */
+  .situation-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 20px; }
+  .situation-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-muted); margin-bottom: 10px; }
+  .situation-text { font-size: 15px; line-height: 1.65; }
+
+  /* HER RESPONSE */
+  .her-response { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; }
+  .her-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--accent-light); margin-bottom: 8px; }
+  .her-text { font-size: 15px; line-height: 1.65; font-style: italic; }
+
+  /* OPTIONS */
+  .options-section { margin-bottom: 20px; }
+  .options-label { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+  .option-btn { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 14px; line-height: 1.5; padding: 13px 16px; border-radius: 10px; cursor: pointer; text-align: left; margin-bottom: 8px; transition: border-color .2s, background .2s; }
+  .option-btn:hover:not(:disabled) { border-color: var(--accent-light); background: var(--surface2); }
+  .option-btn:disabled { opacity: .5; cursor: default; }
+  .option-btn.selected { border-color: var(--accent-light); background: rgba(231,76,60,.1); }
+
+  /* CUSTOM INPUT */
+  .custom-section { margin-bottom: 24px; }
+  .custom-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+  .custom-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 14px; font-family: var(--font); line-height: 1.5; padding: 12px 14px; border-radius: 10px; resize: vertical; min-height: 80px; transition: border-color .2s; }
+  .custom-input:focus { outline: none; border-color: var(--accent-light); }
+  .custom-input::placeholder { color: var(--text-muted); }
+
+  /* ACTIONS */
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { padding: 11px 20px; border-radius: 9px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: opacity .2s; }
+  .btn-primary { background: var(--accent-light); color: #fff; flex: 1; }
+  .btn-primary:hover { opacity: .85; }
+  .btn-primary:disabled { opacity: .5; cursor: default; }
+  .btn-disengage { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); font-size: 13px; padding: 11px 16px; }
+  .btn-disengage:hover { border-color: var(--text-muted); color: var(--text); }
+
+  /* LOADING */
+  .thinking { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 14px; padding: 16px 0; }
+  .dots span { display: inline-block; width: 6px; height: 6px; background: var(--accent-light); border-radius: 50%; animation: bounce .8s infinite; margin-right: 4px; }
+  .dots span:nth-child(2) { animation-delay: .15s; }
+  .dots span:nth-child(3) { animation-delay: .3s; }
+  @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+
+  .error-msg { background: rgba(192,57,43,.15); border: 1px solid rgba(192,57,43,.4); border-radius: 8px; padding: 12px 14px; font-size: 14px; color: #e87060; margin-bottom: 16px; }
+
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin: 80px auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-brand">Signal Theory</span>
+  <span class="nav-back" onclick="confirmExit()">← Back to Scenarios</span>
+</nav>
+
+<div class="container" id="app">
+  <div class="spinner"></div>
+</div>
+
+<script>
+const API_BASE = 'https://signal-theory-backend.onrender.com';
+let token = localStorage.getItem('signal_theory_token') || '';
+
+// Session state (also persisted to localStorage)
+let state = {
+  session_id: null,
+  scenario_title: '',
+  scenario_setup: '',
+  turn: 1,
+  history: [],
+  current_situation: '',
+  suggested_responses: [],
+  her_latest_response: null,
+  loading: false,
+  error: null,
+  complete: false,
+};
+
+function saveState() {
+  localStorage.setItem('active_scenario', JSON.stringify({
+    session_id: state.session_id,
+    scenario_title: state.scenario_title,
+    turn: state.turn,
+    history: state.history,
+  }));
+}
+
+async function apiCall(endpoint, method = 'GET', body = null) {
+  const opts = {
+    method,
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API_BASE + endpoint, opts);
+  const data = await res.json();
+  if (!res.ok) throw { status: res.status, ...data };
+  return data;
+}
+
+function confirmExit() {
+  if (!state.session_id || state.complete) {
+    localStorage.removeItem('active_scenario');
+    window.location.href = '/scenarios.html';
+    return;
+  }
+  if (confirm('End this scenario and get feedback on what you\'ve done so far?')) {
+    endScenario('user_disengaged');
+  }
+}
+
+function renderTurnPips() {
+  let html = '';
+  for (let i = 1; i <= 5; i++) {
+    const cls = i < state.turn ? 'done' : i === state.turn ? 'current' : '';
+    html += `<div class="pip ${cls}"></div>`;
+  }
+  return html;
+}
+
+function render() {
+  if (!state.session_id && !state.loading) {
+    document.getElementById('app').innerHTML = '<div class="spinner"></div>';
+    return;
+  }
+
+  const optionsHtml = state.suggested_responses.map((opt, i) =>
+    `<button class="option-btn" onclick="selectOption(${i})" ${state.loading ? 'disabled' : ''}>${opt}</button>`
+  ).join('');
+
+  const herResponseHtml = state.her_latest_response
+    ? `<div class="her-response">
+        <div class="her-label">Her response</div>
+        <div class="her-text">${state.her_latest_response}</div>
+       </div>` : '';
+
+  const errorHtml = state.error
+    ? `<div class="error-msg">${state.error}</div>` : '';
+
+  const thinkingHtml = state.loading
+    ? `<div class="thinking"><span class="dots"><span></span><span></span><span></span></span> Thinking...</div>` : '';
+
+  document.getElementById('app').innerHTML = `
+    <div class="scenario-header">
+      <div class="scenario-title">${state.scenario_title}</div>
+      <div class="scenario-setup">${state.scenario_setup}</div>
+    </div>
+
+    <div class="turn-bar">
+      <span class="turn-label">Turn ${Math.min(state.turn, 5)} of 5</span>
+      <div class="turn-pips">${renderTurnPips()}</div>
+    </div>
+
+    ${herResponseHtml}
+
+    <div class="situation-card">
+      <div class="situation-label">Current situation</div>
+      <div class="situation-text">${state.current_situation}</div>
+    </div>
+
+    ${errorHtml}
+    ${thinkingHtml}
+
+    ${!state.loading ? `
+    <div class="options-section">
+      <div class="options-label">Choose a response — or write your own below:</div>
+      ${optionsHtml}
+    </div>
+
+    <div class="custom-section">
+      <div class="custom-label">Your own response:</div>
+      <textarea class="custom-input" id="custom-response" placeholder="Type what you would actually say or do..."></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="submitCustom()">Send Response</button>
+      <button class="btn btn-disengage" onclick="confirmDisengage()">Disengage</button>
+    </div>` : ''}
+  `;
+}
+
+function selectOption(index) {
+  const text = state.suggested_responses[index];
+  document.getElementById('custom-response').value = text;
+  document.querySelectorAll('.option-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i === index);
+  });
+}
+
+async function submitCustom() {
+  const input = document.getElementById('custom-response');
+  const text = input ? input.value.trim() : '';
+  if (!text) {
+    state.error = 'Please select an option or write your own response.';
+    render();
+    return;
+  }
+  await submitTurn(text);
+}
+
+async function submitTurn(userResponse) {
+  state.loading = true;
+  state.error = null;
+  render();
+
+  try {
+    const data = await apiCall('/api/scenario-play/turn', 'POST', {
+      session_id: state.session_id,
+      user_response: userResponse,
+    });
+
+    state.her_latest_response = data.her_response;
+    state.current_situation = data.situation;
+    state.suggested_responses = data.suggested_responses || [];
+    state.turn = data.turn;
+    state.history.push({ user: userResponse, her: data.her_response });
+    saveState();
+
+    if (data.scenario_complete) {
+      state.complete = true;
+      await endScenario('turns_completed');
+      return;
+    }
+  } catch (err) {
+    state.error = err.message || 'Something went wrong. Please try again.';
+    if (err.status === 401) { window.location.href = '/'; return; }
+  } finally {
+    state.loading = false;
+  }
+
+  render();
+}
+
+function confirmDisengage() {
+  if (confirm('End the scenario here and get your breakdown?')) {
+    endScenario('user_disengaged');
+  }
+}
+
+async function endScenario(reason) {
+  state.loading = true;
+  state.error = null;
+  render();
+
+  try {
+    const data = await apiCall('/api/scenario-play/end', 'POST', {
+      session_id: state.session_id,
+      reason,
+    });
+
+    // Store result and redirect to result page
+    localStorage.setItem('st_scenario_result', JSON.stringify(data));
+    localStorage.removeItem('active_scenario');
+    window.location.href = '/scenario-result.html';
+  } catch (err) {
+    state.loading = false;
+    state.error = err.message || 'Failed to generate analysis. Please try again.';
+    render();
+  }
+}
+
+async function startScenario() {
+  const scenarioId = localStorage.getItem('st_pending_scenario_id');
+  const customSetup = localStorage.getItem('st_pending_custom_setup');
+
+  if (!scenarioId && !customSetup) {
+    window.location.href = '/scenarios.html';
+    return;
+  }
+
+  state.loading = true;
+  render();
+
+  try {
+    const body = {};
+    if (scenarioId) body.scenario_id = scenarioId;
+    if (customSetup) body.custom_setup = customSetup;
+
+    const data = await apiCall('/api/scenario-play/start', 'POST', body);
+
+    state.session_id = data.session_id;
+    state.scenario_title = data.scenario.title;
+    state.scenario_setup = data.scenario.setup;
+    state.turn = data.turn;
+    state.current_situation = data.situation;
+    state.suggested_responses = data.suggested_responses || [];
+    state.her_latest_response = null;
+
+    // Clear pending
+    localStorage.removeItem('st_pending_scenario_id');
+    localStorage.removeItem('st_pending_custom_setup');
+    saveState();
+  } catch (err) {
+    if (err.code === 'LIMIT_REACHED') {
+      alert('You\'ve reached your weekly limit. Upgrade for unlimited scenarios.');
+      window.location.href = '/scenarios.html';
+      return;
+    }
+    if (err.code === 'PREMIUM_REQUIRED') {
+      alert('This scenario requires a premium account.');
+      window.location.href = '/scenarios.html';
+      return;
+    }
+    if (err.status === 401) { window.location.href = '/'; return; }
+    state.error = err.message || 'Failed to start scenario.';
+  } finally {
+    state.loading = false;
+  }
+
+  render();
+}
+
+if (!token) {
+  window.location.href = '/';
+} else {
+  startScenario();
+}
+</script>
+</body>
+</html>

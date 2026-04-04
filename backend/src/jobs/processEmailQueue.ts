@@ -5,6 +5,9 @@
  * Run as a Render cron job every 15 minutes:
  *   node dist/jobs/processEmailQueue.js
  *
+ * Flags:
+ *   --dry-run   Preview what would be sent without actually sending
+ *
  * Also exported as `processQueue()` for direct invocation.
  */
 
@@ -16,6 +19,8 @@ import { sendEmail, isEmailConfigured } from '../services/emailService';
 import { getTemplate, SubscriberData } from '../templates/emails';
 
 const MAX_ATTEMPTS = 3;
+const MAX_PER_RUN = 10;
+const SEND_DELAY_MS = 500;
 
 interface QueueRow {
   id:                number;
@@ -28,10 +33,14 @@ interface QueueRow {
   attempts:          number;
 }
 
-export async function processQueue(): Promise<void> {
-  if (!isEmailConfigured()) {
+export async function processQueue(dryRun = false): Promise<void> {
+  if (!dryRun && !isEmailConfigured()) {
     console.warn('[queue] Microsoft Graph not configured — skipping. Set MICROSOFT_TENANT_ID, CLIENT_ID, CLIENT_SECRET, EMAIL_FROM.');
     return;
+  }
+
+  if (dryRun) {
+    console.log('[queue] DRY RUN mode — no emails will be sent.');
   }
 
   // Fetch pending emails due now, excluding subscribers who unsubscribed
@@ -45,7 +54,7 @@ export async function processQueue(): Promise<void> {
        AND eq.attempts  < $1
        AND es.unsubscribed_at IS NULL
      ORDER BY eq.scheduled_for ASC
-     LIMIT 50`,
+     LIMIT ${MAX_PER_RUN}`,
     [MAX_ATTEMPTS]
   );
 
@@ -54,7 +63,7 @@ export async function processQueue(): Promise<void> {
     return;
   }
 
-  console.log(`[queue] Processing ${rows.length} email(s)...`);
+  console.log(`[queue] ${dryRun ? '[DRY RUN] Would process' : 'Processing'} ${rows.length} email(s)...`);
 
   for (const row of rows) {
     const subData: SubscriberData = {
@@ -67,8 +76,17 @@ export async function processQueue(): Promise<void> {
     const tmpl = await getTemplate(row.template_name, subData);
 
     if (!tmpl) {
-      console.error(`[queue] Unknown template: ${row.template_name} — marking failed`);
-      await markFailed(row.id, row.subscriber_id, row.email, row.template_name, 'Unknown template name');
+      if (dryRun) {
+        console.log(`[queue] [DRY RUN] SKIP id=${row.id} — unknown template: ${row.template_name}`);
+      } else {
+        console.error(`[queue] Unknown template: ${row.template_name} — marking failed`);
+        await markFailed(row.id, row.subscriber_id, row.email, row.template_name, 'Unknown template name');
+      }
+      continue;
+    }
+
+    if (dryRun) {
+      console.log(`[queue] [DRY RUN] Would send id=${row.id} template="${row.template_name}" to=${row.email} subject="${tmpl.subject}"`);
       continue;
     }
 
@@ -116,6 +134,9 @@ export async function processQueue(): Promise<void> {
         console.log(`[queue] Will retry (attempt ${newAttempts}/${MAX_ATTEMPTS})`);
       }
     }
+
+    // Rate-limit: pause between sends
+    await new Promise((resolve) => setTimeout(resolve, SEND_DELAY_MS));
   }
 
   console.log('[queue] Done.');
@@ -144,7 +165,8 @@ async function markFailed(
 // ─────────────────────────────────────────────
 
 if (require.main === module) {
-  processQueue()
+  const dryRun = process.argv.includes('--dry-run');
+  processQueue(dryRun)
     .then(() => process.exit(0))
     .catch((err) => {
       console.error('[queue] Fatal error:', err);

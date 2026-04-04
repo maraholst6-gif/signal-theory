@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scenario Breakdown | Signal Theory</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0d0f;
+    --surface: #17171a;
+    --surface2: #1e1e22;
+    --border: #2a2a30;
+    --text: #e8e8ec;
+    --text-muted: #8888a0;
+    --accent: #c0392b;
+    --accent-light: #e74c3c;
+    --green: #27ae60;
+    --gold: #f0a500;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+  .nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .nav-brand { font-weight: 700; font-size: 15px; color: var(--accent-light); }
+  .nav-link { font-size: 13px; color: var(--text-muted); cursor: pointer; transition: color .2s; }
+  .nav-link:hover { color: var(--text); }
+
+  .container { max-width: 640px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  /* OUTCOME HEADER */
+  .outcome-header { text-align: center; margin-bottom: 32px; }
+  .outcome-icon { font-size: 48px; margin-bottom: 12px; }
+  .outcome-title { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+  .outcome-subtitle { font-size: 14px; color: var(--text-muted); }
+  .outcome-badge { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-top: 10px; }
+
+  .badge-interest-built { background: rgba(39,174,96,.2); color: #4dc87a; border: 1px solid rgba(39,174,96,.4); }
+  .badge-successful { background: rgba(39,174,96,.15); color: #4dc87a; border: 1px solid rgba(39,174,96,.3); }
+  .badge-mutual { background: rgba(136,136,160,.15); color: #aaaacc; border: 1px solid rgba(136,136,160,.3); }
+  .badge-interest-lost { background: rgba(192,57,43,.15); color: #e87060; border: 1px solid rgba(192,57,43,.3); }
+  .badge-user-disengaged { background: rgba(240,165,0,.15); color: var(--gold); border: 1px solid rgba(240,165,0,.3); }
+
+  /* TURNS STAT */
+  .stats-row { display: flex; gap: 12px; margin-bottom: 28px; justify-content: center; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 20px; text-align: center; min-width: 100px; }
+  .stat-value { font-size: 22px; font-weight: 700; }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ANALYSIS SECTIONS */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-muted); margin-bottom: 12px; }
+  .section p { font-size: 15px; line-height: 1.7; color: var(--text); }
+  .section ul { list-style: none; }
+  .section ul li { font-size: 14px; line-height: 1.6; color: var(--text); padding: 6px 0; padding-left: 20px; position: relative; border-bottom: 1px solid var(--border); }
+  .section ul li:last-child { border-bottom: none; }
+  .section ul li::before { position: absolute; left: 0; top: 8px; }
+  .signals li::before { content: "→"; color: var(--text-muted); }
+  .well li::before { content: "✓"; color: var(--green); }
+  .improve li::before { content: "△"; color: var(--gold); }
+
+  /* ACTIONS */
+  .actions { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+  .btn { padding: 13px 20px; border-radius: 9px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: opacity .2s; flex: 1; min-width: 140px; }
+  .btn-primary { background: var(--accent-light); color: #fff; }
+  .btn-primary:hover { opacity: .85; }
+  .btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+  .btn-secondary:hover { border-color: var(--text-muted); }
+
+  .error-gate { text-align: center; padding: 80px 20px; }
+  .error-gate h2 { font-size: 20px; margin-bottom: 10px; }
+  .error-gate p { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin: 80px auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-brand">Signal Theory</span>
+  <span class="nav-link" onclick="window.location.href='/scenarios.html'">← Back to Scenarios</span>
+</nav>
+
+<div class="container" id="app">
+  <div class="spinner"></div>
+</div>
+
+<script>
+const OUTCOME_META = {
+  interest_built: {
+    icon: '🔥',
+    title: 'Interest Built',
+    subtitle: 'You read the signals and moved the conversation forward.',
+    badgeClass: 'badge-interest-built',
+    badgeText: 'Strong Performance',
+  },
+  successful_engagement: {
+    icon: '✅',
+    title: 'Successful Engagement',
+    subtitle: 'You held the frame and kept things moving through all five turns.',
+    badgeClass: 'badge-successful',
+    badgeText: 'Completed',
+  },
+  mutual_disengagement: {
+    icon: '🤝',
+    title: 'Mutual Exit',
+    subtitle: 'The interaction ran its course — nothing lost, nothing gained.',
+    badgeClass: 'badge-mutual',
+    badgeText: 'Neutral Outcome',
+  },
+  interest_lost: {
+    icon: '📉',
+    title: 'Interest Lost',
+    subtitle: 'Something in your approach moved her away. The analysis below will show you what.',
+    badgeClass: 'badge-interest-lost',
+    badgeText: 'Learning Opportunity',
+  },
+  user_disengaged: {
+    icon: '🚪',
+    title: 'You Disengaged',
+    subtitle: 'You chose to exit — sometimes that\'s the right read.',
+    badgeClass: 'badge-user-disengaged',
+    badgeText: 'Early Exit',
+  },
+};
+
+function renderList(items, cssClass) {
+  if (!items || items.length === 0) return '<li>Nothing noted.</li>';
+  return items.map(item => `<li>${item}</li>`).join('');
+}
+
+function render(result) {
+  const meta = OUTCOME_META[result.outcome] || OUTCOME_META['mutual_disengagement'];
+  const a = result.analysis || {};
+  const pendingScenarioId = localStorage.getItem('st_replay_scenario_id');
+
+  document.getElementById('app').innerHTML = `
+    <div class="outcome-header">
+      <div class="outcome-icon">${meta.icon}</div>
+      <div class="outcome-title">${meta.title}</div>
+      <div class="outcome-subtitle">${meta.subtitle}</div>
+      <span class="outcome-badge ${meta.badgeClass}">${meta.badgeText}</span>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-value">${result.turns_taken}</div>
+        <div class="stat-label">Turns taken</div>
+      </div>
+      ${result.scenario_title ? `<div class="stat" style="min-width:160px">
+        <div class="stat-value" style="font-size:14px;font-weight:600">${result.scenario_title}</div>
+        <div class="stat-label">Scenario</div>
+      </div>` : ''}
+    </div>
+
+    <div class="section">
+      <div class="section-label">Summary</div>
+      <p>${a.summary || 'No summary available.'}</p>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Signals Observed</div>
+      <ul class="signals">${renderList(a.signals_observed, 'signals')}</ul>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What You Did Well</div>
+      <ul class="well">${renderList(a.what_you_did_well, 'well')}</ul>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What to Work On</div>
+      <ul class="improve">${renderList(a.what_to_improve, 'improve')}</ul>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="window.location.href='/scenarios.html'">Try Another</button>
+      ${pendingScenarioId
+        ? `<button class="btn btn-primary" onclick="replayScenario()">Play Again</button>`
+        : `<button class="btn btn-primary" onclick="window.location.href='/scenarios.html'">More Scenarios</button>`
+      }
+    </div>
+  `;
+}
+
+function replayScenario() {
+  const scenarioId = localStorage.getItem('st_replay_scenario_id');
+  if (scenarioId) {
+    localStorage.setItem('st_pending_scenario_id', scenarioId);
+    localStorage.removeItem('st_pending_custom_setup');
+    window.location.href = '/scenario-play.html';
+  } else {
+    window.location.href = '/scenarios.html';
+  }
+}
+
+function init() {
+  const raw = localStorage.getItem('st_scenario_result');
+  if (!raw) {
+    document.getElementById('app').innerHTML = `
+      <div class="error-gate">
+        <h2>No result found</h2>
+        <p>It looks like you landed here without finishing a scenario.</p>
+        <button class="btn btn-primary" onclick="window.location.href='/scenarios.html'" style="display:inline-block;max-width:220px">Go to Scenarios</button>
+      </div>`;
+    return;
+  }
+
+  try {
+    const result = JSON.parse(raw);
+    // Store scenario ID for replay button
+    if (result.scenario_id) {
+      localStorage.setItem('st_replay_scenario_id', result.scenario_id);
+    } else {
+      localStorage.removeItem('st_replay_scenario_id');
+    }
+    localStorage.removeItem('st_scenario_result');
+    render(result);
+  } catch (e) {
+    document.getElementById('app').innerHTML = `
+      <div class="error-gate">
+        <h2>Error loading result</h2>
+        <p>Something went wrong. Please try a new scenario.</p>
+        <button class="btn btn-primary" onclick="window.location.href='/scenarios.html'" style="display:inline-block;max-width:220px">Back to Scenarios</button>
+      </div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>

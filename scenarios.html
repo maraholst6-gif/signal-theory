@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Scenarios | Signal Theory</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0d0f;
+    --surface: #17171a;
+    --surface2: #1e1e22;
+    --border: #2a2a30;
+    --text: #e8e8ec;
+    --text-muted: #8888a0;
+    --accent: #c0392b;
+    --accent-light: #e74c3c;
+    --gold: #f0a500;
+    --green: #27ae60;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+  a { color: inherit; text-decoration: none; }
+
+  /* NAV */
+  .nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .nav-brand { font-weight: 700; font-size: 15px; letter-spacing: .5px; color: var(--accent-light); }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-link { font-size: 13px; color: var(--text-muted); transition: color .2s; }
+  .nav-link:hover { color: var(--text); }
+
+  /* HEADER */
+  .header { padding: 40px 20px 24px; max-width: 960px; margin: 0 auto; }
+  .header h1 { font-size: clamp(22px, 4vw, 30px); font-weight: 700; margin-bottom: 8px; }
+  .header p { color: var(--text-muted); font-size: 15px; line-height: 1.6; max-width: 600px; }
+
+  /* USAGE BAR */
+  .usage-bar { max-width: 960px; margin: 0 auto 24px; padding: 0 20px; }
+  .usage-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .usage-label { font-size: 13px; color: var(--text-muted); }
+  .usage-pips { display: flex; gap: 6px; align-items: center; }
+  .pip { width: 28px; height: 8px; border-radius: 4px; background: var(--border); }
+  .pip.used { background: var(--accent); }
+  .pip.avail { background: var(--green); }
+  .usage-text { font-size: 13px; color: var(--text-muted); }
+  .upgrade-btn { background: var(--gold); color: #000; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer; transition: opacity .2s; white-space: nowrap; }
+  .upgrade-btn:hover { opacity: .85; }
+  .premium-badge { background: var(--gold); color: #000; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+
+  /* FILTERS */
+  .filters { max-width: 960px; margin: 0 auto 20px; padding: 0 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); font-size: 13px; padding: 7px 14px; border-radius: 20px; cursor: pointer; transition: all .2s; white-space: nowrap; }
+  .filter-btn:hover, .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* GRID */
+  .grid { max-width: 960px; margin: 0 auto; padding: 0 20px 60px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+
+  /* CARD */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; transition: border-color .2s, transform .15s; position: relative; }
+  .card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .card.premium-locked { opacity: .65; cursor: default; }
+  .card.premium-locked:hover { border-color: var(--gold); transform: none; }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+  .card-title { font-size: 15px; font-weight: 600; line-height: 1.3; }
+  .card-badges { display: flex; gap: 6px; flex-shrink: 0; align-items: flex-start; flex-wrap: wrap; }
+  .badge { font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: .4px; }
+  .badge-text { background: #1a3a5c; color: #5aadff; }
+  .badge-in-person { background: #1a3b1a; color: #5adc5a; }
+  .badge-post { background: #3a1a3a; color: #c07ada; }
+  .badge-loss { background: #3a2a10; color: #e8a040; }
+  .badge-beginner { background: #1a2a1a; color: #7ac07a; }
+  .badge-intermediate { background: #2a2a1a; color: #c0c040; }
+  .badge-advanced { background: #2a1a1a; color: #c04040; }
+  .card-setup { font-size: 13px; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .lock-icon { position: absolute; bottom: 14px; right: 14px; font-size: 16px; }
+
+  /* CUSTOM SCENARIO */
+  .custom-card { background: linear-gradient(135deg, #1a1a10, #251a0a); border: 1px dashed var(--gold); border-radius: 12px; padding: 18px; cursor: pointer; transition: border-color .2s, opacity .2s; display: flex; align-items: center; gap: 14px; }
+  .custom-card:hover { border-color: #ffcc00; }
+  .custom-card.locked { opacity: .5; cursor: default; }
+  .custom-card .icon { font-size: 28px; flex-shrink: 0; }
+  .custom-card .copy h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .custom-card .copy p { font-size: 13px; color: var(--text-muted); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; width: 100%; max-width: 500px; }
+  .modal h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .modal p { color: var(--text-muted); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+  .btn { padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: opacity .2s; }
+  .btn-primary { background: var(--accent-light); color: #fff; }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+  .btn:hover { opacity: .85; }
+
+  /* AUTH GATE */
+  .auth-gate { max-width: 400px; margin: 80px auto; padding: 0 20px; text-align: center; }
+  .auth-gate h2 { font-size: 22px; margin-bottom: 10px; }
+  .auth-gate p { color: var(--text-muted); margin-bottom: 24px; font-size: 14px; }
+
+  .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); grid-column: 1/-1; }
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; margin: 60px auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <span class="nav-brand">Signal Theory</span>
+  <div class="nav-right">
+    <a href="/" class="nav-link">← Dashboard</a>
+    <a href="/upgrade.html" class="nav-link" id="nav-upgrade" style="display:none">Upgrade</a>
+  </div>
+</nav>
+
+<div id="app">
+  <div class="spinner" id="loader"></div>
+</div>
+
+<!-- Upgrade Modal -->
+<div class="modal-overlay" id="upgrade-modal" style="display:none">
+  <div class="modal">
+    <h2>Upgrade to Premium</h2>
+    <p>Free tier includes 3 scenarios per week. Upgrade for unlimited access, premium scenarios, and the ability to build your own custom scenarios.</p>
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="closeModal('upgrade-modal')">Maybe later</button>
+      <button class="btn btn-primary" onclick="window.location.href='/upgrade.html'">Upgrade Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Scenario Modal -->
+<div class="modal-overlay" id="custom-modal" style="display:none">
+  <div class="modal">
+    <h2>Build Your Own Scenario</h2>
+    <p>Describe a real situation you want to practice. The AI will create a realistic conversation partner and give you Signal Theory feedback at the end.</p>
+    <textarea id="custom-setup-input" placeholder="e.g. A woman I've been texting for two weeks suddenly got very short in her replies. Last night she took 4 hours to respond and said 'yeah' to a question I asked..." style="width:100%;background:#0d0d0f;border:1px solid #2a2a30;color:#e8e8ec;border-radius:8px;padding:12px;font-size:14px;font-family:inherit;line-height:1.5;resize:vertical;min-height:100px;margin-bottom:16px;"></textarea>
+    <div class="modal-btns">
+      <button class="btn btn-secondary" onclick="closeModal('custom-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="startCustomScenario()">Start Scenario</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://signal-theory-backend.onrender.com';
+let token = localStorage.getItem('signal_theory_token') || '';
+let userTier = localStorage.getItem('signal_theory_tier') || 'free';
+
+let allScenarios = [];
+let usageData = { tier: 'free', completions_this_week: 0, limit: 3, remaining: 3 };
+let activeCategory = 'all';
+
+const CATEGORY_LABELS = { all: 'All', text: 'Text & App', in_person: 'In Person', post_relationship: 'Ambiguous', processing_loss: 'Processing Loss' };
+const DIFF_LABELS = { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' };
+
+async function api(endpoint, opts = {}) {
+  try {
+    const res = await fetch(API_BASE + endpoint, {
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json', ...(opts.headers || {}) },
+      ...opts,
+    });
+    if (res.status === 401) { showAuthGate(); return null; }
+    return await res.json();
+  } catch (e) { return null; }
+}
+
+function showAuthGate() {
+  document.getElementById('app').innerHTML = `
+    <div class="auth-gate">
+      <h2>Sign in to practice</h2>
+      <p>Create a free account to access Signal Theory scenario training.</p>
+      <button class="btn btn-primary" style="width:100%" onclick="window.location.href='/'">Go to Sign In</button>
+    </div>`;
+}
+
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+function categoryBadgeClass(cat) {
+  return { text: 'badge-text', in_person: 'badge-in-person', post_relationship: 'badge-post', processing_loss: 'badge-loss' }[cat] || '';
+}
+
+function renderApp() {
+  const freeLimitReached = usageData.tier === 'free' && usageData.remaining <= 0;
+
+  // Pips
+  let pips = '';
+  if (usageData.tier === 'free') {
+    for (let i = 0; i < 3; i++) {
+      pips += `<div class="pip ${i < usageData.completions_this_week ? 'used' : 'avail'}"></div>`;
+    }
+  }
+
+  const usageHtml = usageData.tier === 'free'
+    ? `<div class="usage-card">
+        <span class="usage-label">Weekly usage:</span>
+        <div class="usage-pips">${pips}</div>
+        <span class="usage-text">${usageData.completions_this_week}/3 used this week</span>
+        ${freeLimitReached ? `<button class="upgrade-btn" onclick="document.getElementById('upgrade-modal').style.display='flex'">Upgrade for unlimited</button>` : ''}
+       </div>`
+    : `<div class="usage-card">
+        <span class="usage-label">Premium — Unlimited scenarios</span>
+        <span class="premium-badge">PRO</span>
+       </div>`;
+
+  // Filter buttons
+  const filterBtns = Object.entries(CATEGORY_LABELS).map(([key, label]) =>
+    `<button class="filter-btn ${activeCategory === key ? 'active' : ''}" onclick="setCategory('${key}')">${label}</button>`
+  ).join('');
+
+  // Filtered scenarios
+  const filtered = activeCategory === 'all' ? allScenarios : allScenarios.filter(s => s.category === activeCategory);
+
+  const cards = filtered.length === 0
+    ? '<div class="empty">No scenarios in this category yet.</div>'
+    : filtered.map(s => {
+        const isPremiumLocked = s.is_premium && userTier === 'free';
+        const isBlocked = freeLimitReached && !isPremiumLocked;
+        return `<div class="card ${isPremiumLocked ? 'premium-locked' : ''}" onclick="${isPremiumLocked ? `document.getElementById('upgrade-modal').style.display='flex'` : isBlocked ? `document.getElementById('upgrade-modal').style.display='flex'` : `startScenario('${s.id}')`}">
+          <div class="card-top">
+            <div class="card-title">${s.title}</div>
+            <div class="card-badges">
+              <span class="badge ${categoryBadgeClass(s.category)}">${CATEGORY_LABELS[s.category] || s.category}</span>
+              <span class="badge badge-${s.difficulty}">${DIFF_LABELS[s.difficulty] || s.difficulty}</span>
+              ${s.is_premium ? '<span class="badge" style="background:#2a2010;color:#f0a500">PRO</span>' : ''}
+            </div>
+          </div>
+          <div class="card-setup">${s.setup}</div>
+          ${isPremiumLocked ? '<span class="lock-icon">🔒</span>' : ''}
+        </div>`;
+      }).join('');
+
+  // Custom scenario card
+  const customCard = `
+    <div class="custom-card ${usageData.tier === 'free' ? 'locked' : ''}" onclick="${usageData.tier === 'free' ? `document.getElementById('upgrade-modal').style.display='flex'` : `document.getElementById('custom-modal').style.display='flex'`}">
+      <div class="icon">${usageData.tier === 'free' ? '🔒' : '✏️'}</div>
+      <div class="copy">
+        <h3>Build Your Own Scenario</h3>
+        <p>${usageData.tier === 'free' ? 'Premium feature — describe any real situation for AI-powered practice' : 'Describe any situation and practice with AI feedback'}</p>
+      </div>
+    </div>`;
+
+  document.getElementById('app').innerHTML = `
+    <div class="header">
+      <h1>Practice Scenarios</h1>
+      <p>Each scenario is AI-powered. Same situation, different outcomes every time — based on how you respond.</p>
+    </div>
+    <div class="usage-bar">${usageHtml}</div>
+    <div class="filters">${filterBtns}</div>
+    <div class="grid" id="scenario-grid">
+      ${customCard}
+      ${cards}
+    </div>`;
+}
+
+function setCategory(cat) {
+  activeCategory = cat;
+  renderApp();
+}
+
+async function startScenario(scenarioId) {
+  // Re-check limit before navigating
+  if (usageData.tier === 'free' && usageData.remaining <= 0) {
+    document.getElementById('upgrade-modal').style.display = 'flex';
+    return;
+  }
+  localStorage.setItem('st_pending_scenario_id', scenarioId);
+  localStorage.removeItem('st_pending_custom_setup');
+  window.location.href = '/scenario-play.html';
+}
+
+async function startCustomScenario() {
+  const setup = document.getElementById('custom-setup-input').value.trim();
+  if (!setup) return;
+  closeModal('custom-modal');
+  localStorage.setItem('st_pending_custom_setup', setup);
+  localStorage.removeItem('st_pending_scenario_id');
+  window.location.href = '/scenario-play.html';
+}
+
+async function init() {
+  if (!token) { showAuthGate(); return; }
+
+  const [scenariosData, usageRes] = await Promise.all([
+    api('/api/scenario-play/'),
+    api('/api/scenario-play/usage'),
+  ]);
+
+  if (!scenariosData) return; // auth gate shown
+
+  allScenarios = scenariosData.scenarios || [];
+  if (usageRes) {
+    usageData = usageRes;
+    userTier = usageRes.tier;
+    localStorage.setItem('signal_theory_tier', usageRes.tier);
+  }
+
+  renderApp();
+}
+
+init();
+</script>
+</body>
+</html>

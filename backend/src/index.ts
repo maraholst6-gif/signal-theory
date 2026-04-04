@@ -14,6 +14,7 @@ import adminRoutes, { getActivePrompt } from './routes/admin';
 import convertkitRoutes from './routes/convertkit';
 import emailRoutes from './routes/email';
 import testEmailRoutes from './routes/testEmail';
+import scenarioPlayRoutes from './routes/scenario-play';
 import { requireAuth } from './middleware/auth';
 
 dotenv.config();
@@ -81,6 +82,7 @@ app.use('/api/convertkit', convertkitRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/email', testEmailRoutes);  // TEST: /api/email/test/:template
 app.use('/unsubscribe', emailRoutes);   // GET /unsubscribe/:token
+app.use('/api/scenario-play', scenarioPlayRoutes);
 app.get('/api/prompts/scenario-coach', requireAuth, getActivePrompt);
 
 // ─────────────────────────────────────────────
