@@ -4,6 +4,8 @@ services:
     runtime: docker
     plan: starter
     region: oregon
+    rootDir: backend
+    preDeployCommand: node ../run-migration.js
     envVars:
       - key: PORT
         value: 3000
@@ -17,6 +19,17 @@ services:
         fromDatabase:
           name: signal-theory-db
           property: connectionString
+
+  - type: web
+    name: signal-theory-demo
+    runtime: static
+    plan: free
+    buildCommand: echo "No build needed"
+    staticPublishPath: app
+    routes:
+      - type: rewrite
+        source: /
+        destination: /index.html
 
 databases:
   - name: signal-theory-db

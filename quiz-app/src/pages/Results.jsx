@@ -330,14 +330,6 @@ export default function Results() {
               >
                 Copy Link
               </button>
-              {answers.length > 0 && answers.some(a => a !== null) && (
-                <button
-                  onClick={() => navigate('/quiz', { state: { reviewMode: true, reviewAnswers: answers } })}
-                  className="px-4 py-2 rounded-lg border border-border bg-surface text-muted hover:text-text hover:border-muted transition-all text-sm font-medium"
-                >
-                  Review My Answers
-                </button>
-              )}
               <button
                 onClick={() => navigate('/')}
                 className="px-4 py-2 rounded-lg border border-border bg-surface text-muted hover:text-text hover:border-muted transition-all text-sm font-medium"
