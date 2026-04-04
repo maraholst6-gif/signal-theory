@@ -261,6 +261,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
             <div class="module-meta"><span>3 levels</span><span>&#183;</span><span>10 questions each</span></div>
             <button class="btn-primary" style="pointer-events:none">Start Training &#8594;</button>
           </div>
+          <a href="/app/onboarding.html" class="card module-card" id="onboardingCard" style="text-decoration:none;display:block">
+            <div class="module-icon">&#127919;</div>
+            <h3>Start Here: Your Profile</h3>
+            <p id="onboardingDesc">Learn about the 8 readiness profiles and understand your strengths & blind spots.</p>
+            <div class="module-meta">
+              <span>8 profiles</span><span>&#183;</span><span>5 slides each</span>
+              <span id="onboardingCompleteTag" style="display:none;background:#10b981;color:white;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">✓ Completed</span>
+            </div>
+            <button class="btn-outline" style="pointer-events:none" id="onboardingButton">Get Started &#8594;</button>
+          </a>
           <div class="card module-card" onclick="switchTab('tabScenarios')">
             <div class="module-icon">&#127917;</div>
             <h3>Interactive Scenarios</h3>
@@ -275,13 +285,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
             <div class="module-meta"><span>AI-powered</span><span>&#183;</span><span>Instant feedback</span></div>
             <button class="btn-primary" style="pointer-events:none">Analyze &#8594;</button>
           </div>
-          <a href="/app/onboarding.html" class="card module-card" style="text-decoration:none;display:block">
-            <div class="module-icon">&#127919;</div>
-            <h3>Start Here: Your Profile</h3>
-            <p>Not sure what your readiness profile means? Read the full breakdown of all 8 profiles.</p>
-            <div class="module-meta"><span>8 profiles</span><span>&#183;</span><span>Strengths &amp; blind spots</span></div>
-            <button class="btn-outline" style="pointer-events:none">Learn About Profiles &#8594;</button>
-          </a>
         </div>
       </div>
 
@@ -1243,6 +1246,38 @@ if (_resetToken) {
   window.addEventListener('DOMContentLoaded', function() {
     document.getElementById('resetPasswordModal').style.display='flex';
   });
+}
+
+// Check onboarding completion status and update card
+function updateOnboardingCard() {
+  const completed = localStorage.getItem('onboardingCompleted') === 'true';
+  const selectedProfile = localStorage.getItem('selectedProfile');
+  
+  if (completed && selectedProfile) {
+    // Show completed state
+    document.getElementById('onboardingDesc').textContent = `You completed the ${getProfileName(selectedProfile)} profile walkthrough.`;
+    document.getElementById('onboardingButton').textContent = 'Review Again →';
+    document.getElementById('onboardingCompleteTag').style.display = 'inline-block';
+  }
+}
+
+function getProfileName(key) {
+  const names = {
+    'secure-ready': 'Secure & Ready',
+    'anxious-overreader': 'Anxious Overreader',
+    'confident-misreader': 'Confident Misreader',
+    'guarded-hesitant': 'Guarded & Hesitant',
+    'hopeful-projector': 'Hopeful Projector',
+    'cynical-burned-out': 'Cynical & Burned Out',
+    'pattern-blind-repeater': 'Pattern-Blind Repeater',
+    'overthinking-analyzer': 'Overthinking Analyzer'
+  };
+  return names[key] || 'your';
+}
+
+// Run on page load
+if (token) {
+  updateOnboardingCard();
 }
 </script>
 <!-- FORGOT PASSWORD MODAL -->

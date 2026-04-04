@@ -1028,6 +1028,9 @@ function nextSlide() {
     currentSlide++;
     renderProgressDots();
     renderSlide(currentSlide);
+  } else {
+    // Reached the end of slides, mark as completed
+    localStorage.setItem('onboardingCompleted', 'true');
   }
 }
 
