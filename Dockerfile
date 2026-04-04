@@ -31,6 +31,9 @@ COPY backend/email-action-plans ./email-action-plans
 # Copy frontend static files so Express can serve them
 COPY app ./app
 
+# Verify files were copied (debug)
+RUN ls -la /srv/app && echo "=== app directory contents ===" && ls -la /srv/app | head -20
+
 EXPOSE 3000
 
 CMD ["sh", "-c", "node dist/db/migrate.js && node load-templates.js && node dist/index.js"]
