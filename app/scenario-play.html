@@ -11,8 +11,9 @@
     --surface: #17171a;
     --surface2: #1e1e22;
     --border: #2a2a30;
-    --text: #e8e8ec;
-    --text-muted: #8888a0;
+    --text: #ffffff;
+    --text-muted: #b8b8c8;
+    --text-dim: #8888a0;
     --accent: #c0392b;
     --accent-light: #e74c3c;
     --green: #27ae60;
@@ -31,8 +32,8 @@
 
   /* SCENARIO HEADER */
   .scenario-header { margin-bottom: 24px; }
-  .scenario-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
-  .scenario-setup { font-size: 14px; color: var(--text-muted); line-height: 1.6; padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  .scenario-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .scenario-setup { font-size: 15px; color: var(--text-muted); line-height: 1.6; padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
 
   /* TURN COUNTER */
   .turn-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
@@ -44,7 +45,7 @@
 
   /* CONVERSATION THREAD */
   .conversation-thread { margin-bottom: 20px; }
-  .thread-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-muted); margin-bottom: 10px; }
+  .thread-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-dim); margin-bottom: 10px; }
   .thread-turn { margin-bottom: 10px; }
   .thread-you { font-size: 13px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px 8px 2px 8px; padding: 10px 12px; margin-bottom: 4px; }
   .thread-you-label { font-size: 10px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 3px; }
@@ -53,8 +54,8 @@
 
   /* SITUATION CARD */
   .situation-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 20px; }
-  .situation-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-muted); margin-bottom: 10px; }
-  .situation-text { font-size: 15px; line-height: 1.65; }
+  .situation-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-dim); margin-bottom: 10px; }
+  .situation-text { font-size: 15px; line-height: 1.65; color: var(--text); }
 
   /* OPTIONS */
   .options-section { margin-bottom: 16px; }
@@ -69,7 +70,7 @@
   .custom-label { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
   .custom-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 14px; font-family: var(--font); line-height: 1.5; padding: 12px 14px; border-radius: 10px; resize: vertical; min-height: 80px; transition: border-color .2s; }
   .custom-input:focus { outline: none; border-color: var(--accent-light); }
-  .custom-input::placeholder { color: var(--text-muted); }
+  .custom-input::placeholder { color: var(--text-dim); }
   .custom-input:disabled { opacity: .6; cursor: not-allowed; }
 
   /* ACTIONS */
@@ -97,9 +98,9 @@
   /* PREVIEW */
   .preview-container { padding: 8px 0; }
   .preview-cat-badge { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; padding: 4px 10px; border-radius: 20px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); margin-bottom: 14px; }
-  .preview-title { font-size: 24px; font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
+  .preview-title { font-size: 24px; font-weight: 700; margin-bottom: 16px; line-height: 1.3; color: var(--text); }
   .preview-setup { font-size: 15px; line-height: 1.7; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 10px; }
-  .preview-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; }
+  .preview-hint { font-size: 13px; color: var(--text-dim); margin-bottom: 28px; }
   .preview-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
   .preview-begin { background: var(--accent-light); color: #fff; padding: 13px 28px; border-radius: 9px; font-size: 15px; font-weight: 700; border: none; cursor: pointer; transition: opacity .2s; }
   .preview-begin:hover { opacity: .85; }
@@ -172,7 +173,7 @@ function escapeHtml(str) {
 function confirmExit() {
   if (!state.session_id || state.complete) {
     localStorage.removeItem('active_scenario');
-    window.location.href = '/scenarios.html';
+    window.location.href = '/app/scenarios.html';
     return;
   }
   if (confirm('End this scenario and get feedback on what you\'ve done so far?')) {
@@ -347,7 +348,7 @@ async function endScenario(reason) {
 
     localStorage.setItem('st_scenario_result', JSON.stringify(data));
     localStorage.removeItem('active_scenario');
-    window.location.href = '/scenario-result.html';
+    window.location.href = '/app/scenario-result.html';
   } catch (err) {
     state.loading = false;
     state.error = err.message || 'Failed to generate analysis. Please try again.';
@@ -360,7 +361,7 @@ async function startScenario() {
   const customSetup = localStorage.getItem('st_pending_custom_setup');
 
   if (!scenarioId && !customSetup) {
-    window.location.href = '/scenarios.html';
+    window.location.href = '/app/scenarios.html';
     return;
   }
 
@@ -388,12 +389,12 @@ async function startScenario() {
   } catch (err) {
     if (err.code === 'LIMIT_REACHED') {
       alert('You\'ve reached your weekly limit. Upgrade for unlimited scenarios.');
-      window.location.href = '/scenarios.html';
+      window.location.href = '/app/scenarios.html';
       return;
     }
     if (err.code === 'PREMIUM_REQUIRED') {
       alert('This scenario requires a premium account.');
-      window.location.href = '/scenarios.html';
+      window.location.href = '/app/scenarios.html';
       return;
     }
     if (err.status === 401) { window.location.href = '/'; return; }
@@ -429,7 +430,7 @@ function showPreview() {
       <p class="preview-hint">5 turns to navigate this interaction. Signal Theory analyzes your responses at the end.</p>
       <div class="preview-actions">
         <button class="preview-begin" onclick="beginFromPreview()">Begin Scenario →</button>
-        <span class="preview-back" onclick="window.location.href='/scenarios.html'">← Back to Scenarios</span>
+        <span class="preview-back" onclick="window.location.href='/app/scenarios.html'">← Back to Scenarios</span>
       </div>
     </div>
   `;
