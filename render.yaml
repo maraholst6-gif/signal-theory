@@ -25,11 +25,11 @@ services:
     runtime: static
     plan: free
     buildCommand: echo "No build needed"
-    staticPublishPath: .
+    staticPublishPath: app
     routes:
       - type: rewrite
         source: /
-        destination: /test-ui.html
+        destination: /index.html
 
 databases:
   - name: signal-theory-db
