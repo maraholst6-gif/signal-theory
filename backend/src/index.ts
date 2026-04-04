@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import { generalLimiter } from './middleware/rateLimit';
 import authRoutes from './routes/auth';
 import profileRoutes from './routes/profile';
@@ -112,6 +113,13 @@ app.get('/api/diag/claude', async (_req, res) => {
     res.json({ ok: false, status: e.status, message: e.message, key_prefix: (process.env.ANTHROPIC_API_KEY ?? '').slice(0, 12) + '...' });
   }
 });
+
+// ─────────────────────────────────────────────
+// Static file serving (frontend)
+// Serves /app directory — path from /srv/dist → /srv/app
+// ─────────────────────────────────────────────
+
+app.use(express.static(path.join(__dirname, '../app')));
 
 // ─────────────────────────────────────────────
 // 404 handler
