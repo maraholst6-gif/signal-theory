@@ -24,17 +24,22 @@ export function useUsageTracking(): UsageTrackingActions {
   // ── Compute current usage state ──
   const computeUsageState = useCallback(
     async (_user: User): Promise<UsageState> => {
-      // Check RevenueCat for authoritative subscription status
-      const rcPro = await checkProEntitlement();
-
-      // Fetch current usage from API (handles week reset server-side)
+      // Fetch current usage from API first — DB tier is authoritative for test accounts
       const result = await api.usage.get();
+      console.log('[useUsageTracking] /api/usage response:', result.data);
 
       const scenariosUsed = result.data?.scenarios_used_week ?? 0;
       const analysesUsed = result.data?.analyses_used_week ?? 0;
 
-      // Also treat DB tier = 'premium' as pro (covers test accounts without RevenueCat)
-      const isPro = rcPro || result.data?.tier === 'premium';
+      // DB tier = 'premium' takes priority; skip RevenueCat entirely if already premium
+      const dbPremium = result.data?.tier === 'premium';
+      console.log('[useUsageTracking] dbPremium:', dbPremium, '| tier:', result.data?.tier);
+
+      const rcPro = dbPremium ? false : await checkProEntitlement();
+      console.log('[useUsageTracking] rcPro:', rcPro);
+
+      const isPro = dbPremium || rcPro;
+      console.log('[useUsageTracking] isPro:', isPro);
 
       if (isPro) {
         return {
