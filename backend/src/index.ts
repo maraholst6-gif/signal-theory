@@ -12,6 +12,7 @@ import quizRoutes from './routes/quizzes';
 import adminRoutes, { getActivePrompt } from './routes/admin';
 import convertkitRoutes from './routes/convertkit';
 import emailRoutes from './routes/email';
+import testEmailRoutes from './routes/testEmail';
 import { requireAuth } from './middleware/auth';
 
 dotenv.config();
@@ -72,6 +73,7 @@ app.use('/api/quizzes', quizRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/convertkit', convertkitRoutes);
 app.use('/api/email', emailRoutes);
+app.use('/api/email', testEmailRoutes);  // TEST: /api/email/test/:template
 app.use('/unsubscribe', emailRoutes);   // GET /unsubscribe/:token
 app.get('/api/prompts/scenario-coach', requireAuth, getActivePrompt);
 
