@@ -96,7 +96,7 @@ router.post('/signup', authLimiter, async (req: Request, res: Response) => {
     const userResult = await pool.query(
       `INSERT INTO users (email, password_hash, display_name, profile_type, quiz_profile_id)
        VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, email, display_name, profile_type, subscription_status,
+       RETURNING id, email, display_name, profile_type, subscription_status, tier,
                  scenarios_used_week, analyses_used_week, week_reset_at, quiz_profile_id, created_at`,
       [
         normalizedEmail,
@@ -147,7 +147,7 @@ router.post('/login', authLimiter, async (req: Request, res: Response) => {
 
   try {
     const result = await pool.query(
-      `SELECT id, email, password_hash, display_name, profile_type, subscription_status,
+      `SELECT id, email, password_hash, display_name, profile_type, subscription_status, tier,
               scenarios_used_week, analyses_used_week, week_reset_at, quiz_profile_id, created_at
        FROM users WHERE email = $1`,
       [normalizedEmail]

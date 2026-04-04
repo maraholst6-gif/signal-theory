@@ -117,31 +117,21 @@ app.get('/api/diag/claude', async (_req, res) => {
 
 // ─────────────────────────────────────────────
 // Static file serving (frontend)
-// Serves /app directory — path from /srv/dist → /srv/app
+// Dockerfile copies app/ → /srv/app
 // ─────────────────────────────────────────────
 
-const possibleStaticPaths = [
-  '/srv/app',                              // Dockerfile WORKDIR /srv + COPY app ./app
-  path.join(__dirname, '../app'),          // /srv/dist/../app = /srv/app
-  path.join(__dirname, '../../app'),       // fallback if nested deeper
-  path.join(process.cwd(), 'app'),         // relative to CWD
-];
-console.log('[static] __dirname:', __dirname, '| cwd:', process.cwd());
-let staticPath = '';
-for (const p of possibleStaticPaths) {
-  if (fs.existsSync(p)) {
-    staticPath = p;
-    console.log('[static] Found app directory at:', p);
-    console.log('[static] Files:', fs.readdirSync(p).filter(f => f.endsWith('.html')));
-    break;
-  }
+const staticPath = '/srv/app';
+if (!fs.existsSync(staticPath)) {
+  console.error('[FATAL] /srv/app directory not found! Check Dockerfile COPY app ./app step.');
+  process.exit(1);
 }
-if (!staticPath) {
-  console.error('[static] Could not find app directory. Tried:', possibleStaticPaths);
-  staticPath = possibleStaticPaths[0]; // default so express.static doesn't crash
-}
+console.log('[static] Serving from:', staticPath);
+console.log('[static] HTML files:', fs.readdirSync(staticPath).filter(f => f.endsWith('.html')));
 
-app.use(express.static(staticPath));
+app.use('/app', express.static(staticPath));
+
+// Redirect root to /app/
+app.get('/', (_req, res) => res.redirect('/app/'));
 
 // ─────────────────────────────────────────────
 // 404 handler
