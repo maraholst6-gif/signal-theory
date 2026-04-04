@@ -13,7 +13,7 @@
     --border: #2a2a30;
     --text: #ffffff;
     --text-muted: #b8b8c8;
-    --text-dim: #8888a0;
+    --text-dim: rgba(255,255,255,0.65);
     --accent: #c0392b;
     --accent-light: #e74c3c;
     --green: #27ae60;
@@ -321,7 +321,7 @@ async function submitTurn(userResponse) {
     }
   } catch (err) {
     state.error = err.message || 'Something went wrong. Please try again.';
-    if (err.status === 401) { window.location.href = '/'; return; }
+    if (err.status === 401) { window.location.href = '/app/'; return; }
   } finally {
     state.loading = false;
   }
@@ -397,7 +397,7 @@ async function startScenario() {
       window.location.href = '/app/scenarios.html';
       return;
     }
-    if (err.status === 401) { window.location.href = '/'; return; }
+    if (err.status === 401) { window.location.href = '/app/'; return; }
     state.error = err.message || 'Failed to start scenario.';
   } finally {
     state.loading = false;
@@ -447,7 +447,7 @@ function beginFromPreview() {
 // ── Init ──────────────────────────────────────────────────
 
 if (!token) {
-  window.location.href = '/';
+  window.location.href = '/app/';
 } else {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('preview') === '1') {

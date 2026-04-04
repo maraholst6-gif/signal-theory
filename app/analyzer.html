@@ -13,7 +13,7 @@
     --border: #2a2a30;
     --text: #ffffff;
     --text-muted: #b8b8c8;
-    --text-dim: #8888a0;
+    --text-dim: rgba(255,255,255,0.65);
     --accent: #c0392b;
     --accent-light: #e74c3c;
     --green: #27ae60;
@@ -94,7 +94,7 @@
 
 <nav class="nav">
   <span class="nav-brand">Signal Theory</span>
-  <a href="/" class="nav-link">← Dashboard</a>
+  <a href="/app/" class="nav-link">← Dashboard</a>
 </nav>
 
 <div class="container">
@@ -152,7 +152,7 @@ const API_BASE = 'https://signal-theory-backend.onrender.com';
 let token = localStorage.getItem('signal_theory_token') || '';
 
 if (!token) {
-  window.location.href = '/';
+  window.location.href = '/app/';
 }
 
 const SIGNAL_CONFIG = {
@@ -206,7 +206,7 @@ async function runAnalysis() {
     const data = await res.json();
 
     if (!res.ok) {
-      if (res.status === 401) { window.location.href = '/'; return; }
+      if (res.status === 401) { window.location.href = '/app/'; return; }
       throw new Error(data.error || 'Analysis failed. Please try again.');
     }
 

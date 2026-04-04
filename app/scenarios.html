@@ -13,7 +13,7 @@
     --border: #2a2a30;
     --text: #ffffff;
     --text-muted: #b8b8c8;
-    --text-dim: #8888a0;
+    --text-dim: rgba(255,255,255,0.65);
     --accent: #c0392b;
     --accent-light: #e74c3c;
     --gold: #f0a500;
@@ -112,8 +112,8 @@
 <nav class="nav">
   <span class="nav-brand">Signal Theory</span>
   <div class="nav-right">
-    <a href="/" class="nav-link">← Dashboard</a>
-    <a href="/upgrade.html" class="nav-link" id="nav-upgrade" style="display:none">Upgrade</a>
+    <a href="/app/" class="nav-link">← Dashboard</a>
+    <a href="/app/upgrade.html" class="nav-link" id="nav-upgrade" style="display:none">Upgrade</a>
   </div>
 </nav>
 
@@ -128,7 +128,7 @@
     <p>Free tier includes 3 beginner scenarios per week. Upgrade for unlimited access, intermediate and advanced scenarios, and custom scenario building.</p>
     <div class="modal-btns">
       <button class="btn btn-secondary" onclick="closeModal('upgrade-modal')">Maybe later</button>
-      <button class="btn btn-primary" onclick="window.location.href='/upgrade.html'">Upgrade Now</button>
+      <button class="btn btn-primary" onclick="window.location.href='/app/upgrade.html'">Upgrade Now</button>
     </div>
   </div>
 </div>
@@ -174,7 +174,7 @@ function showAuthGate() {
     <div class="auth-gate">
       <h2>Sign in to practice</h2>
       <p>Create a free account to access Signal Theory scenario training.</p>
-      <button class="btn btn-primary" style="width:100%" onclick="window.location.href='/'">Go to Sign In</button>
+      <button class="btn btn-primary" style="width:100%" onclick="window.location.href='/app/'">Go to Sign In</button>
     </div>`;
 }
 
