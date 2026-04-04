@@ -93,7 +93,7 @@ async function generateFirstSituation(
   const stateDesc = stateDescriptions[initial_state] ?? stateDescriptions['neutral_curious'];
 
   const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-6',
+    model: 'claude-3-5-sonnet-20241022',
     max_tokens: 512,
     temperature: 0.85,
     messages: [
@@ -184,7 +184,7 @@ ${historyText}
 ${session.current_situation}`;
 
   const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-6',
+    model: 'claude-3-5-sonnet-20241022',
     max_tokens: 768,
     temperature: 0.75,
     system: systemPrompt,
@@ -230,7 +230,7 @@ async function generateAnalysis(session: ScenarioSession): Promise<{
   const finalStateLabel = STATE_LABELS[session.current_state] ?? session.current_state;
 
   const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-6',
+    model: 'claude-3-5-sonnet-20241022',
     max_tokens: 800,
     temperature: 0.4,
     messages: [
