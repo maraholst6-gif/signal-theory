@@ -3,1180 +3,1108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Start Here: Understanding Your Profile — Signal Theory</title>
-<meta name="description" content="Learn about the 8 readiness profiles in Signal Theory. Find your pattern, understand your blind spots, and know exactly what to work on.">
+<title>Start Here: Your Profile — Signal Theory</title>
+<meta name="description" content="Discover your readiness profile and get a personalized action plan for reading signals more clearly.">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --bg: #1a1a1a;
-    --surface: #2a2a2a;
-    --surface2: #333;
-    --border: #3a3a3a;
-    --text: #f5f5f5;
-    --muted: #a0a0a0;
-    --accent: #FF6B35;
-    --accent-hover: #e55a25;
-    --green-bg: #0a2e1a;
-    --green-text: #4ade80;
-    --amber-bg: #2e1a0a;
-    --amber-text: #fb923c;
-    --radius: 12px;
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* ── LAYOUT ── */
-  .container {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
-
-  /* ── NAV ── */
-  nav {
-    background: var(--surface);
-    border-bottom: 2px solid var(--accent);
-    position: sticky;
-    top: 0;
-    z-index: 200;
-  }
-
-  .nav-inner {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 0 24px;
-    height: 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .nav-back {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--muted);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: color 0.2s;
-    white-space: nowrap;
-  }
-
-  .nav-back:hover { color: var(--accent); }
-
-  .nav-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text);
-    text-align: center;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .nav-cta {
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.2s;
-    white-space: nowrap;
-  }
-
-  .nav-cta:hover { background: var(--accent-hover); }
-
-  /* ── HERO ── */
-  .page-hero {
-    padding: 64px 0 48px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .hero-eyebrow {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--accent);
-    margin-bottom: 16px;
-  }
-
-  .page-hero h1 {
-    font-size: clamp(28px, 5vw, 44px);
-    font-weight: 900;
-    line-height: 1.1;
-    letter-spacing: -0.8px;
-    margin-bottom: 16px;
-  }
-
-  .page-hero p {
-    font-size: 17px;
-    color: var(--muted);
-    max-width: 540px;
-    margin: 0 auto;
-    line-height: 1.7;
-  }
-
-  .page-hero .hero-note {
-    margin-top: 24px;
-    font-size: 14px;
-    color: var(--muted);
-    font-style: italic;
-  }
-
-  /* ── PROFILE GRID NAV ── */
-  .profile-nav-section {
-    padding: 48px 0 40px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--accent);
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  .profile-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 8px;
-  }
-
-  .profile-nav-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    cursor: pointer;
-    text-decoration: none;
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-    transition: border-color 0.2s, background 0.2s;
-    line-height: 1.3;
-  }
-
-  .profile-nav-btn:hover {
-    border-color: var(--accent);
-    background: var(--surface2);
-  }
-
-  .profile-nav-btn .pnb-emoji {
-    font-size: 22px;
-    flex-shrink: 0;
-  }
-
-  .profile-nav-btn .pnb-number {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 500;
-    display: block;
-  }
-
-  /* ── PROFILES ── */
-  .profiles-section {
-    padding: 56px 0;
-  }
-
-  .profile-block {
-    margin-bottom: 72px;
-    scroll-margin-top: 80px;
-  }
-
-  .profile-block:last-child { margin-bottom: 0; }
-
-  .profile-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .profile-emoji {
-    font-size: 40px;
-    flex-shrink: 0;
-    line-height: 1;
-  }
-
-  .profile-header-text {}
-
-  .profile-number {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-
-  .profile-name {
-    font-size: clamp(22px, 4vw, 30px);
-    font-weight: 900;
-    line-height: 1.1;
-    letter-spacing: -0.4px;
-    margin-bottom: 6px;
-  }
-
-  .profile-summary {
-    font-size: 16px;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  .profile-body {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .profile-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 22px;
-  }
-
-  .profile-card-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-
-  .profile-card ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .profile-card ul li {
-    font-size: 15px;
-    color: #ccc;
-    line-height: 1.6;
-    padding-left: 16px;
-    position: relative;
-  }
-
-  .profile-card ul li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: var(--border);
-    font-size: 13px;
-  }
-
-  .profile-card ol {
-    list-style: none;
-    counter-reset: item;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .profile-card ol li {
-    font-size: 15px;
-    color: #ccc;
-    line-height: 1.6;
-    padding-left: 28px;
-    position: relative;
-    counter-increment: item;
-  }
-
-  .profile-card ol li::before {
-    content: counter(item);
-    position: absolute;
-    left: 0;
-    width: 20px;
-    height: 20px;
-    background: var(--accent);
-    color: white;
-    font-size: 11px;
-    font-weight: 800;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    top: 2px;
-  }
-
-  /* Strength box */
-  .strength-box {
-    background: var(--green-bg);
-    border: 1px solid #1a4a2a;
-    border-radius: var(--radius);
-    padding: 18px 20px;
-  }
-
-  .strength-box .profile-card-label { color: var(--green-text); }
-
-  .strength-box p {
-    font-size: 15px;
-    color: #d4fce5;
-    line-height: 1.6;
-  }
-
-  /* Blind spot box */
-  .blindspot-box {
-    background: var(--amber-bg);
-    border: 1px solid #4a2a0a;
-    border-radius: var(--radius);
-    padding: 18px 20px;
-  }
-
-  .blindspot-box .profile-card-label { color: var(--amber-text); }
-
-  .blindspot-box p {
-    font-size: 15px;
-    color: #fde8cc;
-    line-height: 1.6;
-  }
-
-  /* Training focus box */
-  .training-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    padding: 18px 20px;
-  }
-
-  .training-box .profile-card-label { color: var(--accent); }
-
-  .training-box ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .training-box ul li {
-    font-size: 14px;
-    color: var(--muted);
-    line-height: 1.5;
-    padding-left: 0;
-  }
-
-  .training-box ul li::before { display: none; }
-
-  .training-box ul li strong {
-    color: var(--text);
-    font-weight: 600;
-  }
-
-  /* Profile separator */
-  .profile-sep {
-    height: 1px;
-    background: var(--border);
-    margin: 64px 0 0;
-  }
-
-  /* ── OVERVIEW SECTION ── */
-  .overview-section {
-    padding: 56px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .section-headline {
-    font-size: clamp(22px, 4vw, 32px);
-    font-weight: 800;
-    line-height: 1.2;
-    letter-spacing: -0.4px;
-    margin-bottom: 20px;
-  }
-
-  .body-copy {
-    font-size: 16px;
-    line-height: 1.8;
-    color: #ccc;
-    margin-bottom: 16px;
-  }
-
-  .body-copy strong { color: var(--text); }
-
-  .steps-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-top: 24px;
-  }
-
-  .step-row {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-  }
-
-  .step-num {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: white;
-    font-size: 14px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .step-text {
-    font-size: 15px;
-    color: #ccc;
-    line-height: 1.6;
-    padding-top: 6px;
-  }
-
-  .step-text strong { color: var(--text); }
-
-  /* ── BOTTOM CTA ── */
-  .bottom-cta {
-    padding: 72px 0;
-    text-align: center;
-    border-top: 1px solid var(--border);
-  }
-
-  .bottom-cta h2 {
-    font-size: clamp(24px, 4vw, 36px);
-    font-weight: 900;
-    letter-spacing: -0.5px;
-    margin-bottom: 12px;
-  }
-
-  .bottom-cta p {
-    font-size: 16px;
-    color: var(--muted);
-    margin-bottom: 32px;
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.6;
-  }
-
-  .cta-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .btn-primary {
-    display: inline-block;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: var(--radius);
-    padding: 16px 32px;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.2s, transform 0.15s;
-    text-align: center;
-  }
-
-  .btn-primary:hover {
-    background: var(--accent-hover);
-    transform: translateY(-1px);
-  }
-
-  .btn-outline {
-    display: inline-block;
-    background: transparent;
-    color: var(--accent);
-    border: 2px solid var(--accent);
-    border-radius: var(--radius);
-    padding: 14px 32px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s, transform 0.15s;
-    text-align: center;
-  }
-
-  .btn-outline:hover {
-    background: var(--accent);
-    color: white;
-    transform: translateY(-1px);
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 40px 0;
-  }
-
-  .footer-inner {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 0 24px;
-    text-align: center;
-  }
-
-  .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-  }
-
-  .footer-links a {
-    font-size: 14px;
-    color: var(--muted);
-    text-decoration: none;
-  }
-
-  .footer-links a:hover { color: var(--accent); }
-
-  .footer-copy {
-    font-size: 13px;
-    color: #555;
-  }
-
-  /* ── BACK TO TOP ── */
-  .back-to-top {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--muted);
-    text-decoration: none;
-    margin-top: 48px;
-    transition: color 0.2s;
-  }
-
-  .back-to-top:hover { color: var(--accent); }
-
-  /* ── RESPONSIVE ── */
-  @media (min-width: 600px) {
-    .cta-group {
-      flex-direction: row;
-      justify-content: center;
-    }
-  }
-
-  @media (max-width: 500px) {
-    .profile-grid { grid-template-columns: 1fr; }
-    .profile-header { flex-direction: column; gap: 10px; }
-    .nav-title { display: none; }
-    .page-hero { padding: 48px 0 36px; }
-  }
-
-  @media (max-width: 400px) {
-    .nav-cta { display: none; }
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #1a1a1a;
+  --surface: #2a2a2a;
+  --surface2: #333;
+  --border: #3a3a3a;
+  --text: #f5f5f5;
+  --muted: #a0a0a0;
+  --accent: #FF6B35;
+  --accent-hover: #e55a25;
+  --green-bg: rgba(16,185,129,0.12);
+  --green-border: rgba(16,185,129,0.3);
+  --green-text: #6ee7b7;
+  --amber-bg: rgba(245,158,11,0.12);
+  --amber-border: rgba(245,158,11,0.3);
+  --amber-text: #fcd34d;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app-shell {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  background: var(--surface);
+  padding: 16px 24px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  border-bottom: 2px solid var(--accent);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.app-header h1 { font-size: 20px; font-weight: 700; }
+.header-back {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 0;
+  display: none;
+}
+.header-back.visible { display: block; }
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 16px;
+  padding-bottom: 32px;
+}
+
+/* ===== SELECTOR SCREEN ===== */
+#selectorScreen { display: block; }
+#slideScreen { display: none; }
+
+.selector-header {
+  text-align: center;
+  padding: 20px 0 24px;
+}
+.selector-header h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.selector-header p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Current profile banner */
+.current-profile-banner {
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  display: none;
+}
+.current-profile-banner.visible { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cpb-left { display: flex; align-items: center; gap: 10px; }
+.cpb-emoji { font-size: 24px; }
+.cpb-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.cpb-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.cpb-continue {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.cpb-continue:hover { background: var(--accent-hover); }
+
+/* Profile grid */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.profile-btn {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.profile-btn:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  background: #2e2e2e;
+}
+.profile-btn.selected {
+  border-color: var(--accent);
+  background: rgba(255,107,53,0.08);
+}
+.pb-emoji { font-size: 28px; line-height: 1; }
+.pb-name { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
+.pb-summary { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+/* Quiz link */
+.quiz-link-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+.quiz-link-box p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.quiz-link-box a {
+  display: inline-block;
+  background: none;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+.quiz-link-box a:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* ===== SLIDE SCREEN ===== */
+.slide-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0 16px;
+}
+.slide-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.slide-profile-badge .badge-emoji { font-size: 20px; }
+.slide-profile-badge .badge-name { font-size: 15px; font-weight: 700; color: var(--text); }
+
+/* Progress dots */
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.dot.active {
+  background: var(--accent);
+  transform: scale(1.3);
+}
+.dot.visited {
+  background: rgba(255,107,53,0.4);
+}
+
+/* Slide card */
+.slide-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 24px 20px;
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-number {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.slide-emoji-display {
+  font-size: 56px;
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.slide-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.slide-subtitle {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.slide-body {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.slide-body ul {
+  list-style: none;
+  padding: 0;
+}
+.slide-body ul li {
+  padding: 4px 0 4px 18px;
+  position: relative;
+  color: var(--text);
+}
+.slide-body ul li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.slide-body ol {
+  padding-left: 20px;
+}
+.slide-body ol li {
+  padding: 5px 0;
+  color: var(--text);
+}
+
+.highlight-box {
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.highlight-box.green {
+  background: var(--green-bg);
+  border: 1px solid var(--green-border);
+  color: var(--green-text);
+}
+.highlight-box.amber {
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
+  color: var(--amber-text);
+}
+.highlight-box strong {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  opacity: 0.8;
+}
+
+.training-section {
+  margin-bottom: 16px;
+}
+.training-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.cta-box {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-primary {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-secondary {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.btn-secondary:hover { background: #3a3a3a; }
+
+/* Navigation buttons */
+.slide-nav {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.nav-prev, .nav-next {
+  flex: 1;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.nav-prev {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.nav-prev:hover:not(:disabled) { background: #3a3a3a; }
+.nav-prev:disabled { opacity: 0.35; cursor: default; }
+.nav-next {
+  background: var(--accent);
+  color: white;
+}
+.nav-next:hover { background: var(--accent-hover); }
+
+/* Mobile */
+@media (max-width: 420px) {
+  .profile-grid { grid-template-columns: 1fr; }
+  .slide-title { font-size: 19px; }
+  .slide-emoji-display { font-size: 44px; }
+}
 </style>
 </head>
-<body id="top">
-
-<!-- ── NAVIGATION ── -->
-<nav>
-  <div class="nav-inner">
-    <a href="/app" class="nav-back">← App</a>
-    <div class="nav-title">Start Here: Your Profile</div>
-    <a href="/quiz/" class="nav-cta">Take the Quiz</a>
+<body>
+<div class="app-shell">
+  <div class="app-header">
+    <button class="header-back" id="headerBack" onclick="showSelector()">← Profiles</button>
+    <h1>Start Here</h1>
+    <div style="width:80px"></div>
   </div>
-</nav>
 
-<!-- ── HERO ── -->
-<section class="page-hero">
-  <div class="container">
-    <div class="hero-eyebrow">Onboarding</div>
-    <h1>Start Here:<br>Understanding Your Profile</h1>
-    <p>After the quiz, you'll get one of 8 readiness profiles. Each one maps a specific pattern in how you read signals and respond to uncertainty. Find yours below.</p>
-    <p class="hero-note">These aren't permanent labels. They're snapshots of where you are right now.</p>
+  <div class="main-content">
+
+    <!-- SELECTOR SCREEN -->
+    <div id="selectorScreen">
+      <div class="selector-header">
+        <h2>Select Your Profile</h2>
+        <p>Based on your quiz results — or take the quiz if you haven't yet</p>
+      </div>
+
+      <!-- Current profile banner (shown if already selected) -->
+      <div class="current-profile-banner" id="currentProfileBanner">
+        <div class="cpb-left">
+          <span class="cpb-emoji" id="cpbEmoji"></span>
+          <div>
+            <div class="cpb-label">Your current profile</div>
+            <div class="cpb-name" id="cpbName"></div>
+          </div>
+        </div>
+        <button class="cpb-continue" onclick="continueProfile()">Continue →</button>
+      </div>
+
+      <div class="profile-grid" id="profileGrid">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="quiz-link-box">
+        <p>Don't know your profile yet?</p>
+        <a href="/quiz/">Take the Quiz →</a>
+      </div>
+    </div>
+
+    <!-- SLIDE SCREEN -->
+    <div id="slideScreen">
+      <div class="slide-header">
+        <div class="slide-profile-badge">
+          <span class="badge-emoji" id="slideProfileEmoji"></span>
+          <span class="badge-name" id="slideProfileName"></span>
+        </div>
+      </div>
+
+      <div class="progress-dots" id="progressDots">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="slide-card" id="slideCard">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="slide-nav">
+        <button class="nav-prev" id="navPrev" onclick="prevSlide()">← Previous</button>
+        <button class="nav-next" id="navNext" onclick="nextSlide()">Next →</button>
+      </div>
+    </div>
+
   </div>
-</section>
-
-<!-- ── PROFILE NAVIGATION GRID ── -->
-<section class="profile-nav-section">
-  <div class="container">
-    <div class="section-label">Jump to a Profile</div>
-    <div class="profile-grid">
-      <a href="#profile-1" class="profile-nav-btn">
-        <span class="pnb-emoji">✅</span>
-        <span>
-          <span class="pnb-number">Profile 1</span>
-          Secure &amp; Ready
-        </span>
-      </a>
-      <a href="#profile-2" class="profile-nav-btn">
-        <span class="pnb-emoji">😰</span>
-        <span>
-          <span class="pnb-number">Profile 2</span>
-          Anxious Overreader
-        </span>
-      </a>
-      <a href="#profile-3" class="profile-nav-btn">
-        <span class="pnb-emoji">😎</span>
-        <span>
-          <span class="pnb-number">Profile 3</span>
-          Confident Misreader
-        </span>
-      </a>
-      <a href="#profile-4" class="profile-nav-btn">
-        <span class="pnb-emoji">🛡️</span>
-        <span>
-          <span class="pnb-number">Profile 4</span>
-          Guarded &amp; Hesitant
-        </span>
-      </a>
-      <a href="#profile-5" class="profile-nav-btn">
-        <span class="pnb-emoji">🌱</span>
-        <span>
-          <span class="pnb-number">Profile 5</span>
-          Hopeful Projector
-        </span>
-      </a>
-      <a href="#profile-6" class="profile-nav-btn">
-        <span class="pnb-emoji">🔥</span>
-        <span>
-          <span class="pnb-number">Profile 6</span>
-          Cynical &amp; Burned Out
-        </span>
-      </a>
-      <a href="#profile-7" class="profile-nav-btn">
-        <span class="pnb-emoji">🔄</span>
-        <span>
-          <span class="pnb-number">Profile 7</span>
-          Pattern-Blind Repeater
-        </span>
-      </a>
-      <a href="#profile-8" class="profile-nav-btn">
-        <span class="pnb-emoji">🧠</span>
-        <span>
-          <span class="pnb-number">Profile 8</span>
-          Overthinking Analyzer
-        </span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ── ALL PROFILES ── -->
-<section class="profiles-section">
-  <div class="container">
-
-    <!-- PROFILE 1 -->
-    <div class="profile-block" id="profile-1">
-      <div class="profile-header">
-        <div class="profile-emoji">✅</div>
-        <div class="profile-header-text">
-          <div class="profile-number">Profile 1</div>
-          <div class="profile-name">Secure &amp; Ready</div>
-          <div class="profile-summary">You read signals clearly, pace yourself well, and handle uncertainty without overreacting.</div>
-        </div>
-      </div>
-      <div class="profile-body">
-        <div class="profile-card">
-          <div class="profile-card-label">What this means</div>
-          <ul>
-            <li>You can tell the difference between genuine interest and politeness</li>
-            <li>You don't fill gaps with stories or assume the worst</li>
-            <li>You trust yourself to handle outcomes, good or bad</li>
-            <li>You're grounded when things are unclear</li>
-          </ul>
-        </div>
-        <div class="strength-box">
-          <div class="profile-card-label">Your Strength</div>
-          <p>Emotional stability. You're the guy who doesn't spiral when she doesn't text back for a day.</p>
-        </div>
-        <div class="blindspot-box">
-          <div class="profile-card-label">Your Blind Spot</div>
-          <p>You can sometimes under-read interest because you're so calm about it. If someone is subtle, you might miss the opening.</p>
-        </div>
-        <div class="profile-card">
-          <div class="profile-card-label">What to work on</div>
-          <ol>
-            <li>Stay aware of when your calm becomes passive</li>
-            <li>Practice recognizing soft signals (eye contact, proximity, small touches)</li>
-            <li>Don't wait for certainty before taking action</li>
-          </ol>
-        </div>
-        <div class="training-box">
-          <div class="profile-card-label">Recommended Training Focus</div>
-          <ul>
-            <li><strong>Scenarios:</strong> Timing (when to escalate)</li>
-            <li><strong>Analyzer:</strong> Test your reads on ambiguous situations</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="profile-sep"></div>
-
-    <!-- PROFILE 2 -->
-    <div class="profile-block" id="profile-2" style="margin-top: 64px;">
-      <div class="profile-header">
-        <div class="profile-emoji">😰</div>
-        <div class="profile-header-text">
-          <div class="profile-number">Profile 2</div>
-          <div class="profile-name">Anxious Overreader</div>
-          <div class="profile-summary">You see rejection everywhere, even when it's not there. Every delay feels like disinterest.</div>
-        </div>
-      </div>
-      <div class="profile-body">
-        <div class="profile-card">
-          <div class="profile-card-label">What this means</div>
-          <ul>
-            <li>She doesn't text back for 3 hours → you assume she's ghosting</li>
-            <li>She reschedules → you think she's losing interest</li>
-            <li>She's less enthusiastic than usual → you panic and over-explain</li>
-            <li>You fill silence with stories about what's going wrong</li>
-          </ul>
-        </div>
-        <div class="strength-box">
-          <div class="profile-card-label">Your Strength</div>
-          <p>You're highly attuned to shifts in energy. You notice things others miss.</p>
-        </div>
-        <div class="blindspot-box">
-          <div class="profile-card-label">Your Blind Spot</div>
-          <p>You interpret normal behavior as negative signals. Your anxiety creates the very distance you're afraid of.</p>
-        </div>
-        <div class="profile-card">
-          <div class="profile-card-label">What to work on</div>
-          <ol>
-            <li>Separate signal from story (she's busy ≠ she's pulling away)</li>
-            <li>Practice sitting with uncertainty instead of chasing reassurance</li>
-            <li>Learn to recognize when YOU'RE creating the problem by over-investing too early</li>
-          </ol>
-        </div>
-        <div class="training-box">
-          <div class="profile-card-label">Recommended Training Focus</div>
-          <ul>
-            <li><strong>Scenarios:</strong> Ambiguous situations (practice NOT filling gaps)</li>
-            <li><strong>Analyzer:</strong> Run your anxious interpretations through the framework to see where you're adding narrative</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="profile-sep"></div>
-
-    <!-- PROFILE 3 -->
-    <div class="profile-block" id="profile-3" style="margin-top: 64px;">
-      <div class="profile-header">
-        <div class="profile-emoji">😎</div>
-        <div class="profile-header-text">
-          <div class="profile-number">Profile 3</div>
-          <div class="profile-name">Confident Misreader</div>
-          <div class="profile-summary">You're comfortable and self-assured, but you miss subtle cues. You assume interest when it's just politeness.</div>
-        </div>
-      </div>
-      <div class="profile-body">
-        <div class="profile-card">
-          <div class="profile-card-label">What this means</div>
-          <ul>
-            <li>She's friendly → you think she's flirting</li>
-            <li>She agrees to plans → you think it's a date (she thinks it's networking/friendship)</li>
-            <li>She laughs at your jokes → you think there's chemistry</li>
-            <li>You're surprised when she's "suddenly" not interested</li>
-          </ul>
-        </div>
-        <div class="strength-box">
-          <div class="profile-card-label">Your Strength</div>
-          <p>You don't second-guess yourself. You take action. You're not paralyzed by fear.</p>
-        </div>
-        <div class="blindspot-box">
-          <div class="profile-card-label">Your Blind Spot</div>
-          <p>You're reading confidence for interest. You don't slow down enough to check if the other person is actually on the same page.</p>
-        </div>
-        <div class="profile-card">
-          <div class="profile-card-label">What to work on</div>
-          <ol>
-            <li>Learn to distinguish warmth from attraction</li>
-            <li>Watch for reciprocation, not just receptiveness</li>
-            <li>Slow down and observe before escalating</li>
-          </ol>
-        </div>
-        <div class="training-box">
-          <div class="profile-card-label">Recommended Training Focus</div>
-          <ul>
-            <li><strong>Scenarios:</strong> Misread signals (friendly vs. interested)</li>
-            <li><strong>Analyzer:</strong> Test situations where you thought it was going well but it wasn't</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="profile-sep"></div>
-
-    <!-- PROFILE 4 -->
-    <div class="profile-block" id="profile-4" style="margin-top: 64px;">
-      <div class="profile-header">
-        <div class="profile-emoji">🛡️</div>
-        <div class="profile-header-text">
-          <div class="profile-number">Profile 4</div>
-          <div class="profile-name">Guarded &amp; Hesitant</div>
-          <div class="profile-summary">You hold back even when interest is clear. You're protecting yourself from getting hurt again.</div>
-        </div>
-      </div>
-      <div class="profile-body">
-        <div class="profile-card">
-          <div class="profile-card-label">What this means</div>
-          <ul>
-            <li>She shows interest → you assume it's temporary</li>
-            <li>Things are going well → you brace for it to fall apart</li>
-            <li>She's vulnerable → you pull back emotionally</li>
-            <li>You find reasons to doubt instead of reasons to trust</li>
-          </ul>
-        </div>
-        <div class="strength-box">
-          <div class="profile-card-label">Your Strength</div>
-          <p>You're careful. You don't rush in blind. You protect yourself.</p>
-        </div>
-        <div class="blindspot-box">
-          <div class="profile-card-label">Your Blind Spot</div>
-          <p>Your caution has become avoidance. You're so afraid of being hurt that you sabotage good connections before they start.</p>
-        </div>
-        <div class="profile-card">
-          <div class="profile-card-label">What to work on</div>
-          <ol>
-            <li>Recognize the difference between real red flags and fear-based retreat</li>
-            <li>Practice small acts of vulnerability (without jumping all-in)</li>
-            <li>Learn that being open doesn't mean being reckless</li>
-          </ol>
-        </div>
-        <div class="training-box">
-          <div class="profile-card-label">Recommended Training Focus</div>
-          <ul>
-            <li><strong>Scenarios:</strong> Recognizing genuine interest (so you don't dismiss it)</li>
-            <li><strong>Analyzer:</strong> Test situations where you pulled back and assess if it was warranted</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="profile-sep"></div>
-
-    <!-- PROFILE 5 -->
-    <div class="profile-block" id="profile-5" style="margin-top: 64px;">
-      <div class="profile-header">
-        <div class="profile-emoji">🌱</div>
-        <div class="profile-header-text">
-          <div class="profile-number">Profile 5</div>
-          <div class="profile-name">Hopeful Projector</div>
-          <div class="profile-summary">You see potential in everyone and give too many chances. You mistake "maybe" for "yes if I try harder."</div>
-        </div>
-      </div>
-      <div class="profile-body">
-        <div class="profile-card">
-          <div class="profile-card-label">What this means</div>
-          <ul>
-            <li>She's vague about plans → you think she just needs more time</li>
-            <li>She cancels twice → you believe her excuses</li>
-            <li>She keeps you in the friend zone → you think it'll change if you're patient</li>
-            <li>You invest in people who aren't investing back</li>
-          </ul>
-        </div>
-        <div class="strength-box">
-          <div class="profile-card-label">Your Strength</div>
-          <p>You're optimistic, kind, and willing to give people the benefit of the doubt.</p>
-        </div>
-        <div class="blindspot-box">
-          <div class="profile-card-label">Your Blind Spot</div>
-          <p>You're confusing hope with data. You're seeing what you want to see instead of what's actually there.</p>
-        </div>
-        <div class="profile-card">
-          <div class="profile-card-label">What to work on</div>
-          <ol>
-            <li>Trust behavior over words</li>
-            <li>Learn to walk away from low-investment situations</li>
-            <li>Stop giving endless chances to people who aren't showing up</li>
-          </ol>
-        </div>
-        <div class="training-box">
-          <div class="profile-card-label">Recommended Training Focus</div>
-          <ul>
-            <li><strong>Scenarios:</strong> Disengagement signals (so you stop ignoring them)</li>
-            <li><strong>Analyzer:</strong> Run "maybes" through the framework to see when they're actually "no"</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="profile-sep"></div>
-
-    <!-- PROFILE 6 -->
-    <div class="profile-block" id="profile-6" style="margin-top: 64px;">
-      <div class="profile-header">
-        <div class="profile-emoji">🔥</div>
-        <div class="profile-header-text">
-          <div class="profile-number">Profile 6</div>
-          <div class="profile-name">Cynical &amp; Burned Out</div>
-          <div class="profile-summary">You've been hurt before, and now you assume everyone's playing games. You see manipulation where there's often just human imperfection.</div>
-        </div>
-      </div>
-      <div class="profile-body">
-        <div class="profile-card">
-          <div class="profile-card-label">What this means</div>
-          <ul>
-            <li>She's warm → you think she's love-bombing</li>
-            <li>She takes time to respond → you think she's playing hard to get</li>
-            <li>She shows interest → you think it's a trap or she wants something</li>
-            <li>You treat normal dating behavior as red flags</li>
-          </ul>
-        </div>
-        <div class="strength-box">
-          <div class="profile-card-label">Your Strength</div>
-          <p>You don't tolerate BS. You have boundaries. You won't be taken advantage of.</p>
-        </div>
-        <div class="blindspot-box">
-          <div class="profile-card-label">Your Blind Spot</div>
-          <p>You're so defended that you can't recognize genuine interest when it shows up. You've closed the door before anyone can walk through it.</p>
-        </div>
-        <div class="profile-card">
-          <div class="profile-card-label">What to work on</div>
-          <ol>
-            <li>Learn to tell the difference between someone being human and someone being manipulative</li>
-            <li>Practice giving people a chance without assuming the worst</li>
-            <li>Recognize that not everyone is your ex</li>
-          </ol>
-        </div>
-        <div class="training-box">
-          <div class="profile-card-label">Recommended Training Focus</div>
-          <ul>
-            <li><strong>Scenarios:</strong> Healthy vs. unhealthy dynamics (so you can tell them apart)</li>
-            <li><strong>Analyzer:</strong> Test situations where you assumed manipulation and see if there's another explanation</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="profile-sep"></div>
-
-    <!-- PROFILE 7 -->
-    <div class="profile-block" id="profile-7" style="margin-top: 64px;">
-      <div class="profile-header">
-        <div class="profile-emoji">🔄</div>
-        <div class="profile-header-text">
-          <div class="profile-number">Profile 7</div>
-          <div class="profile-name">Pattern-Blind Repeater</div>
-          <div class="profile-summary">You keep making the same mistakes without realizing it. You don't see your own patterns.</div>
-        </div>
-      </div>
-      <div class="profile-body">
-        <div class="profile-card">
-          <div class="profile-card-label">What this means</div>
-          <ul>
-            <li>You're attracted to the same type of unavailable person every time</li>
-            <li>You repeat behaviors that didn't work before</li>
-            <li>You think each situation is unique when it's actually the same pattern</li>
-            <li>You're frustrated but don't know why nothing changes</li>
-          </ul>
-        </div>
-        <div class="strength-box">
-          <div class="profile-card-label">Your Strength</div>
-          <p>You're persistent. You keep trying. You don't give up easily.</p>
-        </div>
-        <div class="blindspot-box">
-          <div class="profile-card-label">Your Blind Spot</div>
-          <p>You're not learning from experience because you're not seeing the pattern. You think the problem is external when it's often internal.</p>
-        </div>
-        <div class="profile-card">
-          <div class="profile-card-label">What to work on</div>
-          <ol>
-            <li>Start tracking your experiences (who you're attracted to, what behaviors repeat)</li>
-            <li>Get honest about your own contribution to failed connections</li>
-            <li>Break one pattern at a time (don't try to fix everything at once)</li>
-          </ol>
-        </div>
-        <div class="training-box">
-          <div class="profile-card-label">Recommended Training Focus</div>
-          <ul>
-            <li><strong>Scenarios:</strong> ALL categories (you need to build pattern recognition from scratch)</li>
-            <li><strong>Analyzer:</strong> Use it after every interaction to start seeing your habits</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="profile-sep"></div>
-
-    <!-- PROFILE 8 -->
-    <div class="profile-block" id="profile-8" style="margin-top: 64px;">
-      <div class="profile-header">
-        <div class="profile-emoji">🧠</div>
-        <div class="profile-header-text">
-          <div class="profile-number">Profile 8</div>
-          <div class="profile-name">Overthinking Analyzer</div>
-          <div class="profile-summary">You dissect every interaction to death. You're so busy analyzing that you're not actually present.</div>
-        </div>
-      </div>
-      <div class="profile-body">
-        <div class="profile-card">
-          <div class="profile-card-label">What this means</div>
-          <ul>
-            <li>After every date, you replay the conversation 100 times</li>
-            <li>You read into pauses, word choices, response times</li>
-            <li>You Google "what does it mean if she..." constantly</li>
-            <li>You're stuck in your head instead of trusting your gut</li>
-          </ul>
-        </div>
-        <div class="strength-box">
-          <div class="profile-card-label">Your Strength</div>
-          <p>You're thoughtful, detail-oriented, and deeply reflective.</p>
-        </div>
-        <div class="blindspot-box">
-          <div class="profile-card-label">Your Blind Spot</div>
-          <p>You're creating complexity where there's often simplicity. You're thinking when you should be feeling.</p>
-        </div>
-        <div class="profile-card">
-          <div class="profile-card-label">What to work on</div>
-          <ol>
-            <li>Practice being present instead of analyzing in real-time</li>
-            <li>Trust first impressions more (your gut is often right)</li>
-            <li>Set a limit on post-date analysis (5 minutes, then move on)</li>
-          </ol>
-        </div>
-        <div class="training-box">
-          <div class="profile-card-label">Recommended Training Focus</div>
-          <ul>
-            <li><strong>Scenarios:</strong> Quick-read situations (build intuition, not over-analysis)</li>
-            <li><strong>Analyzer:</strong> Use it ONCE per situation, then trust the result and stop spiraling</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /container -->
-</section>
-
-<!-- ── HOW TO USE YOUR PROFILE ── -->
-<section class="overview-section">
-  <div class="container">
-    <div class="section-label">Next Steps</div>
-    <h2 class="section-headline">How to Use Your Profile</h2>
-    <div class="steps-list">
-      <div class="step-row">
-        <div class="step-num">1</div>
-        <div class="step-text"><strong>Accept where you are.</strong> Your profile isn't a judgment. It's information. You can't fix what you don't see.</div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">2</div>
-        <div class="step-text"><strong>Focus on your specific work.</strong> Each profile has different training priorities. Start there, not everywhere.</div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">3</div>
-        <div class="step-text"><strong>Practice with real situations.</strong> Use the Analyzer tool after real interactions. Track what you got right and what you missed.</div>
-      </div>
-      <div class="step-row">
-        <div class="step-num">4</div>
-        <div class="step-text"><strong>Revisit the quiz in 3 months.</strong> Your profile will likely shift as you grow. That's the point.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── BOTTOM CTA ── -->
-<section class="bottom-cta">
-  <div class="container">
-    <h2>Ready to Start Training?</h2>
-    <p>Haven't taken the quiz yet? Find out which profile fits you. Already know your profile? Head to the app and start working on it.</p>
-    <div class="cta-group">
-      <a href="/quiz/" class="btn-primary">Take the Free Quiz</a>
-      <a href="/app" class="btn-outline">Start Training →</a>
-    </div>
-    <a href="#top" class="back-to-top">↑ Back to top</a>
-  </div>
-</section>
-
-<!-- ── FOOTER ── -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-links">
-      <a href="/app">App</a>
-      <a href="/quiz/">Readiness Quiz</a>
-      <a href="/signal-theory.pdf">Free Book</a>
-      <a href="/app/onboarding.html">Start Here</a>
-    </div>
-    <p class="footer-copy">© 2026 Signal Theory. All rights reserved.</p>
-  </div>
-</footer>
+</div>
 
 <script>
-  // Smooth scroll for all anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
-    a.addEventListener('click', function(e) {
-      var target = this.getAttribute('href');
-      if (target === '#top') {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        return;
+// ===== PROFILE DATA =====
+const profiles = {
+  'secure-ready': {
+    name: 'Secure & Ready',
+    emoji: '🎯',
+    summary: 'You read signals clearly, pace yourself well, and handle uncertainty without overreacting.',
+    slides: [
+      {
+        type: 'overview',
+        title: 'Secure & Ready',
+        subtitle: 'You read signals clearly, pace yourself well, and handle uncertainty without overreacting.',
+        content: `<ul>
+          <li>You can tell the difference between genuine interest and politeness</li>
+          <li>You don't fill gaps with stories or assume the worst</li>
+          <li>You trust yourself to handle outcomes, good or bad</li>
+          <li>You're grounded when things are unclear</li>
+        </ul>`
+      },
+      {
+        type: 'strength',
+        title: 'Your Strength',
+        subtitle: 'Emotional stability',
+        content: `<div class="highlight-box green"><strong>What you do well</strong>You're the guy who doesn't spiral when she doesn't text back for a day. You stay present, stay grounded, and don't let uncertainty turn into anxiety.</div>
+        <p>This makes you easy to be around. People feel safe with you because you're not reactive or needy. You project confidence naturally — not because you're performing it, but because you genuinely don't catastrophize.</p>`
+      },
+      {
+        type: 'blindspot',
+        title: 'Your Blind Spot',
+        subtitle: 'Your calm can become passive',
+        content: `<div class="highlight-box amber"><strong>Watch out for this</strong>You can sometimes under-read interest because you're so calm about it. If someone is subtle, you might miss the opening.</div>
+        <p>Your security is an asset, but it can make you slower to act. You wait for signals to be obvious before you move — which means you sometimes miss the window when someone is showing soft, early interest.</p>`
+      },
+      {
+        type: 'workon',
+        title: 'What to Work On',
+        subtitle: 'Stay sharp, even when you\'re comfortable',
+        content: `<ol>
+          <li>Stay aware of when your calm becomes passive — action still matters</li>
+          <li>Practice recognizing soft signals: eye contact, proximity, small touches, mirroring</li>
+          <li>Don't wait for certainty before taking action — early moves are part of the dynamic</li>
+        </ol>`
+      },
+      {
+        type: 'plan',
+        title: 'Your Action Plan',
+        subtitle: 'How to use Signal Theory as a Secure & Ready reader',
+        content: null
       }
-      var id = target.slice(1);
-      var el = document.getElementById(id);
-      if (el) {
-        e.preventDefault();
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
+    ],
+    trainingFocus: 'Scenarios focused on timing — practice recognizing when to escalate. Use the Analyzer on ambiguous situations where you might be waiting too long.',
+    nextSteps: [
+      'Try the Intermediate quiz first — Beginner may feel too obvious for you',
+      'In the Analyzer, focus on situations where you held back — were the signals there?',
+      'Practice taking small actions earlier than feels necessary',
+      'Your goal: sharpen your soft signal recognition without losing your calm'
+    ]
+  },
 
-  // Highlight active profile nav button on scroll
-  var profileBlocks = document.querySelectorAll('.profile-block');
-  var navBtns = document.querySelectorAll('.profile-nav-btn');
+  'anxious-overreader': {
+    name: 'Anxious Overreader',
+    emoji: '😰',
+    summary: 'You see rejection everywhere, even when it\'s not there. Every delay feels like disinterest.',
+    slides: [
+      {
+        type: 'overview',
+        title: 'Anxious Overreader',
+        subtitle: 'You see rejection everywhere, even when it\'s not there. Every delay feels like disinterest.',
+        content: `<ul>
+          <li>She doesn't text back for 3 hours → you assume she's ghosting</li>
+          <li>She reschedules → you think she's losing interest</li>
+          <li>She's less enthusiastic than usual → you panic and over-explain</li>
+          <li>You fill silence with stories about what's going wrong</li>
+        </ul>`
+      },
+      {
+        type: 'strength',
+        title: 'Your Strength',
+        subtitle: 'Highly attuned to shifts in energy',
+        content: `<div class="highlight-box green"><strong>What you do well</strong>You notice things others miss. You're sensitive to emotional tone, energy changes, and subtle cues in communication.</div>
+        <p>This attunement is a real skill. When calibrated correctly, you can pick up on genuine shifts in interest before most people would notice. The challenge is that right now, this sensitivity is misfiring — reading danger where there isn't any.</p>`
+      },
+      {
+        type: 'blindspot',
+        title: 'Your Blind Spot',
+        subtitle: 'Your anxiety creates the distance you\'re afraid of',
+        content: `<div class="highlight-box amber"><strong>Watch out for this</strong>You interpret normal behavior as negative signals. Your anxiety creates the very distance you're afraid of.</div>
+        <p>When you over-text, seek reassurance, or pull back in anticipation of rejection — you're not reading a signal, you're creating one. The irony: your anxiety often triggers the exact outcome you feared.</p>`
+      },
+      {
+        type: 'workon',
+        title: 'What to Work On',
+        subtitle: 'Separate signal from story',
+        content: `<ol>
+          <li>Separate signal from story — "she's busy" ≠ "she's pulling away"</li>
+          <li>Practice sitting with uncertainty instead of chasing reassurance</li>
+          <li>Learn to recognize when YOU'RE creating the problem by over-investing too early</li>
+        </ol>`
+      },
+      {
+        type: 'plan',
+        title: 'Your Action Plan',
+        subtitle: 'How to retrain your signal-reading instincts',
+        content: null
+      }
+    ],
+    trainingFocus: 'Ambiguous situations — practice NOT filling the gaps with negative narrative. Use the Analyzer to run your anxious interpretations through the framework and see where you\'re adding story.',
+    nextSteps: [
+      'Start with Beginner scenarios — build baseline accuracy before tackling ambiguous ones',
+      'In the Analyzer, submit situations where you felt anxious — see what the framework says',
+      'Practice the rule: no action on a "signal" that isn\'t confirmed by at least 2 behaviors',
+      'When you feel the urge to seek reassurance — wait 24 hours first'
+    ]
+  },
 
-  function onScroll() {
-    var scrollY = window.scrollY + 100;
-    var activeId = null;
-    profileBlocks.forEach(function(block) {
-      if (block.offsetTop <= scrollY) {
-        activeId = block.id;
+  'confident-misreader': {
+    name: 'Confident Misreader',
+    emoji: '😎',
+    summary: 'You\'re comfortable and self-assured, but you miss subtle cues. You assume interest when it\'s just politeness.',
+    slides: [
+      {
+        type: 'overview',
+        title: 'Confident Misreader',
+        subtitle: 'You\'re comfortable and self-assured, but you miss subtle cues.',
+        content: `<ul>
+          <li>She's friendly → you think she's flirting</li>
+          <li>She agrees to plans → you think it's a date (she thinks it's networking)</li>
+          <li>She laughs at your jokes → you think there's chemistry</li>
+          <li>You're surprised when she's "suddenly" not interested</li>
+        </ul>`
+      },
+      {
+        type: 'strength',
+        title: 'Your Strength',
+        subtitle: 'Action without paralysis',
+        content: `<div class="highlight-box green"><strong>What you do well</strong>You don't second-guess yourself. You take action. You're not paralyzed by fear of rejection the way others are.</div>
+        <p>This is genuinely valuable. Your willingness to move confidently means you take more shots — and volume matters. The problem isn't your confidence, it's the calibration of what you're confident about.</p>`
+      },
+      {
+        type: 'blindspot',
+        title: 'Your Blind Spot',
+        subtitle: 'Confidence ≠ correctness',
+        content: `<div class="highlight-box amber"><strong>Watch out for this</strong>You're reading your own confidence as evidence of her interest. You don't slow down enough to check if the other person is actually on the same page.</div>
+        <p>Friendliness and warmth are not attraction. When you miss this distinction, you invest in the wrong situations and miss the real cues that would tell you whether to escalate or exit.</p>`
+      },
+      {
+        type: 'workon',
+        title: 'What to Work On',
+        subtitle: 'Slow down to read more accurately',
+        content: `<ol>
+          <li>Learn to distinguish warmth from attraction — they feel similar but behave differently</li>
+          <li>Watch for reciprocation, not just receptiveness — is she initiating or just responding?</li>
+          <li>Slow down and observe before escalating — one extra beat of observation costs nothing</li>
+        </ol>`
+      },
+      {
+        type: 'plan',
+        title: 'Your Action Plan',
+        subtitle: 'Sharpen your signal accuracy without losing confidence',
+        content: null
       }
-    });
-    navBtns.forEach(function(btn) {
-      var href = btn.getAttribute('href').slice(1);
-      if (href === activeId) {
-        btn.style.borderColor = 'var(--accent)';
-        btn.style.background = '#2e1a0a';
-        btn.style.color = '#fb923c';
-      } else {
-        btn.style.borderColor = '';
-        btn.style.background = '';
-        btn.style.color = '';
+    ],
+    trainingFocus: 'Misread signal scenarios — specifically friendly vs. interested. Use the Analyzer on situations where you thought it was going well but it wasn\'t.',
+    nextSteps: [
+      'In training, focus on "reciprocation" as the key variable — not just positive reception',
+      'Before escalating, ask: is she matching my investment, or just being polite?',
+      'Use the Analyzer after any situation where you felt chemistry — check if the signals support it',
+      'Your goal: same confidence, better accuracy'
+    ]
+  },
+
+  'guarded-hesitant': {
+    name: 'Guarded & Hesitant',
+    emoji: '🛡️',
+    summary: 'You hold back even when interest is clear. You\'re protecting yourself from getting hurt again.',
+    slides: [
+      {
+        type: 'overview',
+        title: 'Guarded & Hesitant',
+        subtitle: 'You hold back even when interest is clear.',
+        content: `<ul>
+          <li>She shows interest → you assume it's temporary</li>
+          <li>Things are going well → you brace for it to fall apart</li>
+          <li>She's vulnerable → you pull back emotionally</li>
+          <li>You find reasons to doubt instead of reasons to trust</li>
+        </ul>`
+      },
+      {
+        type: 'strength',
+        title: 'Your Strength',
+        subtitle: 'Careful, not reckless',
+        content: `<div class="highlight-box green"><strong>What you do well</strong>You're careful. You don't rush in blind. You protect yourself from situations that would hurt you.</div>
+        <p>Your caution comes from lived experience — you've been hurt and you learned from it. That self-protection instinct isn't a flaw, it's wisdom. The question is whether your protection has become a prison.</p>`
+      },
+      {
+        type: 'blindspot',
+        title: 'Your Blind Spot',
+        subtitle: 'Caution has become avoidance',
+        content: `<div class="highlight-box amber"><strong>Watch out for this</strong>Your caution has become avoidance. You're so afraid of being hurt that you sabotage good connections before they start.</div>
+        <p>You're not protecting yourself from danger — you're protecting yourself from the possibility of danger. The result is the same: isolation and missed connections that could have been real.</p>`
+      },
+      {
+        type: 'workon',
+        title: 'What to Work On',
+        subtitle: 'Distinguish red flags from fear',
+        content: `<ol>
+          <li>Recognize the difference between real red flags and fear-based retreat — they feel the same but aren't</li>
+          <li>Practice small acts of vulnerability without jumping all-in — micro-openness builds trust safely</li>
+          <li>Learn that being open doesn't mean being reckless — you can engage and still protect yourself</li>
+        </ol>`
+      },
+      {
+        type: 'plan',
+        title: 'Your Action Plan',
+        subtitle: 'Open the door without losing your judgment',
+        content: null
       }
-    });
+    ],
+    trainingFocus: 'Scenarios on recognizing genuine interest — so you can stop dismissing it. Use the Analyzer on situations where you pulled back to assess whether it was warranted.',
+    nextSteps: [
+      'In training, practice identifying clear interest signals — build confidence in what "safe" looks like',
+      'Use the Analyzer after you pull back — ask the framework if the signals supported retreat',
+      'Challenge yourself: one small act of openness per week',
+      'Your goal: accurate risk assessment, not zero risk'
+    ]
+  },
+
+  'hopeful-projector': {
+    name: 'Hopeful Projector',
+    emoji: '🌟',
+    summary: 'You see potential in everyone and give too many chances. You mistake "maybe" for "yes if I try harder."',
+    slides: [
+      {
+        type: 'overview',
+        title: 'Hopeful Projector',
+        subtitle: 'You see potential in everyone and give too many chances.',
+        content: `<ul>
+          <li>She's vague about plans → you think she just needs more time</li>
+          <li>She cancels twice → you believe her excuses</li>
+          <li>She keeps you in the friend zone → you think it'll change if you're patient</li>
+          <li>You invest in people who aren't investing back</li>
+        </ul>`
+      },
+      {
+        type: 'strength',
+        title: 'Your Strength',
+        subtitle: 'Optimistic and kind',
+        content: `<div class="highlight-box green"><strong>What you do well</strong>You're optimistic, kind, and willing to give people the benefit of the doubt. You don't write people off quickly.</div>
+        <p>These qualities make you a good partner — when you're with someone who deserves them. The problem is you're extending this generosity to people who haven't earned it, based on potential rather than behavior.</p>`
+      },
+      {
+        type: 'blindspot',
+        title: 'Your Blind Spot',
+        subtitle: 'You\'re confusing hope with data',
+        content: `<div class="highlight-box amber"><strong>Watch out for this</strong>You're seeing what you want to see instead of what's actually there. Hope is not a signal. Potential is not current reality.</div>
+        <p>"She's just busy" is a story. "She cancelled twice and hasn't rescheduled" is data. You're making decisions based on the story while the data is telling you something different.</p>`
+      },
+      {
+        type: 'workon',
+        title: 'What to Work On',
+        subtitle: 'Trust behavior over words',
+        content: `<ol>
+          <li>Trust behavior over words — what people do tells you more than what they say</li>
+          <li>Learn to walk away from low-investment situations — your time and attention have value</li>
+          <li>Stop giving endless chances to people who aren't showing up — 2 strikes is enough data</li>
+        </ol>`
+      },
+      {
+        type: 'plan',
+        title: 'Your Action Plan',
+        subtitle: 'See what\'s real, not what could be',
+        content: null
+      }
+    ],
+    trainingFocus: 'Disengagement signal scenarios — learn to recognize them so you stop ignoring them. Use the Analyzer to run "maybes" through the framework and see when they\'re actually "no."',
+    nextSteps: [
+      'In training, focus on low-investment and disengagement signals — build recognition muscles',
+      'Create a personal rule: if someone doesn\'t reschedule within 48 hours, it\'s a no',
+      'Use the Analyzer when you feel the urge to give another chance — ask what the behavior says',
+      'Your goal: keep the optimism, lose the self-deception'
+    ]
+  },
+
+  'cynical-burned-out': {
+    name: 'Cynical & Burned Out',
+    emoji: '😑',
+    summary: 'You\'ve been hurt before, and now you assume everyone\'s playing games.',
+    slides: [
+      {
+        type: 'overview',
+        title: 'Cynical & Burned Out',
+        subtitle: 'You\'ve been hurt before, and now you assume everyone\'s playing games.',
+        content: `<ul>
+          <li>She's warm → you think she's love-bombing</li>
+          <li>She takes time to respond → you think she's playing hard to get</li>
+          <li>She shows interest → you think it's a trap or she wants something</li>
+          <li>You treat normal dating behavior as red flags</li>
+        </ul>`
+      },
+      {
+        type: 'strength',
+        title: 'Your Strength',
+        subtitle: 'You don\'t tolerate BS',
+        content: `<div class="highlight-box green"><strong>What you do well</strong>You don't tolerate BS. You have genuine boundaries. You won't be taken advantage of easily.</div>
+        <p>Your experience has given you real pattern recognition for manipulation and games. This is valuable — when it's working correctly. The issue is that your radar is now so sensitive it's flagging everything as a threat.</p>`
+      },
+      {
+        type: 'blindspot',
+        title: 'Your Blind Spot',
+        subtitle: 'You\'ve closed the door before anyone can walk through',
+        content: `<div class="highlight-box amber"><strong>Watch out for this</strong>You're so defended that you can't recognize genuine interest when it shows up. You've closed the door before anyone can walk through it.</div>
+        <p>Not everyone is your ex. Not everyone is running a game. Some people are just warm, or slow to respond, or nervous. Your cynicism can't tell the difference anymore — and that's costing you real connections.</p>`
+      },
+      {
+        type: 'workon',
+        title: 'What to Work On',
+        subtitle: 'Learn to calibrate your radar',
+        content: `<ol>
+          <li>Learn to tell the difference between someone being human and someone being manipulative</li>
+          <li>Practice giving people a chance without assuming the worst from the start</li>
+          <li>Recognize that not everyone is your ex — past wounds don't define present reality</li>
+        </ol>`
+      },
+      {
+        type: 'plan',
+        title: 'Your Action Plan',
+        subtitle: 'Rebuild trust in your own judgment',
+        content: null
+      }
+    ],
+    trainingFocus: 'Healthy vs. unhealthy dynamic scenarios — so you can tell the difference. Use the Analyzer on situations where you assumed manipulation and see if there\'s another explanation.',
+    nextSteps: [
+      'In training, practice the "charitable interpretation" — what\'s the most benign explanation?',
+      'Use the Analyzer when you spot a "red flag" — get a second opinion from the framework',
+      'Set a rule: one genuine chance per person, with actual evidence before concluding it\'s a game',
+      'Your goal: keep your standards, lose the blanket suspicion'
+    ]
+  },
+
+  'pattern-blind-repeater': {
+    name: 'Pattern-Blind Repeater',
+    emoji: '🔄',
+    summary: 'You keep making the same mistakes without realizing it. You don\'t see your own patterns.',
+    slides: [
+      {
+        type: 'overview',
+        title: 'Pattern-Blind Repeater',
+        subtitle: 'You keep making the same mistakes without realizing it.',
+        content: `<ul>
+          <li>You're attracted to the same type of unavailable person every time</li>
+          <li>You repeat behaviors that didn't work before</li>
+          <li>You think each situation is unique when it's actually the same pattern</li>
+          <li>You're frustrated but don't know why nothing changes</li>
+        </ul>`
+      },
+      {
+        type: 'strength',
+        title: 'Your Strength',
+        subtitle: 'Persistent and resilient',
+        content: `<div class="highlight-box green"><strong>What you do well</strong>You're persistent. You keep trying. You don't give up easily after rejection or disappointment.</div>
+        <p>Your resilience is real. Most people quit after a few failures — you don't. The problem is that persistence without pattern recognition just means repeating the same mistakes more times.</p>`
+      },
+      {
+        type: 'blindspot',
+        title: 'Your Blind Spot',
+        subtitle: 'You\'re not learning from experience',
+        content: `<div class="highlight-box amber"><strong>Watch out for this</strong>You're not learning from experience because you're not seeing the pattern. You think the problem is external when it's often internal.</div>
+        <p>Every situation feels different from the inside, so you don't connect them. But from the outside, you're running the same script: same attraction type, same approach, same outcome. The common variable is you — and that's actually good news.</p>`
+      },
+      {
+        type: 'workon',
+        title: 'What to Work On',
+        subtitle: 'Make the invisible visible',
+        content: `<ol>
+          <li>Start tracking your experiences — who you're attracted to, what behaviors repeat, what outcomes follow</li>
+          <li>Get honest about your own contribution to failed connections — what did you do each time?</li>
+          <li>Break one pattern at a time — don't try to fix everything at once, pick one thing</li>
+        </ol>`
+      },
+      {
+        type: 'plan',
+        title: 'Your Action Plan',
+        subtitle: 'Build the pattern recognition you\'re currently missing',
+        content: null
+      }
+    ],
+    trainingFocus: 'ALL scenario categories — you need to build pattern recognition from scratch. Use the Analyzer after every real interaction to start seeing your habits emerge over time.',
+    nextSteps: [
+      'Do all three training levels — the patterns will reveal themselves across categories',
+      'Use the Analyzer consistently — your data over time is the most valuable thing you can have',
+      'After each situation, ask: "Have I been here before?" — write it down if yes',
+      'Your goal: build a map of your own patterns so you can choose differently'
+    ]
+  },
+
+  'overthinking-analyzer': {
+    name: 'Overthinking Analyzer',
+    emoji: '🤔',
+    summary: 'You dissect every interaction to death. You\'re so busy analyzing that you\'re not actually present.',
+    slides: [
+      {
+        type: 'overview',
+        title: 'Overthinking Analyzer',
+        subtitle: 'You dissect every interaction to death.',
+        content: `<ul>
+          <li>After every date, you replay the conversation 100 times</li>
+          <li>You read into pauses, word choices, response times</li>
+          <li>You Google "what does it mean if she..." constantly</li>
+          <li>You're stuck in your head instead of trusting your gut</li>
+        </ul>`
+      },
+      {
+        type: 'strength',
+        title: 'Your Strength',
+        subtitle: 'Thoughtful and deeply reflective',
+        content: `<div class="highlight-box green"><strong>What you do well</strong>You're thoughtful, detail-oriented, and deeply reflective. You care about getting things right and understanding what's happening.</div>
+        <p>Your analytical nature means you can learn quickly when given the right framework. You're good at spotting nuance. The Signal Theory framework was basically built for someone like you — the issue is you need to learn to use it once, then stop.</p>`
+      },
+      {
+        type: 'blindspot',
+        title: 'Your Blind Spot',
+        subtitle: 'You\'re thinking when you should be feeling',
+        content: `<div class="highlight-box amber"><strong>Watch out for this</strong>You're creating complexity where there's often simplicity. You're thinking when you should be feeling.</div>
+        <p>Most signals are not complicated. She either shows up or she doesn't. She either initiates or she doesn't. Your analysis is generating false complexity and keeping you in your head instead of present in the moment.</p>`
+      },
+      {
+        type: 'workon',
+        title: 'What to Work On',
+        subtitle: 'Trust your gut more, your analysis less',
+        content: `<ol>
+          <li>Practice being present instead of analyzing in real-time — notice when you're narrating the date while on the date</li>
+          <li>Trust first impressions more — your gut is often right, and you've trained it with enough data</li>
+          <li>Set a hard limit on post-date analysis: 5 minutes maximum, then move on</li>
+        </ol>`
+      },
+      {
+        type: 'plan',
+        title: 'Your Action Plan',
+        subtitle: 'Use your analysis strategically, not compulsively',
+        content: null
+      }
+    ],
+    trainingFocus: 'Quick-read situations — build intuition and pattern recognition, not deeper analysis. Use the Analyzer ONCE per situation, then trust the result and stop. The framework is a circuit-breaker for the spiral.',
+    nextSteps: [
+      'In training, practice committing to answers quickly — notice your first instinct',
+      'Use the Analyzer as a replacement for rumination, not an addition to it: one use, done',
+      'Practice the "5-minute rule" in real life — set a timer, analyze, stop when it rings',
+      'Your goal: analysis as a tool, not a compulsion'
+    ]
+  }
+};
+
+// ===== STATE =====
+let currentProfileKey = null;
+let currentSlide = 0;
+const TOTAL_SLIDES = 5;
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  renderProfileGrid();
+  loadSavedProfile();
+});
+
+function renderProfileGrid() {
+  const grid = document.getElementById('profileGrid');
+  grid.innerHTML = Object.entries(profiles).map(([key, p]) => `
+    <button class="profile-btn" id="btn-${key}" onclick="selectProfile('${key}')">
+      <span class="pb-emoji">${p.emoji}</span>
+      <span class="pb-name">${p.name}</span>
+      <span class="pb-summary">${p.summary}</span>
+    </button>
+  `).join('');
+}
+
+function loadSavedProfile() {
+  const saved = localStorage.getItem('selectedProfile');
+  if (saved && profiles[saved]) {
+    currentProfileKey = saved;
+    highlightSelectedBtn(saved);
+    // Show banner
+    const banner = document.getElementById('currentProfileBanner');
+    document.getElementById('cpbEmoji').textContent = profiles[saved].emoji;
+    document.getElementById('cpbName').textContent = profiles[saved].name;
+    banner.classList.add('visible');
+  }
+}
+
+function highlightSelectedBtn(key) {
+  document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('selected'));
+  const btn = document.getElementById('btn-' + key);
+  if (btn) btn.classList.add('selected');
+}
+
+function selectProfile(key) {
+  currentProfileKey = key;
+  currentSlide = 0;
+  localStorage.setItem('selectedProfile', key);
+  highlightSelectedBtn(key);
+  showSlides();
+}
+
+function continueProfile() {
+  if (currentProfileKey) {
+    currentSlide = 0;
+    showSlides();
+  }
+}
+
+function showSlides() {
+  document.getElementById('selectorScreen').style.display = 'none';
+  document.getElementById('slideScreen').style.display = 'block';
+  document.getElementById('headerBack').classList.add('visible');
+
+  const p = profiles[currentProfileKey];
+  document.getElementById('slideProfileEmoji').textContent = p.emoji;
+  document.getElementById('slideProfileName').textContent = p.name;
+
+  renderProgressDots();
+  renderSlide(currentSlide);
+}
+
+function showSelector() {
+  document.getElementById('slideScreen').style.display = 'none';
+  document.getElementById('selectorScreen').style.display = 'block';
+  document.getElementById('headerBack').classList.remove('visible');
+}
+
+function renderProgressDots() {
+  const container = document.getElementById('progressDots');
+  container.innerHTML = '';
+  for (let i = 0; i < TOTAL_SLIDES; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'dot' + (i === currentSlide ? ' active' : (i < currentSlide ? ' visited' : ''));
+    dot.onclick = () => goToSlide(i);
+    container.appendChild(dot);
+  }
+}
+
+function goToSlide(index) {
+  currentSlide = index;
+  renderProgressDots();
+  renderSlide(index);
+}
+
+function nextSlide() {
+  if (currentSlide < TOTAL_SLIDES - 1) {
+    currentSlide++;
+    renderProgressDots();
+    renderSlide(currentSlide);
+  }
+}
+
+function prevSlide() {
+  if (currentSlide > 0) {
+    currentSlide--;
+    renderProgressDots();
+    renderSlide(currentSlide);
+  }
+}
+
+function renderSlide(index) {
+  const p = profiles[currentProfileKey];
+  const slide = p.slides[index];
+  const card = document.getElementById('slideCard');
+
+  // Update nav buttons
+  document.getElementById('navPrev').disabled = (index === 0);
+  const nextBtn = document.getElementById('navNext');
+  if (index === TOTAL_SLIDES - 1) {
+    nextBtn.textContent = 'Start Training →';
+    nextBtn.onclick = () => { window.location.href = '/app/'; };
+  } else {
+    nextBtn.textContent = 'Next →';
+    nextBtn.onclick = nextSlide;
   }
 
-  window.addEventListener('scroll', onScroll, { passive: true });
-</script>
+  let html = '';
 
+  html += `<div class="slide-number">Slide ${index + 1} of ${TOTAL_SLIDES}</div>`;
+
+  if (slide.type === 'overview') {
+    html += `<div class="slide-emoji-display">${p.emoji}</div>`;
+    html += `<div class="slide-title">${slide.title}</div>`;
+    html += `<div class="slide-subtitle">${slide.subtitle}</div>`;
+    html += `<div class="slide-body">${slide.content}</div>`;
+
+  } else if (slide.type === 'strength') {
+    html += `<div class="slide-title">${slide.title}</div>`;
+    html += `<div class="slide-subtitle">${slide.subtitle}</div>`;
+    html += `<div class="slide-body">${slide.content}</div>`;
+
+  } else if (slide.type === 'blindspot') {
+    html += `<div class="slide-title">${slide.title}</div>`;
+    html += `<div class="slide-subtitle">${slide.subtitle}</div>`;
+    html += `<div class="slide-body">${slide.content}</div>`;
+
+  } else if (slide.type === 'workon') {
+    html += `<div class="slide-title">${slide.title}</div>`;
+    html += `<div class="slide-subtitle">${slide.subtitle}</div>`;
+    html += `<div class="slide-body">${slide.content}</div>`;
+
+  } else if (slide.type === 'plan') {
+    html += `<div class="slide-title">${slide.title}</div>`;
+    html += `<div class="slide-subtitle">${slide.subtitle}</div>`;
+    html += `<div class="slide-body">`;
+    html += `<div class="training-section">`;
+    html += `<div class="training-section-title">Recommended Training Focus</div>`;
+    html += `<p style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:16px">${p.trainingFocus}</p>`;
+    html += `</div>`;
+    html += `<div class="training-section">`;
+    html += `<div class="training-section-title">Next Steps</div>`;
+    html += `<ul>` + p.nextSteps.map(s => `<li>${s}</li>`).join('') + `</ul>`;
+    html += `</div>`;
+    html += `<div class="cta-box">`;
+    html += `<a href="/app/" class="btn-primary">Start Training →</a>`;
+    html += `<a href="/quiz/" class="btn-secondary">Retake Quiz</a>`;
+    html += `<button class="btn-secondary" onclick="showSelector()">Choose Different Profile</button>`;
+    html += `</div>`;
+    html += `</div>`;
+  }
+
+  card.innerHTML = html;
+
+  // Scroll to top of card
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
 </body>
 </html>
