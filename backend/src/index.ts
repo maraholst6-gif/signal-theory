@@ -120,25 +120,13 @@ app.get('/api/diag/claude', async (_req, res) => {
 // Serves /app directory — path from /srv/dist → /srv/app
 // ─────────────────────────────────────────────
 
-const possibleStaticPaths = [
-  '/srv/app',                              // Dockerfile WORKDIR /srv + COPY app ./app
-  path.join(__dirname, '../app'),          // /srv/dist/../app = /srv/app
-  path.join(__dirname, '../../app'),       // fallback if nested deeper
-  path.join(process.cwd(), 'app'),         // relative to CWD
-];
-console.log('[static] __dirname:', __dirname, '| cwd:', process.cwd());
-let staticPath = '';
-for (const p of possibleStaticPaths) {
-  if (fs.existsSync(p)) {
-    staticPath = p;
-    console.log('[static] Found app directory at:', p);
-    console.log('[static] Files:', fs.readdirSync(p).filter(f => f.endsWith('.html')));
-    break;
-  }
-}
-if (!staticPath) {
-  console.error('[static] Could not find app directory. Tried:', possibleStaticPaths);
-  staticPath = possibleStaticPaths[0]; // default so express.static doesn't crash
+const staticPath = path.join(__dirname, '../app');
+console.log('[static] __dirname:', __dirname);
+console.log('[static] Serving static files from:', staticPath);
+if (fs.existsSync(staticPath)) {
+  console.log('[static] Directory exists, files:', fs.readdirSync(staticPath).filter(f => f.endsWith('.html')));
+} else {
+  console.error('[static] Directory NOT FOUND at', staticPath);
 }
 
 app.use(express.static(staticPath));
