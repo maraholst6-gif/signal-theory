@@ -8,6 +8,7 @@ import scenarioRoutes from './routes/scenarios';
 import analysisRoutes from './routes/analysis';
 import usageRoutes from './routes/usage';
 import webhookRoutes from './routes/webhooks';
+import stripeRoutes from './routes/stripe';
 import quizRoutes from './routes/quizzes';
 import adminRoutes, { getActivePrompt } from './routes/admin';
 import convertkitRoutes from './routes/convertkit';
@@ -56,6 +57,9 @@ app.use('/api/webhooks', express.raw({ type: 'application/json' }), (req, _res, 
   next();
 });
 
+// Stripe webhook needs raw body for constructEvent signature verification
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+
 app.use(express.json({ limit: '1mb' }));
 app.use(generalLimiter);
 
@@ -65,10 +69,12 @@ app.use(generalLimiter);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/users', profileRoutes);   // GET /api/users/:userId/premium
 app.use('/api/scenarios', scenarioRoutes);
 app.use('/api/analyze', analysisRoutes);
 app.use('/api/usage', usageRoutes);
 app.use('/api/webhooks', webhookRoutes);
+app.use('/api/stripe', stripeRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/convertkit', convertkitRoutes);

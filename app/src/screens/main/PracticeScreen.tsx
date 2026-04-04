@@ -48,6 +48,7 @@ export function PracticeScreen({ navigation }: Props): React.ReactElement {
 
     try {
       // Load scenarios from Supabase, fallback to local seed
+      // Load all difficulties — gating is enforced client-side
       let scenarioData: Scenario[] = [];
       const { data: remoteScenarios, error: dbErr } = await supabase
         .from('scenarios')
@@ -98,9 +99,21 @@ export function PracticeScreen({ navigation }: Props): React.ReactElement {
     loadData();
   }, [loadData]);
 
+  const isPremium = appUser?.tier === 'premium' || usageState?.isPro;
+
   const handleScenarioPress = useCallback(
     (scenario: Scenario): void => {
       if (!usageState) return;
+
+      // Locked = non-basic difficulty for free users
+      const isLocked = scenario.difficulty !== 'basic' && !isPremium;
+      if (isLocked) {
+        navigation.navigate('Profile', {
+          screen: 'Paywall',
+          params: { trigger: 'scenario' },
+        } as any);
+        return;
+      }
 
       if (!usageState.canUseScenario) {
         navigation.navigate('Profile', {
@@ -112,7 +125,7 @@ export function PracticeScreen({ navigation }: Props): React.ReactElement {
 
       navigation.navigate('Scenario', { scenarioId: scenario.id });
     },
-    [usageState, navigation]
+    [usageState, isPremium, navigation]
   );
 
   if (loading) {
@@ -159,6 +172,7 @@ export function PracticeScreen({ navigation }: Props): React.ReactElement {
             scenario={item}
             onPress={() => handleScenarioPress(item)}
             isCompleted={completedIds.has(item.id)}
+            isLocked={item.difficulty !== 'basic' && !isPremium}
             style={styles.card}
           />
         )}

@@ -281,6 +281,7 @@ export const usageApi = {
       analyses_used_week: number;
       week_reset_at: string;
       subscription_status: string;
+      tier: string;
     }>('/api/usage');
   },
 };

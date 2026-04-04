@@ -36,15 +36,18 @@ export function ProfileScreen({ navigation }: Props): React.ReactElement {
   const readinessScore = quizProfile?.readiness_score ?? profileMeta.readinessScore;
   const strategyScore = quizProfile?.strategy_score ?? profileMeta.strategyScore;
 
+  const isPremium = appUser.tier === 'premium' || appUser.subscription_status !== 'free';
+
   const subLabel =
-    appUser.subscription_status === 'free'
+    appUser.tier === 'premium'
+      ? 'Signal Pro'
+      : appUser.subscription_status === 'free'
       ? 'Free Plan'
       : appUser.subscription_status === 'monthly'
       ? 'Signal Pro — Monthly'
       : 'Signal Pro — Annual';
 
-  const subColor =
-    appUser.subscription_status === 'free' ? colors.textMuted : colors.primary;
+  const subColor = isPremium ? colors.primary : colors.textMuted;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -65,6 +68,11 @@ export function ProfileScreen({ navigation }: Props): React.ReactElement {
           <View style={styles.profileTypeBadge}>
             <Text style={styles.profileTypeText}>{profileMeta.title}</Text>
           </View>
+          {isPremium && (
+            <View style={styles.premiumBadge}>
+              <Text style={styles.premiumBadgeText}>✦ Premium</Text>
+            </View>
+          )}
         </View>
 
         {/* Dimension scores */}
@@ -132,7 +140,7 @@ export function ProfileScreen({ navigation }: Props): React.ReactElement {
               </Text>
             </View>
 
-            {appUser.subscription_status === 'free' && (
+            {!isPremium && (
               <TouchableOpacity
                 style={styles.upgradeRow}
                 onPress={() => navigation.navigate('Paywall', { trigger: 'manual' })}
@@ -216,6 +224,18 @@ const styles = StyleSheet.create({
     fontSize: typography.sm,
     fontWeight: '700',
     color: colors.primary,
+  },
+  premiumBadge: {
+    backgroundColor: colors.ambiguous,
+    borderRadius: borderRadius.full,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+  },
+  premiumBadgeText: {
+    fontSize: typography.sm,
+    fontWeight: '700',
+    color: colors.white,
+    letterSpacing: 0.5,
   },
   section: {
     paddingHorizontal: spacing.xl,

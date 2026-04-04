@@ -16,8 +16,9 @@ router.get('/', async (req: AuthRequest, res: Response) => {
 
   try {
     const userResult = await pool.query(
-      `SELECT id, email, display_name, profile_type, subscription_status,
-              scenarios_used_week, analyses_used_week, week_reset_at, quiz_profile_id, created_at
+      `SELECT id, email, display_name, profile_type, subscription_status, tier,
+              stripe_subscription_id, scenarios_used_week, analyses_used_week,
+              week_reset_at, quiz_profile_id, created_at
        FROM users WHERE id = $1`,
       [userId]
     );
@@ -98,8 +99,9 @@ router.patch('/', async (req: AuthRequest, res: Response) => {
     const result = await pool.query(
       `UPDATE users SET ${fields.join(', ')}
        WHERE id = $${idx}
-       RETURNING id, email, display_name, profile_type, subscription_status,
-                 scenarios_used_week, analyses_used_week, week_reset_at, quiz_profile_id, created_at`,
+       RETURNING id, email, display_name, profile_type, subscription_status, tier,
+                 stripe_subscription_id, scenarios_used_week, analyses_used_week,
+                 week_reset_at, quiz_profile_id, created_at`,
       values
     );
 
@@ -107,6 +109,36 @@ router.patch('/', async (req: AuthRequest, res: Response) => {
   } catch (err) {
     console.error('[profile/patch]', err);
     res.status(500).json({ error: 'Failed to update profile.' });
+  }
+});
+
+// ─────────────────────────────────────────────
+// GET /api/users/:userId/premium
+// (also accessible as /api/profile/premium)
+// Returns the current user's tier — userId param is ignored, JWT user is used
+// ─────────────────────────────────────────────
+
+router.get('/:userId/premium', async (req: AuthRequest, res: Response) => {
+  const userId = req.user!.userId;
+
+  try {
+    const result = await pool.query(
+      'SELECT tier, stripe_subscription_id FROM users WHERE id = $1',
+      [userId]
+    );
+    const user = result.rows[0];
+    if (!user) {
+      res.status(404).json({ error: 'User not found.' });
+      return;
+    }
+    res.json({
+      isPremium: user.tier === 'premium',
+      tier: (user.tier as string) ?? 'free',
+      subscriptionId: (user.stripe_subscription_id as string) ?? null,
+    });
+  } catch (err) {
+    console.error('[users/premium]', err);
+    res.status(500).json({ error: 'Failed to fetch premium status.' });
   }
 });
 

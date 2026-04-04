@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upgrade to Premium — Signal Theory</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #1a1a1a; min-height: 100vh; color: #f5f5f5; }
+.page { max-width: 600px; margin: 0 auto; padding: 24px 16px 60px; }
+.header { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+.back-btn { background: none; border: none; color: #FF6B35; font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 0; }
+.hero { text-align: center; margin-bottom: 32px; }
+.hero h1 { font-size: 28px; font-weight: 800; color: #f5f5f5; margin-bottom: 8px; }
+.hero p { font-size: 15px; color: #a0a0a0; line-height: 1.6; }
+.features-list { background: #2a2a2a; border-radius: 16px; padding: 20px; margin-bottom: 28px; border: 1px solid #3a3a3a; }
+.features-list h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: #9ca3af; margin-bottom: 14px; }
+.feature-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #3a3a3a; font-size: 14px; color: #f5f5f5; }
+.feature-row:last-child { border-bottom: none; }
+.feature-icon { font-size: 16px; flex-shrink: 0; }
+.pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.plan-card { background: #2a2a2a; border: 2px solid #3a3a3a; border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: border-color 0.2s; position: relative; }
+.plan-card:hover { border-color: #FF6B35; }
+.plan-card.selected { border-color: #FF6B35; }
+.plan-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #FF6B35; color: white; font-size: 11px; font-weight: 700; padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
+.plan-name { font-size: 14px; font-weight: 700; color: #a0a0a0; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.plan-price { font-size: 32px; font-weight: 800; color: #f5f5f5; line-height: 1; }
+.plan-period { font-size: 13px; color: #9ca3af; margin-top: 4px; }
+.plan-savings { font-size: 12px; color: #10b981; font-weight: 600; margin-top: 6px; }
+.cta-section { margin-bottom: 16px; }
+.btn-upgrade { width: 100%; padding: 16px; background: #FF6B35; color: white; border: none; border-radius: 12px; font-size: 17px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.btn-upgrade:hover { background: #e55a25; }
+.btn-upgrade:disabled { background: #4a4a4a; cursor: not-allowed; color: #9ca3af; }
+.btn-portal { width: 100%; padding: 14px; background: #2a2a2a; color: #FF6B35; border: 2px solid #FF6B35; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-bottom: 12px; }
+.btn-portal:hover { background: #3a3a3a; }
+.back-to-app { width: 100%; padding: 12px; background: none; border: none; color: #9ca3af; font-size: 14px; font-weight: 500; cursor: pointer; }
+.back-to-app:hover { color: #f5f5f5; }
+.notice { font-size: 12px; color: #9ca3af; text-align: center; margin-bottom: 20px; line-height: 1.5; }
+.loading-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; }
+.loading-overlay.show { display: flex; }
+.loading-card { background: #2a2a2a; border-radius: 16px; padding: 32px; text-align: center; }
+.loading-spinner { font-size: 32px; margin-bottom: 12px; animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.loading-text { font-size: 15px; color: #f5f5f5; font-weight: 600; }
+.alert-banner { border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; font-size: 14px; font-weight: 500; }
+.alert-success { background: #064e3b; border: 1px solid #10b981; color: #a7f3d0; }
+.alert-error { background: #450a0a; border: 1px solid #ef4444; color: #fecaca; }
+.premium-banner { background: linear-gradient(135deg, #1a3a2a, #0f2a1a); border: 1px solid #10b981; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 24px; }
+.premium-banner .crown { font-size: 36px; margin-bottom: 8px; }
+.premium-banner h2 { font-size: 20px; font-weight: 800; color: #a7f3d0; margin-bottom: 6px; }
+.premium-banner p { font-size: 14px; color: #6ee7b7; }
+.error-msg { color: #ef4444; font-size: 13px; text-align: center; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header">
+    <button class="back-btn" onclick="goBack()">&#8592; Back to App</button>
+  </div>
+
+  <!-- Alert banners (success/cancel from Stripe redirect) -->
+  <div id="alertBanner" style="display:none"></div>
+
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-card">
+      <div class="loading-spinner">&#128256;</div>
+      <div class="loading-text">Redirecting to Stripe...</div>
+    </div>
+  </div>
+
+  <!-- Premium user view -->
+  <div id="premiumView" style="display:none">
+    <div class="premium-banner">
+      <div class="crown">&#128081;</div>
+      <h2>You're Premium!</h2>
+      <p>You have full access to all Signal Theory features.</p>
+    </div>
+    <button class="btn-portal" onclick="openPortal()">&#128179; Manage Subscription</button>
+    <button class="back-to-app" onclick="goBack()">Back to App</button>
+    <div id="portalError" class="error-msg"></div>
+  </div>
+
+  <!-- Free user upgrade view -->
+  <div id="upgradeView">
+    <div class="hero">
+      <h1>&#128640; Go Premium</h1>
+      <p>Unlock the full Signal Theory training system and read every situation with confidence.</p>
+    </div>
+
+    <div class="features-list">
+      <h3>What you get</h3>
+      <div class="feature-row"><span class="feature-icon">&#128218;</span> Intermediate &amp; Advanced quizzes</div>
+      <div class="feature-row"><span class="feature-icon">&#127917;</span> Unlimited scenarios every week</div>
+      <div class="feature-row"><span class="feature-icon">&#128269;</span> Unlimited AI signal analysis</div>
+      <div class="feature-row"><span class="feature-icon">&#128202;</span> Full progress tracking</div>
+      <div class="feature-row"><span class="feature-icon">&#128274;</span> Cancel anytime</div>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="plan-card selected" id="planMonthly" onclick="selectPlan('monthly')">
+        <div class="plan-name">Monthly</div>
+        <div class="plan-price">$19<span style="font-size:18px">.99</span></div>
+        <div class="plan-period">per month</div>
+      </div>
+      <div class="plan-card" id="planYearly" onclick="selectPlan('yearly')">
+        <div class="plan-badge">Best Value</div>
+        <div class="plan-name">Yearly</div>
+        <div class="plan-price">$199</div>
+        <div class="plan-period">per year</div>
+        <div class="plan-savings">Save $41 vs monthly</div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <button class="btn-upgrade" id="upgradeBtn" onclick="startCheckout()">Start Premium — $19.99/mo &#8594;</button>
+      <div id="checkoutError" class="error-msg"></div>
+    </div>
+
+    <div class="notice">
+      Secure checkout via Stripe. Cancel anytime from your account.
+      Test card: 4242 4242 4242 4242 (any future date, any CVV).
+    </div>
+
+    <button class="back-to-app" onclick="goBack()">Maybe later</button>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://signal-theory-backend.onrender.com';
+const token = localStorage.getItem('signal_theory_token') || '';
+const userId = localStorage.getItem('signal_theory_user_id') || '';
+
+let selectedPlan = 'monthly';
+
+// Price config
+const PLANS = {
+  monthly: { priceId: 'price_monthly', label: '$19.99/mo', amount: '$19.99/month' },
+  yearly:  { priceId: 'price_yearly',  label: '$199/yr',   amount: '$199/year' },
+};
+
+// ─────────────────────────────────────────────
+// Init
+// ─────────────────────────────────────────────
+
+async function init() {
+  // Not logged in — redirect to app
+  if (!token) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  // Check for Stripe redirect params
+  const params = new URLSearchParams(window.location.search);
+  const upgrade = params.get('upgrade');
+  if (upgrade === 'success') {
+    showAlert('success', '&#127881; You\'re now Premium! Welcome to the full Signal Theory experience.');
+    // Refresh tier in localStorage
+    await fetchAndStoreTier();
+  } else if (upgrade === 'cancelled') {
+    showAlert('error', 'Checkout was cancelled. You can try again below.');
+  }
+
+  // Check if user is already premium
+  await loadUserTier();
+}
+
+async function loadUserTier() {
+  try {
+    const res = await fetch(`${API_BASE}/api/users/${userId || '_'}/premium`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.isPremium) {
+      document.getElementById('upgradeView').style.display = 'none';
+      document.getElementById('premiumView').style.display = 'block';
+      localStorage.setItem('signal_theory_tier', 'premium');
+    }
+  } catch(e) {
+    // Fail open — show upgrade view
+  }
+}
+
+async function fetchAndStoreTier() {
+  try {
+    const res = await fetch(`${API_BASE}/api/profile`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.user?.tier) {
+      localStorage.setItem('signal_theory_tier', data.user.tier);
+    }
+  } catch(e) {}
+}
+
+// ─────────────────────────────────────────────
+// Plan selection
+// ─────────────────────────────────────────────
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  document.getElementById('planMonthly').classList.toggle('selected', plan === 'monthly');
+  document.getElementById('planYearly').classList.toggle('selected', plan === 'yearly');
+  const btn = document.getElementById('upgradeBtn');
+  const p = PLANS[plan];
+  btn.textContent = `Start Premium — ${p.amount} →`;
+}
+
+// ─────────────────────────────────────────────
+// Checkout
+// ─────────────────────────────────────────────
+
+async function startCheckout() {
+  const plan = PLANS[selectedPlan];
+  const btn = document.getElementById('upgradeBtn');
+  const errEl = document.getElementById('checkoutError');
+  errEl.textContent = '';
+
+  showLoading(true);
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/stripe/create-checkout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+      body: JSON.stringify({ priceId: plan.priceId }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.url) {
+      showLoading(false);
+      btn.disabled = false;
+      errEl.textContent = data.error || 'Failed to start checkout. Please try again.';
+      return;
+    }
+
+    // Redirect to Stripe Checkout
+    window.location.href = data.url;
+  } catch(e) {
+    showLoading(false);
+    btn.disabled = false;
+    errEl.textContent = 'Connection error. Please try again.';
+  }
+}
+
+// ─────────────────────────────────────────────
+// Customer Portal
+// ─────────────────────────────────────────────
+
+async function openPortal() {
+  const errEl = document.getElementById('portalError');
+  errEl.textContent = '';
+  showLoading(true);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/stripe/create-portal-session`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.url) {
+      showLoading(false);
+      errEl.textContent = data.error || 'Failed to open portal. Please try again.';
+      return;
+    }
+
+    window.location.href = data.url;
+  } catch(e) {
+    showLoading(false);
+    errEl.textContent = 'Connection error. Please try again.';
+  }
+}
+
+// ─────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────
+
+function showAlert(type, message) {
+  const el = document.getElementById('alertBanner');
+  el.className = `alert-banner alert-${type}`;
+  el.innerHTML = message;
+  el.style.display = 'block';
+}
+
+function showLoading(show) {
+  document.getElementById('loadingOverlay').classList.toggle('show', show);
+}
+
+function goBack() {
+  window.location.href = 'index.html';
+}
+
+init();
+</script>
+</body>
+</html>

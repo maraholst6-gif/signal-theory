@@ -24,6 +24,7 @@ export interface User {
   display_name?: string;
   profile_type: ProfileType | string;
   subscription_status: SubscriptionStatus;
+  tier?: string;
   scenarios_used_week: number;
   analyses_used_week: number;
   week_reset_at: string;

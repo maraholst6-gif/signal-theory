@@ -13,6 +13,7 @@ interface Props {
   scenario: Scenario;
   onPress: () => void;
   isCompleted?: boolean;
+  isLocked?: boolean;
   style?: ViewStyle;
 }
 
@@ -32,6 +33,7 @@ export function ScenarioCard({
   scenario,
   onPress,
   isCompleted = false,
+  isLocked = false,
   style,
 }: Props): React.ReactElement {
   const categoryColor = CATEGORY_COLORS[scenario.category] ?? colors.primary;
@@ -39,7 +41,7 @@ export function ScenarioCard({
 
   return (
     <TouchableOpacity
-      style={[styles.card, isCompleted && styles.cardCompleted, style]}
+      style={[styles.card, isCompleted && styles.cardCompleted, isLocked && styles.cardLocked, style]}
       onPress={onPress}
       activeOpacity={0.75}
     >
@@ -63,6 +65,11 @@ export function ScenarioCard({
             <Text style={[styles.badgeText, { color: colors.positive }]}>done</Text>
           </View>
         )}
+        {isLocked && (
+          <View style={[styles.badge, { backgroundColor: `${colors.ambiguous}20`, borderColor: colors.ambiguous }]}>
+            <Text style={[styles.badgeText, { color: colors.ambiguous }]}>premium</Text>
+          </View>
+        )}
       </View>
 
       {/* Title */}
@@ -73,8 +80,8 @@ export function ScenarioCard({
         {scenario.body}
       </Text>
 
-      {/* Arrow */}
-      <Text style={styles.arrow}>→</Text>
+      {/* Arrow or lock */}
+      <Text style={styles.arrow}>{isLocked ? '🔒' : '→'}</Text>
     </TouchableOpacity>
   );
 }
@@ -91,6 +98,9 @@ const styles = StyleSheet.create({
   },
   cardCompleted: {
     opacity: 0.7,
+  },
+  cardLocked: {
+    opacity: 0.6,
   },
   completedStripe: {
     position: 'absolute',

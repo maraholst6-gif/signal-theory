@@ -16,7 +16,20 @@
 
 ## 🟡 High Priority (Core Features)
 
-### 2. **Scenarios Tab - AI Generation**
+### 2. **Book Revision Pass (15-25 hours)**
+**Status:** Humanizing pass complete, ready for Jeff's review  
+**Location:** Google Doc: https://docs.google.com/document/d/1VeZ0XbB3ORMeejnMRN0l7L3YEme8eXh481HV-BCrlq8/edit  
+**Assessment:** `signal-theory/book/PUBLICATION-READINESS-ASSESSMENT.md`  
+**Score:** 6.5/10 — 70-75% done  
+**Critical fixes needed:**
+1. Condense Chapters 9-12 (mid-book sag) → 2 chapters
+2. Add first-person stories and concrete examples (biggest gap)
+3. Fix repetitive prose patterns (three-line staccato, negation-correction)
+4. Add age-specific practical content (app profiles, age gaps, physical confidence)
+5. Apply Chapter 13 energy to rest of book
+**Next:** Jeff reads full book + assessment, adds personal stories/voice, then formatting + PDF export
+
+### 3. **Scenarios Tab - AI Generation**
 **Status:** Placeholder content only  
 **Requirements:**
 - Build AI scenario generator (relationship situations)

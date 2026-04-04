@@ -44,7 +44,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
 
   try {
     const result = await pool.query(
-      `SELECT scenarios_used_week, analyses_used_week, week_reset_at, subscription_status
+      `SELECT scenarios_used_week, analyses_used_week, week_reset_at, subscription_status, tier
        FROM users WHERE id = $1`,
       [userId]
     );
@@ -87,6 +87,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
       analyses_used_week: user.analyses_used_week,
       week_reset_at: user.week_reset_at,
       subscription_status: user.subscription_status,
+      tier: user.tier ?? 'free',
       quizzes_completed: weeklyUsage.quizzes_completed,
       scenarios_completed: weeklyUsage.scenarios_completed,
       analyzer_uses: weeklyUsage.analyzer_uses,

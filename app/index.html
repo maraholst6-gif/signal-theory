@@ -540,15 +540,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 <!-- UPGRADE MODAL -->
 <div id="upgradeModal" class="modal-overlay">
   <div class="modal-card">
-    <h2>&#128640; Upgrade to Pro</h2>
+    <h2>&#128640; Upgrade to Premium</h2>
     <p>Unlock the full Signal Theory training system.</p>
     <div class="modal-features">
       <div class="modal-feature">&#9989; Intermediate &amp; Advanced quizzes</div>
       <div class="modal-feature">&#9989; Unlimited scenarios per week</div>
-      <div class="modal-feature">&#9989; Create custom scenarios</div>
       <div class="modal-feature">&#9989; Unlimited AI analysis</div>
+      <div class="modal-feature">&#9989; Full progress tracking</div>
     </div>
-    <button class="btn-primary" onclick="hideUpgrade()">Coming Soon</button>
+    <button class="btn-primary" onclick="window.location.href='upgrade.html'">See Pricing &#8594;</button>
     <br><br>
     <button class="btn-secondary" onclick="hideUpgrade()">Maybe Later</button>
   </div>
@@ -559,6 +559,11 @@ const API_BASE = 'https://signal-theory-backend.onrender.com';
 let token = localStorage.getItem('signal_theory_token') || '';
 let userEmail = localStorage.getItem('signal_theory_email') || '';
 let userName = localStorage.getItem('signal_theory_name') || '';
+let userId = localStorage.getItem('signal_theory_user_id') || '';
+let userTier = localStorage.getItem('signal_theory_tier') || 'free';
+
+// Check for upgrade return from Stripe
+const _upgradeStatus = new URLSearchParams(window.location.search).get('upgrade');
 
 // Check for password reset token IMMEDIATELY (before app loads)
 const _resetToken = new URLSearchParams(window.location.search).get('reset');
@@ -708,7 +713,7 @@ async function login() {
   try {
     const res = await fetch(API_BASE+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
     const data = await res.json();
-    if (data.accessToken) { onAuthSuccess(data.accessToken,email,data.user?.display_name||email.split('@')[0]); }
+    if (data.accessToken) { onAuthSuccess(data.accessToken,email,data.user?.display_name||email.split('@')[0],data.user?.id); }
     else { document.getElementById('loginError').textContent=data.error||data.message||'Login failed.'; }
   } catch(e) { document.getElementById('loginError').textContent='Connection error. Please try again.'; }
 }
@@ -723,7 +728,7 @@ async function register() {
     const res = await fetch(API_BASE+'/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({display_name:name,email,password})});
     const data = await res.json();
     if (data.accessToken) {
-      onAuthSuccess(data.accessToken,email,name);
+      onAuthSuccess(data.accessToken,email,name,data.user?.id);
       try {
         await fetch(API_BASE+'/api/email/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,firstName:name.split(' ')[0],quizProfile:'Unknown',source:'signup'})});
       } catch(emailErr) { console.warn('Email subscription failed:',emailErr); }
@@ -738,28 +743,54 @@ async function register() {
   } catch(e) { document.getElementById('signupError').textContent='Connection error. Please try again.'; }
 }
 
-function onAuthSuccess(tok, email, name) {
-  token=tok; userEmail=email; userName=name||email.split('@')[0];
+function onAuthSuccess(tok, email, name, uid) {
+  token=tok; userEmail=email; userName=name||email.split('@')[0]; userId=uid||'';
   cachedQuizHistory = null;
   localStorage.removeItem('quiz_history');
   localStorage.removeItem('scenarios_used_week');
   localStorage.setItem('signal_theory_token',token);
   localStorage.setItem('signal_theory_email',userEmail);
   localStorage.setItem('signal_theory_name',userName);
+  if (userId) localStorage.setItem('signal_theory_user_id',userId);
   document.getElementById('authScreen').style.display='none';
   document.getElementById('appScreen').style.display='block';
   switchTab('tabDashboard');
+  // Fetch and cache tier in background
+  fetchAndCacheTier();
+}
+
+async function fetchAndCacheTier() {
+  try {
+    const data = await apiGet('/api/profile');
+    if (data?.user?.tier) {
+      userTier = data.user.tier;
+      localStorage.setItem('signal_theory_tier', userTier);
+    }
+  } catch(e) {}
 }
 
 function logout() {
-  token=''; userEmail=''; userName='';
+  token=''; userEmail=''; userName=''; userId=''; userTier='free';
   cachedQuizHistory = null;
-  ['signal_theory_token','signal_theory_email','signal_theory_name','quiz_history','scenarios_used_week'].forEach(k=>localStorage.removeItem(k));
+  ['signal_theory_token','signal_theory_email','signal_theory_name','signal_theory_user_id','signal_theory_tier','quiz_history','scenarios_used_week'].forEach(k=>localStorage.removeItem(k));
   document.getElementById('appScreen').style.display='none';
   document.getElementById('authScreen').style.display='flex';
 }
 
 async function loadDashboard() {
+  // Handle return from Stripe Checkout
+  if (_upgradeStatus === 'success') {
+    fetchAndCacheTier();
+    const banner = document.createElement('div');
+    banner.style.cssText = 'background:#064e3b;border:1px solid #10b981;color:#a7f3d0;border-radius:12px;padding:12px 16px;margin-bottom:14px;font-size:14px;font-weight:500;';
+    banner.textContent = '🎉 You\'re now Premium! Enjoy unlimited access.';
+    const content = document.querySelector('.main-content');
+    if (content) content.insertBefore(banner, content.firstChild);
+    history.replaceState({}, '', window.location.pathname);
+  } else if (_upgradeStatus === 'cancelled') {
+    history.replaceState({}, '', window.location.pathname);
+  }
+
   const nameEl = document.getElementById('dashUserName');
   if (nameEl) nameEl.textContent = userName||'there';
   const greetEl = document.getElementById('dashGreeting');
@@ -813,7 +844,7 @@ async function loadQuizHistory() {
 
 async function startQuiz(level) {
   if (level!=='beginner') {
-    if (!localStorage.getItem('signal_theory_pro')) { showUpgrade(); return; }
+    if (userTier !== 'premium') { showUpgrade(); return; }
   }
   // Only check usage limits for paid tiers (intermediate/advanced)
   if (level !== 'beginner') {
@@ -1000,9 +1031,9 @@ async function loadUsageBanner() {
 }
 
 function checkUsageLimit() {
+  if (userTier === 'premium') return true; // Premium: unlimited
   const used=parseInt(localStorage.getItem('scenarios_used_week')||'0');
-  const isPro=localStorage.getItem('signal_theory_pro')==='true';
-  if (!isPro&&used>=1) { showUpgrade(); return false; }
+  if (used>=1) { showUpgrade(); return false; }
   return true;
 }
 
@@ -1113,6 +1144,11 @@ function showScenarioFinalAnalysis() {
 }
 
 async function analyze() {
+  // Free tier: limit 3 analyses per week (server-side tracked)
+  if (userTier !== 'premium') {
+    const allowed = await checkUsage('analyzer');
+    if (!allowed) { showUpgrade(); return; }
+  }
   const input=document.getElementById('analyzeInput').value.trim();
   if (!input) { alert('Please enter a situation to analyze.'); return; }
   const resultDiv=document.getElementById('analyzeResult');
@@ -1171,7 +1207,6 @@ async function checkUsage(type) {
                 : type === 'scenario' ? 'scenarios_completed'
                 : 'analyzer_uses';
     if (usage[field] >= limits[type]) {
-      alert('Weekly limit reached! Upgrade to Pro for unlimited access.');
       return false;
     }
     return true;
