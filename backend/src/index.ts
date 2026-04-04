@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
-import fs from 'fs';
 import { generalLimiter } from './middleware/rateLimit';
 import authRoutes from './routes/auth';
 import profileRoutes from './routes/profile';
@@ -120,16 +119,7 @@ app.get('/api/diag/claude', async (_req, res) => {
 // Serves /app directory — path from /srv/dist → /srv/app
 // ─────────────────────────────────────────────
 
-const staticPath = path.join(__dirname, '../app');
-console.log('[static] __dirname:', __dirname);
-console.log('[static] Serving static files from:', staticPath);
-if (fs.existsSync(staticPath)) {
-  console.log('[static] Directory exists, files:', fs.readdirSync(staticPath).filter(f => f.endsWith('.html')));
-} else {
-  console.error('[static] Directory NOT FOUND at', staticPath);
-}
-
-app.use(express.static(staticPath));
+app.use(express.static(path.join(__dirname, '../app')));
 
 // ─────────────────────────────────────────────
 // 404 handler
