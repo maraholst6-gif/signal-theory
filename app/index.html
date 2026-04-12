@@ -1161,13 +1161,18 @@ async function analyze() {
     if (data.analysis) {
       const a=data.analysis.ai_response||data.analysis;
       if (typeof a==='string') { resultText.innerHTML='<p style="font-size:14px;line-height:1.8;color:#e5e7eb">'+a.replace(/\n/g,'<br>')+'</p>'; }
-      else { resultText.innerHTML='<div style="font-size:14px;line-height:1.8;color:#e5e7eb">'
-        +'<p><strong style="color:#FF6B35">Signal State:</strong> '+(a.signal_state||'Unknown')+'</p>'
-        +'<p><strong style="color:#FF6B35">What I See:</strong> '+(a.what_i_see||'')+'</p>'
-        +'<p><strong style="color:#FF6B35">What It Means:</strong> '+(a.what_it_means||'')+'</p>'
-        +'<p><strong style="color:#FF6B35">Your Move:</strong> '+(a.your_move||'')+'</p>'
-        +'<p><strong style="color:#FF6B35">Watch For:</strong> '+(a.watch_for||'')+'</p>'
-        +'</div>'; }
+      else {
+        const stateColors={INTEREST:'#22c55e',UNCERTAINTY:'#eab308',COMFORT:'#3b82f6',DISENGAGEMENT:'#ef4444'};
+        const stateColor=stateColors[(a.signal_state||'').toUpperCase()]||'#FF6B35';
+        resultText.innerHTML='<div style="font-size:14px;line-height:1.8;color:#e5e7eb">'
+        +'<p style="font-size:20px;font-weight:700;color:'+stateColor+';margin-bottom:16px">⚡ '+(a.signal_state||'Unknown').toUpperCase()+'</p>'
+        +'<p style="margin-bottom:14px"><strong style="color:#FF6B35">The Signal:</strong><br>'+(a.the_signal||a.what_i_see||'')+'</p>'
+        +(a.the_story?'<p style="margin-bottom:14px;padding:10px 14px;background:rgba(255,107,53,0.08);border-left:3px solid #FF6B35;border-radius:4px"><strong style="color:#FF6B35">The Story You\'re Telling Yourself:</strong><br>'+a.the_story+'</p>':'')
+        +'<p style="margin-bottom:14px"><strong style="color:#FF6B35">What\'s Actually Happening:</strong><br>'+(a.whats_happening||a.what_it_means||'')+'</p>'
+        +'<p style="margin-bottom:14px"><strong style="color:#FF6B35">Your Move:</strong><br>'+(a.your_move||'')+'</p>'
+        +(a.blind_spot?'<p style="margin-bottom:14px;padding:10px 14px;background:rgba(239,68,68,0.08);border-left:3px solid #ef4444;border-radius:4px"><strong style="color:#ef4444">⚠ Your Blind Spot:</strong><br>'+a.blind_spot+'</p>':'')
+        +'</div>';
+      }
     }
     else if (data.error||data.message) { resultText.innerHTML='<p style="color:#dc2626">'+(data.error||data.message)+'</p>'; }
     else { resultText.innerHTML='<p style="color:#dc2626">Unable to analyze. Please try again.</p>'; }

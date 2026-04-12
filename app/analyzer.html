@@ -124,12 +124,17 @@
     </div>
 
     <div class="analysis-section">
-      <div class="section-label">What I See</div>
+      <div class="section-label">The Signal</div>
       <div class="section-body" id="what-i-see"></div>
     </div>
 
+    <div class="analysis-section" id="story-section" style="display:none">
+      <div class="section-label" style="color:#FF6B35">The Story You're Telling Yourself</div>
+      <div class="section-body" id="the-story" style="border-left:3px solid #FF6B35;padding-left:12px"></div>
+    </div>
+
     <div class="analysis-section">
-      <div class="section-label">What It Means</div>
+      <div class="section-label">What's Actually Happening</div>
       <div class="section-body" id="what-it-means"></div>
     </div>
 
@@ -139,7 +144,7 @@
     </div>
 
     <div class="analysis-section">
-      <div class="section-label">Watch For</div>
+      <div class="section-label" style="color:#ef4444">Your Blind Spot</div>
       <div class="section-body" id="watch-for"></div>
     </div>
 
@@ -156,10 +161,15 @@ if (!token) {
 }
 
 const SIGNAL_CONFIG = {
-  POSITIVE:  { icon: '🟢', label: 'Positive',  cls: 'positive' },
-  NEUTRAL:   { icon: '🟡', label: 'Neutral',   cls: 'neutral'  },
-  NEGATIVE:  { icon: '🔴', label: 'Negative',  cls: 'negative' },
-  AMBIGUOUS: { icon: '⚪', label: 'Ambiguous', cls: 'ambiguous' },
+  INTEREST:       { icon: '🟢', label: 'Interest',       cls: 'positive' },
+  UNCERTAINTY:    { icon: '🟡', label: 'Uncertainty',    cls: 'neutral'  },
+  COMFORT:        { icon: '🔵', label: 'Comfort',        cls: 'neutral'  },
+  DISENGAGEMENT:  { icon: '🔴', label: 'Disengagement',  cls: 'negative' },
+  // Legacy fallbacks
+  POSITIVE:  { icon: '🟢', label: 'Interest',       cls: 'positive' },
+  NEUTRAL:   { icon: '🟡', label: 'Uncertainty',    cls: 'neutral'  },
+  NEGATIVE:  { icon: '🔴', label: 'Disengagement',  cls: 'negative' },
+  AMBIGUOUS: { icon: '🟡', label: 'Uncertainty',    cls: 'neutral'  },
 };
 
 function showError(msg) {
@@ -221,7 +231,7 @@ async function runAnalysis() {
 function displayResults(analysis) {
   const aiResponse = analysis.ai_response || analysis;
   const signalState = (aiResponse.signal_state || analysis.signal_state || 'NEUTRAL').toUpperCase();
-  const config = SIGNAL_CONFIG[signalState] || SIGNAL_CONFIG['NEUTRAL'];
+  const config = SIGNAL_CONFIG[signalState] || SIGNAL_CONFIG['UNCERTAINTY'];
 
   const card = document.getElementById('signal-state-card');
   card.className = 'signal-state-card ' + config.cls;
@@ -230,10 +240,17 @@ function displayResults(analysis) {
   valEl.textContent = config.label;
   valEl.className = 'signal-value ' + config.cls;
 
-  document.getElementById('what-i-see').textContent = aiResponse.what_i_see || '—';
-  document.getElementById('what-it-means').textContent = aiResponse.what_it_means || '—';
+  document.getElementById('what-i-see').textContent = aiResponse.the_signal || aiResponse.what_i_see || '—';
+  const story = aiResponse.the_story || '';
+  if (story) {
+    document.getElementById('the-story').textContent = story;
+    document.getElementById('story-section').style.display = 'block';
+  } else {
+    document.getElementById('story-section').style.display = 'none';
+  }
+  document.getElementById('what-it-means').textContent = aiResponse.whats_happening || aiResponse.what_it_means || '—';
   document.getElementById('your-move').textContent = aiResponse.your_move || '—';
-  document.getElementById('watch-for').textContent = aiResponse.watch_for || '—';
+  document.getElementById('watch-for').textContent = aiResponse.blind_spot || aiResponse.watch_for || '—';
 
   document.getElementById('input-area').style.display = 'none';
   document.getElementById('results').classList.add('visible');
