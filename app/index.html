@@ -1158,7 +1158,17 @@ async function analyze() {
       return;
     }
     const data=await res.json();
-    if (data.analysis) { resultText.innerHTML='<p style="font-size:14px;line-height:1.8;color:#374151">'+data.analysis.replace(/\n/g,'<br>')+'</p>'; }
+    if (data.analysis) {
+      const a=data.analysis.ai_response||data.analysis;
+      if (typeof a==='string') { resultText.innerHTML='<p style="font-size:14px;line-height:1.8;color:#e5e7eb">'+a.replace(/\n/g,'<br>')+'</p>'; }
+      else { resultText.innerHTML='<div style="font-size:14px;line-height:1.8;color:#e5e7eb">'
+        +'<p><strong style="color:#FF6B35">Signal State:</strong> '+(a.signal_state||'Unknown')+'</p>'
+        +'<p><strong style="color:#FF6B35">What I See:</strong> '+(a.what_i_see||'')+'</p>'
+        +'<p><strong style="color:#FF6B35">What It Means:</strong> '+(a.what_it_means||'')+'</p>'
+        +'<p><strong style="color:#FF6B35">Your Move:</strong> '+(a.your_move||'')+'</p>'
+        +'<p><strong style="color:#FF6B35">Watch For:</strong> '+(a.watch_for||'')+'</p>'
+        +'</div>'; }
+    }
     else if (data.error||data.message) { resultText.innerHTML='<p style="color:#dc2626">'+(data.error||data.message)+'</p>'; }
     else { resultText.innerHTML='<p style="color:#dc2626">Unable to analyze. Please try again.</p>'; }
   } catch(e) {
