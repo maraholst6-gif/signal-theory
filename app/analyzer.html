@@ -148,6 +148,8 @@
       <div class="section-body" id="watch-for"></div>
     </div>
 
+    <div id="email-btn-container" style="text-align:center;margin:20px 0"></div>
+
     <button class="reset-btn" onclick="resetForm()">← Analyze Another</button>
   </div>
 </div>
@@ -155,6 +157,8 @@
 <script>
 const API_BASE = 'https://signal-theory-backend.onrender.com';
 let token = localStorage.getItem('signal_theory_token') || '';
+let userTier = localStorage.getItem('signal_theory_tier') || 'free';
+let lastAnalysisId = null;
 
 if (!token) {
   window.location.href = '/';
@@ -220,6 +224,7 @@ async function runAnalysis() {
       throw new Error(data.error || 'Analysis failed. Please try again.');
     }
 
+    lastAnalysisId = data.analysis.id;
     displayResults(data.analysis);
   } catch (err) {
     showError(err.message || 'Something went wrong. Please try again.');
@@ -252,10 +257,40 @@ function displayResults(analysis) {
   document.getElementById('your-move').textContent = aiResponse.your_move || '—';
   document.getElementById('watch-for').textContent = aiResponse.blind_spot || aiResponse.watch_for || '—';
 
+  // Email button
+  const emailContainer = document.getElementById('email-btn-container');
+  if (userTier === 'premium') {
+    emailContainer.innerHTML = '<button id="emailResultsBtn" onclick="emailResults()" style="background:none;border:1px solid #FF6B35;color:#FF6B35;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">Email My Results</button>';
+  } else {
+    emailContainer.innerHTML = '<button onclick="window.location.href=\'/app/upgrade.html\'" style="background:none;border:1px solid #555;color:#888;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:13px">Email My Results (Premium)</button>';
+  }
+
   document.getElementById('input-area').style.display = 'none';
   document.getElementById('results').classList.add('visible');
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function emailResults() {
+  if (!lastAnalysisId) return;
+  const btn = document.getElementById('emailResultsBtn');
+  if (!btn) return;
+  const orig = btn.textContent;
+  btn.textContent = 'Sending...'; btn.disabled = true;
+  try {
+    const res = await fetch(API_BASE + '/api/analyze/' + lastAnalysisId + '/email', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+    });
+    if (res.ok) {
+      btn.textContent = 'Sent!'; btn.style.borderColor = '#22c55e'; btn.style.color = '#22c55e';
+      setTimeout(() => { btn.textContent = orig; btn.style.borderColor = '#FF6B35'; btn.style.color = '#FF6B35'; btn.disabled = false; }, 3000);
+    } else {
+      btn.textContent = 'Failed'; setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 3000);
+    }
+  } catch(e) {
+    btn.textContent = 'Failed'; setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 3000);
+  }
 }
 
 function resetForm() {

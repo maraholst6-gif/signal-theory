@@ -1015,26 +1015,27 @@ function checkUsageLimit() {
   return true;
 }
 
-function startRandomScenario() {
-  if (!checkUsageLimit()) return;
-  const idx=Math.floor(Math.random()*INTERACTIVE_SCENARIOS.length);
-  startInteractiveScenario(INTERACTIVE_SCENARIOS[idx].id);
+async function startRandomScenario() {
+  try {
+    const res=await fetch(API_BASE+'/api/scenario-play/',{headers:{'Authorization':'Bearer '+token}});
+    if (!res.ok) { alert('Failed to load scenarios. Please try again.'); return; }
+    const data=await res.json();
+    let scenarios=data.scenarios||[];
+    // Filter out premium for free users
+    if (userTier!=='premium') scenarios=scenarios.filter(s=>!s.is_premium);
+    if (scenarios.length===0) { alert('No scenarios available.'); return; }
+    const pick=scenarios[Math.floor(Math.random()*scenarios.length)];
+    localStorage.setItem('st_pending_scenario_id',pick.id);
+    localStorage.setItem('st_pending_scenario_data',JSON.stringify(pick));
+    window.location.href='/app/scenario-play.html';
+  } catch(e) {
+    alert('Connection error. Please try again.');
+  }
 }
 
 function browseCategory(cat) {
-  const scenarios=INTERACTIVE_SCENARIOS.filter(s=>s.category===cat);
-  const catNames={bar:'Bar / Social',texting:'Texting','first-date':'First Dates','mixed-signals':'Mixed Signals'};
-  document.getElementById('categoryTitle').textContent=catNames[cat]||cat;
-  const list=document.getElementById('scenarioCategoryList');
-  list.innerHTML='';
-  scenarios.forEach(s=>{
-    const div=document.createElement('div');
-    div.className='scenario-list-item';
-    div.innerHTML='<div class="scenario-list-title">'+s.title+'</div><div class="scenario-list-desc">'+s.description+'</div><div class="scenario-list-meta"><span class="diff-badge '+s.difficulty+'">'+s.difficulty+'</span><span style="font-size:12px;color:#9ca3af">5 turns</span></div>';
-    div.onclick=()=>{ if (!checkUsageLimit()) return; startInteractiveScenario(s.id); };
-    list.appendChild(div);
-  });
-  showView('viewScenarioCategory');
+  // Redirect to the full scenarios page with category filter
+  window.location.href='/app/scenarios.html' + (cat ? '?category='+cat : '');
 }
 
 function startInteractiveScenario(id) {
@@ -1171,6 +1172,11 @@ async function analyze() {
         +'<p style="margin-bottom:14px"><strong style="color:#FF6B35">What\'s Actually Happening:</strong><br>'+(a.whats_happening||a.what_it_means||'')+'</p>'
         +'<p style="margin-bottom:14px"><strong style="color:#FF6B35">Your Move:</strong><br>'+(a.your_move||'')+'</p>'
         +(a.blind_spot?'<p style="margin-bottom:14px;padding:10px 14px;background:rgba(239,68,68,0.08);border-left:3px solid #ef4444;border-radius:4px"><strong style="color:#ef4444">⚠ Your Blind Spot:</strong><br>'+a.blind_spot+'</p>':'')
+        +'<div style="margin-top:20px;text-align:center">'
+        +(userTier==='premium'
+          ?'<button id="emailResultsBtn" onclick="emailAnalysisResults(\''+data.analysis.id+'\')" style="background:none;border:1px solid #FF6B35;color:#FF6B35;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">Email My Results</button>'
+          :'<button onclick="showUpgrade()" style="background:none;border:1px solid #555;color:#888;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:13px">Email My Results (Premium)</button>')
+        +'</div>'
         +'</div>';
       }
     }
@@ -1185,6 +1191,31 @@ async function analyze() {
 }
 
 function showUpgrade() { document.getElementById('upgradeModal').classList.add('show'); }
+
+async function emailAnalysisResults(analysisId) {
+  const btn=document.getElementById('emailResultsBtn');
+  if (!btn) return;
+  const orig=btn.textContent;
+  btn.textContent='Sending...'; btn.disabled=true;
+  try {
+    const res=await fetch(API_BASE+'/api/analyze/'+analysisId+'/email',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'}
+    });
+    if (res.ok) {
+      btn.textContent='Sent!'; btn.style.borderColor='#22c55e'; btn.style.color='#22c55e';
+      setTimeout(()=>{ btn.textContent=orig; btn.style.borderColor='#FF6B35'; btn.style.color='#FF6B35'; btn.disabled=false; },3000);
+    } else {
+      const d=await res.json().catch(()=>({}));
+      if (d.code==='PREMIUM_REQUIRED') { showUpgrade(); }
+      else { btn.textContent='Failed — try again'; }
+      setTimeout(()=>{ btn.textContent=orig; btn.disabled=false; },3000);
+    }
+  } catch(e) {
+    btn.textContent='Failed — try again';
+    setTimeout(()=>{ btn.textContent=orig; btn.disabled=false; },3000);
+  }
+}
 function hideUpgrade() { document.getElementById('upgradeModal').classList.remove('show'); }
 
 // ─────────────────────────────────────────────
