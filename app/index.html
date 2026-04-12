@@ -125,7 +125,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 .breakdown-cell.comfort .bc-score { color: #1e40af; }
 .breakdown-cell.disengagement .bc-score { color: #991b1b; }
 .quiz-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
-.usage-banner { background: #f0f4ff; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; display: flex; justify-content: space-between; font-size: 13px; color: #374151; }
+.usage-banner { background: #2a2a2a; border: 1px solid #444; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; display: flex; justify-content: space-between; font-size: 13px; color: #a0a0a0; }
 .usage-count-text { font-weight: 700; color: #FF6B35; }
 .btn-featured { width: 100%; padding: 16px; background: #FF6B35; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 20px; transition: background 0.2s; }
 .btn-featured:hover { background: #e55a25; }
@@ -250,43 +250,50 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
           <div class="dashboard-header">
             <h1>&#128293; Signal Theory</h1>
             <p id="dashGreeting" class="subtitle">Welcome back, <span id="dashUserName">&#8212;</span></p>
+            <div id="profileBadge" style="display:none;margin-top:8px;padding:8px 16px;background:#2a2a2a;border:1px solid #444;border-radius:20px;display:inline-block;font-size:13px;color:#a0a0a0">
+              <span id="profileBadgeIcon">&#128161;</span> Your Profile: <strong id="profileBadgeType" style="color:#FF6B35">—</strong>
+            </div>
           </div>
           <div class="card progress-card">
             <h2>&#128202; Your Progress</h2>
-            <div class="stat-row"><span>Training:</span><span id="dashTrainingPct" class="stat-value">&#8212;</span></div>
+            <div class="stat-row"><span>Signal Reading:</span><span id="dashAccuracy" class="stat-value">&#8212;</span></div>
+            <div class="stat-row"><span>Quizzes Completed:</span><span id="dashQuizCount" class="stat-value">0</span></div>
             <div class="stat-row"><span>Scenarios this week:</span><span id="dashScenariosLeft" class="stat-value">&#8212;</span></div>
-            <div class="stat-row"><span>Quiz Accuracy:</span><span id="dashAccuracy" class="stat-value">&#8212;</span></div>
+            <div id="dashEncouragement" style="display:none;margin-top:10px;padding:8px 12px;background:rgba(34,197,94,0.1);border-left:3px solid #22c55e;border-radius:4px;font-size:13px;color:#a7f3d0"></div>
           </div>
-          <div class="card module-card" onclick="switchTab('tabTraining')">
-            <div class="module-icon">&#128218;</div>
-            <h3>Training Quizzes</h3>
-            <p>Test your signal-reading ability across 30 real scenarios</p>
-            <div class="module-meta"><span>3 levels</span><span>&#183;</span><span>10 questions each</span></div>
-            <button class="btn-primary" style="pointer-events:none">Start Training &#8594;</button>
-          </div>
-          <a href="/app/onboarding.html" class="card module-card" id="onboardingCard" style="text-decoration:none;display:block">
+          <!-- Start Here card - shown prominently for new users, moved down for returning users -->
+          <a href="/app/onboarding.html" class="card module-card" id="onboardingCard" style="text-decoration:none;display:block;border:2px solid #FF6B35">
             <div class="module-icon">&#127919;</div>
-            <h3>Start Here: Your Profile</h3>
-            <p id="onboardingDesc">Learn about the 8 readiness profiles and understand your strengths & blind spots.</p>
+            <h3>Start Here: Find Your Profile</h3>
+            <p id="onboardingDesc">Take the beginner quiz to discover your signal-reading profile and blind spots.</p>
             <div class="module-meta">
-              <span>8 profiles</span><span>&#183;</span><span>5 slides each</span>
-              <span id="onboardingCompleteTag" style="display:none;background:#10b981;color:white;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">✓ Completed</span>
+              <span>5 minutes</span><span>&#183;</span><span>Free</span>
+              <span id="onboardingCompleteTag" style="display:none;background:#10b981;color:white;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">&#10003; Completed</span>
             </div>
-            <button class="btn-outline" style="pointer-events:none" id="onboardingButton">Get Started &#8594;</button>
+            <button class="btn-primary" style="pointer-events:none" id="onboardingButton">Get Started &#8594;</button>
           </a>
-          <div class="card module-card" onclick="switchTab('tabScenarios')">
-            <div class="module-icon">&#127917;</div>
-            <h3>Interactive Scenarios</h3>
-            <p>Navigate real-time social situations with live feedback</p>
-            <div class="module-meta"><span>4 scenarios</span><span>&#183;</span><span>5 turns each</span></div>
-            <button class="btn-primary" style="pointer-events:none">Practice Now &#8594;</button>
-          </div>
-          <div class="card module-card" onclick="switchTab('tabAnalyze')">
-            <div class="module-icon">&#128269;</div>
-            <h3>Analyze a Situation</h3>
-            <p>Paste a text thread or describe a situation for AI analysis</p>
-            <div class="module-meta"><span>AI-powered</span><span>&#183;</span><span>Instant feedback</span></div>
-            <button class="btn-primary" style="pointer-events:none">Analyze &#8594;</button>
+          <div id="dashModuleCards">
+            <div class="card module-card" onclick="switchTab('tabTraining')">
+              <div class="module-icon">&#128218;</div>
+              <h3>Training Quizzes</h3>
+              <p>Test your signal-reading ability across real scenarios</p>
+              <div class="module-meta"><span>3 levels</span><span>&#183;</span><span>Multiple sets per level</span></div>
+              <button class="btn-primary" style="pointer-events:none">Start Training &#8594;</button>
+            </div>
+            <div class="card module-card" onclick="switchTab('tabScenarios')">
+              <div class="module-icon">&#127917;</div>
+              <h3>Interactive Scenarios</h3>
+              <p>Navigate real-time dating situations with AI-powered feedback</p>
+              <div class="module-meta"><span>40 scenarios</span><span>&#183;</span><span>5 turns each</span></div>
+              <button class="btn-primary" style="pointer-events:none">Practice Now &#8594;</button>
+            </div>
+            <div class="card module-card" onclick="switchTab('tabAnalyze')">
+              <div class="module-icon">&#128269;</div>
+              <h3>Analyze a Situation</h3>
+              <p>Paste a real conversation or describe what happened — get a Signal Theory read</p>
+              <div class="module-meta"><span>AI-powered</span><span>&#183;</span><span>Instant feedback</span></div>
+              <button class="btn-primary" style="pointer-events:none">Analyze &#8594;</button>
+            </div>
           </div>
         </div>
       </div>
@@ -422,19 +429,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
       <div id="tabScenarios" class="tab-module">
         <div id="viewScenariosMain" class="module-view active">
           <div class="section-title">&#127917; Interactive Scenarios</div>
-          <div class="usage-banner">
-            <span>Free plan: 1 scenario/week</span>
+          <div class="usage-banner" id="scenarioUsageBanner">
+            <span id="scenarioPlanLabel">Free plan: 1 scenario/week</span>
             <span id="usageCountText" class="usage-count-text">&#8212; used</span>
           </div>
           <button class="btn-featured" onclick="startRandomScenario()">&#127922; Random Scenario</button>
           <a href="/app/scenarios.html" class="btn-secondary" style="display:block;text-align:center;margin-top:8px;text-decoration:none;">Browse All Scenarios &#8594;</a>
-          <div class="card quiz-card locked" style="margin-top:4px">
-            <div class="quiz-header">
-              <h3>&#9999; Create Your Own</h3>
-              <span class="badge-pro">PRO</span>
-            </div>
-            <p class="quiz-stats">Describe your real situation and get a custom scenario</p>
-            <button class="btn-secondary" onclick="showUpgrade()">Upgrade to Unlock &#8594;</button>
+          <div id="createYourOwnCard" class="card quiz-card" style="margin-top:4px">
           </div>
         </div>
 
@@ -782,6 +783,20 @@ async function loadDashboard() {
   if (accEl) accEl.textContent = '—';
   const leftEl = document.getElementById('dashScenariosLeft');
   if (leftEl) leftEl.textContent = '0 used this week';
+
+  // Update scenario section for tier
+  const planLabel=document.getElementById('scenarioPlanLabel');
+  if (planLabel) planLabel.textContent=userTier==='premium'?'Premium: Unlimited scenarios':'Free plan: 1 scenario/week';
+  const cyoCard=document.getElementById('createYourOwnCard');
+  if (cyoCard) {
+    if (userTier==='premium') {
+      cyoCard.className='card quiz-card';
+      cyoCard.innerHTML='<div class="quiz-header"><h3>&#9999; Create Your Own</h3><span class="badge-pro" style="background:#22c55e">PRO</span></div><p class="quiz-stats">Describe your real situation and get a custom AI-powered scenario</p><button class="btn-featured" style="margin-top:8px" onclick="window.location.href=\'/app/scenarios.html?custom=1\'">Build a Scenario &#8594;</button>';
+    } else {
+      cyoCard.className='card quiz-card locked';
+      cyoCard.innerHTML='<div class="quiz-header"><h3>&#9999; Create Your Own</h3><span class="badge-pro">PRO</span></div><p class="quiz-stats">Describe your real situation and get a custom scenario</p><button class="btn-secondary" onclick="showUpgrade()">Upgrade to Unlock &#8594;</button>';
+    }
+  }
   try {
     const usage = await apiGet('/api/usage');
     if (usage&&usage.scenarios_used_week!==undefined) {
@@ -791,16 +806,67 @@ async function loadDashboard() {
     const qhData = await apiGet('/api/quizzes/history');
     const qh = qhData&&qhData.history ? qhData.history : (Array.isArray(qhData) ? qhData : []);
     cachedQuizHistory = qh;
+
+    // Fetch profile info
+    try {
+      const profile = await apiGet('/api/profile');
+      if (profile&&profile.user) {
+        const ptype = profile.user.profile_type;
+        const profileNames = {
+          'over-investor':'The Over-Investor','anxious':'The Anxious Reader','avoidant':'The Avoidant',
+          'secure':'The Secure Base','people-pleaser':'The People Pleaser','controller':'The Controller',
+          'romantic':'The Romantic','realist':'The Realist','unknown':'Not set yet'
+        };
+        const badge = document.getElementById('profileBadge');
+        const badgeType = document.getElementById('profileBadgeType');
+        const onboardCard = document.getElementById('onboardingCard');
+        const moduleCards = document.getElementById('dashModuleCards');
+        if (badge && ptype && ptype !== 'unknown') {
+          badge.style.display='inline-block';
+          if (badgeType) badgeType.textContent = profileNames[ptype] || ptype;
+          // User has a profile — move Start Here below modules, de-emphasize
+          if (onboardCard && moduleCards) {
+            onboardCard.style.border='1px solid #444';
+            onboardCard.style.order='2';
+            moduleCards.parentNode.appendChild(onboardCard);
+            const obBtn = document.getElementById('onboardingButton');
+            if (obBtn) obBtn.textContent='Review Profile &#8594;';
+            const obDesc = document.getElementById('onboardingDesc');
+            if (obDesc) obDesc.textContent='Review the 8 readiness profiles and revisit your strengths.';
+            const obTag = document.getElementById('onboardingCompleteTag');
+            if (obTag) obTag.style.display='inline-block';
+          }
+        }
+      }
+    } catch(e) {}
+
     if (greetEl) {
-      if (!qh||qh.length===0) { greetEl.textContent='Welcome!'; }
+      if (!qh||qh.length===0) { greetEl.textContent='Welcome! Take a quiz to get started.'; }
       else { greetEl.innerHTML='Welcome back, <span id="dashUserName">'+(userName||'there')+'</span>'; }
     }
+    // Quiz count
+    const qcEl = document.getElementById('dashQuizCount');
+    if (qcEl) qcEl.textContent = qh ? qh.length : '0';
+
     if (qh&&qh.length>0) {
-      const acc2=Math.round(qh.reduce((s,h)=>s+(h.score||0),0)/qh.reduce((s,h)=>s+(h.total||10),0)*100);
-      const accEl2=document.getElementById('dashAccuracy');
+      const totalCorrect = qh.reduce((s,h)=>s+(h.score||0),0);
+      const totalQs = qh.reduce((s,h)=>s+(h.total||10),0);
+      const acc2 = Math.round(totalCorrect/totalQs*100);
+      const accEl2 = document.getElementById('dashAccuracy');
       if (accEl2) accEl2.textContent=acc2+'%';
-      const pct2=Math.round(Math.min(qh.length*10/30*100,100));
-      if (pctEl) pctEl.textContent=pct2+'%';
+
+      // Encouragement based on accuracy and progress
+      const encEl = document.getElementById('dashEncouragement');
+      if (encEl) {
+        let msg = '';
+        if (qh.length <= 1) { msg = 'You\'re just getting started. Take a few more quizzes to see your patterns emerge.'; }
+        else if (acc2 >= 80) { msg = 'You\'re reading signals well. Your calibration is strong — keep sharpening it with scenarios.'; }
+        else if (acc2 >= 60) { msg = 'You\'re building solid signal awareness. Focus on the situations you\'re getting wrong — that\'s where the growth is.'; }
+        else if (acc2 >= 40) { msg = 'You\'re learning. Most men never even start. The patterns will click — keep practicing.'; }
+        else { msg = 'Early days. Signal reading is a skill, not a talent. Every quiz builds your pattern recognition.'; }
+        encEl.textContent = msg;
+        encEl.style.display = 'block';
+      }
     }
   } catch(e) {}
 }
