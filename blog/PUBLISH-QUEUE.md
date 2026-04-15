@@ -9,8 +9,8 @@
 |---|------|------|--------|-----------|
 | 1 | Post 6: How to Read Texting Patterns | how-to-read-texting-patterns | ✅ LIVE | Apr 2, 2026 |
 | 2 | Post 3: Why You Keep Getting Ghosted | why-you-keep-getting-ghosted | ✅ LIVE | Apr 5, 2026 |
-| 3 | Post 2: 5 Dating Signals Men Over 40 Misread | dating-signals-men-over-40-misread | ⏳ NEXT | |
-| 4 | Post 1: Interested vs. Polite | interested-or-just-being-polite | 🔜 | |
+| 3 | Post 2: 5 Dating Signals Men Over 40 Misread | dating-signals-men-over-40-misread | ✅ LIVE | Apr 15, 2026 |
+| 4 | Post 1: Interested vs. Polite | interested-or-just-being-polite | ⏳ NEXT | |
 | 5 | Post 7: 4 Signal States Every Man Should Know | four-signal-states | 🔜 | |
 | 6 | Post 4: Biggest Divorce Dating Mistake | biggest-divorce-dating-mistake | 🔜 | |
 | 7 | Post 8: She Canceled Plans Again | she-keeps-canceling-plans | 🔜 | |
